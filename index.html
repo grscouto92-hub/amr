@@ -606,6 +606,19 @@
         .legenda-presenca { display: none; }
         @media (min-width: 768px) { .legenda-presenca { display: flex; } }
 
+        /* v2.2: faixa "Nova versão disponível" */
+        .aviso-versao { position: fixed; left: 50%; bottom: 1rem; transform: translateX(-50%); z-index: 9998;
+            display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; justify-content: center;
+            max-width: calc(100vw - 2rem); padding: 0.75rem 1rem; border-radius: 0.75rem;
+            background-color: var(--brand-purple); color: #fff; font-size: 0.875rem;
+            box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.25); }
+        .aviso-versao[hidden] { display: none; }
+        .aviso-versao .btn-aviso-atualizar { background-color: #fff; color: var(--brand-purple); font-weight: 700;
+            padding: 0.375rem 0.875rem; border-radius: 0.5rem; }
+        .aviso-versao .btn-aviso-atualizar:hover { background-color: var(--brand-lavender-soft); }
+        .aviso-versao .btn-aviso-depois { color: #f3e8ff; text-decoration: underline; font-size: 0.8125rem; }
+        .aviso-versao button:focus-visible { outline-color: #fff; }
+
         /* Logo e rodapé de versão */
         .logo-ra { height: 2rem; width: auto; }
         .versao-sistema { font-size: 0.6875rem; color: #9ca3af; text-align: center; }
@@ -615,7 +628,9 @@
     <script>
         window.LOGO_RA_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="110" height="32" viewBox="0 0 110 32" fill="none"><mask id="m0" maskUnits="userSpaceOnUse" x="0" y="0" width="110" height="32"><path d="M109.8 0H0V32H109.8V0Z" fill="white"/></mask><g mask="url(#m0)"><path d="M42.5 19.8L38.2 31.5H40.3L41.1 29H46.2L47.1 31.5H49.3L45 19.8H42.4H42.5ZM41.8 27.2L43.6 22.1H43.7L45.6 27.2H41.8Z" fill="#6D2077"/><path d="M61.3 22.9C60.8 22.7 60.2 22.5 59.6 22.5C59 22.5 58.5 22.7 58 22.9C57.5 23.2 57.1 23.5 56.9 24H56.8C56.6 23.5 56.2 23.2 55.8 22.9C55.4 22.7 54.9 22.5 54.4 22.5C53.9 22.5 53.5 22.6 53.1 22.8C52.7 23 52.4 23.3 52.2 23.8H52.1L51.9 22.7H50.2V31.5H52.2V26.2C52.2 25.8 52.2 25.5 52.4 25.2C52.5 24.9 52.7 24.7 53 24.5C53.3 24.3 53.5 24.3 53.8 24.3C54.2 24.3 54.5 24.3 54.7 24.5C55 24.6 55.2 24.9 55.3 25.1C55.5 25.4 55.6 25.8 55.6 26.2V31.5H57.5V26.2C57.5 25.8 57.6 25.5 57.7 25.2C57.9 24.9 58.1 24.7 58.3 24.5C58.6 24.4 58.9 24.3 59.2 24.3C59.5 24.3 59.8 24.3 60.1 24.5C60.3 24.6 60.5 24.9 60.7 25.2C60.8 25.4 60.9 25.8 60.9 26.3V31.5H62.8V26C62.8 25.3 62.7 24.7 62.4 24.2C62.1 23.6 61.7 23.2 61.3 23" fill="#6D2077"/><path d="M71.2 19H69.3L67.7 21.4H69.3L71.2 19Z" fill="#6D2077"/><path d="M70.8 23.1C70.1 22.7 69.4 22.5 68.6 22.5C67.7 22.5 67 22.7 66.3 23.1C65.7 23.4 65.2 23.9 64.9 24.6C64.5 25.3 64.4 26.1 64.4 27.1C64.4 28.1 64.5 28.9 64.9 29.6C65.2 30.3 65.7 30.8 66.4 31.1C67 31.5 67.7 31.7 68.6 31.7C69.3 31.7 69.9 31.6 70.4 31.3C71 31.1 71.4 30.8 71.7 30.4C72.1 30 72.3 29.5 72.5 28.9H70.4C70.2 29.3 70 29.6 69.7 29.7C69.4 29.9 69 30 68.6 30C68.1 30 67.6 29.9 67.3 29.6C67 29.4 66.7 29.1 66.5 28.6C66.4 28.3 66.4 28 66.3 27.7H72.6C72.7 27.6 72.7 27.5 72.7 27.3C72.7 27.2 72.7 27 72.7 26.8C72.7 26 72.5 25.3 72.2 24.7C71.9 24 71.4 23.5 70.8 23.1ZM66.3 26.2C66.4 26 66.5 25.7 66.5 25.5C66.7 25.1 67 24.8 67.3 24.6C67.7 24.3 68.1 24.2 68.6 24.2C69 24.2 69.4 24.3 69.7 24.5C70 24.7 70.3 24.9 70.4 25.2C70.6 25.6 70.7 25.9 70.8 26.2H66.3L66.3 26.2Z" fill="#6D2077"/><path d="M77.2 22.9C76.8 23.1 76.5 23.4 76.3 23.8H76.2L76 22.7H74.3V31.5H76.3V26.7C76.3 26.3 76.4 25.9 76.6 25.6C76.7 25.2 77 25 77.4 24.8C77.7 24.6 78.1 24.5 78.6 24.5H79.5V22.7H78.5C78 22.7 77.5 22.8 77.2 22.9" fill="#6D2077"/><path d="M82.7 22.7H80.7V31.5H82.7V22.7Z" fill="#6D2077"/><path d="M81.7 19.1C81.4 19.1 81.1 19.2 80.9 19.4C80.6 19.6 80.5 19.9 80.5 20.2C80.5 20.6 80.6 20.8 80.9 21.1C81.1 21.3 81.4 21.4 81.7 21.4C82 21.4 82.3 21.3 82.5 21.1C82.7 20.8 82.9 20.6 82.9 20.2C82.9 19.9 82.7 19.6 82.5 19.4C82.3 19.2 82 19.1 81.7 19.1Z" fill="#6D2077"/><path d="M87.3 24.6C87.7 24.4 88.1 24.3 88.5 24.3C89 24.3 89.4 24.4 89.7 24.6C90 24.7 90.3 25 90.5 25.4H92.5C92.3 24.8 92 24.3 91.7 23.9C91.3 23.5 90.9 23.1 90.4 22.9C89.8 22.6 89.2 22.5 88.5 22.5C87.7 22.5 86.9 22.7 86.3 23.1C85.7 23.4 85.2 23.9 84.8 24.6C84.5 25.3 84.3 26.1 84.3 27.1C84.3 28.1 84.5 28.9 84.8 29.6C85.2 30.3 85.7 30.8 86.3 31.1C86.9 31.5 87.7 31.7 88.5 31.7C89.2 31.7 89.8 31.6 90.4 31.3C90.9 31.1 91.3 30.7 91.7 30.3C92 29.9 92.3 29.4 92.5 28.8H90.5C90.3 29.2 90 29.4 89.7 29.6C89.4 29.8 89 29.9 88.5 29.9C88.1 29.9 87.7 29.8 87.3 29.6C87 29.4 86.7 29.1 86.5 28.7C86.3 28.2 86.2 27.7 86.2 27.1C86.2 26.5 86.3 26 86.5 25.5C86.7 25.1 87 24.8 87.3 24.6" fill="#6D2077"/><path d="M99.3 22.9C98.8 22.6 98.1 22.5 97.4 22.5C96.4 22.5 95.6 22.8 95 23.2C94.4 23.7 94 24.4 93.8 25.2H95.7C95.8 24.9 96 24.6 96.3 24.5C96.6 24.3 96.9 24.2 97.3 24.2C97.9 24.2 98.3 24.3 98.6 24.6C98.9 24.9 99.1 25.2 99.1 25.7V26.2H96.8C96.1 26.2 95.5 26.3 95 26.6C94.5 26.8 94.1 27.1 93.9 27.5C93.6 27.9 93.5 28.4 93.5 28.9C93.5 29.5 93.6 29.9 93.8 30.3C94.1 30.8 94.4 31.1 94.9 31.3C95.4 31.6 95.9 31.7 96.5 31.7C97.2 31.7 97.7 31.5 98.1 31.3C98.5 31 98.9 30.8 99.1 30.4H99.2L99.4 31.5H101V25.8C101 25.1 100.9 24.5 100.6 24C100.3 23.5 99.9 23.2 99.3 22.9M98.8 29.1C98.6 29.4 98.4 29.6 98 29.8C97.7 30 97.3 30 96.9 30C96.4 30 96.1 29.9 95.8 29.7C95.5 29.5 95.4 29.2 95.4 28.8C95.4 28.5 95.5 28.2 95.8 28C96 27.8 96.4 27.7 96.9 27.7H99.1V28.1C99.1 28.5 99 28.8 98.8 29.1" fill="#6D2077"/><path d="M109.3 27.5C109 27.1 108.6 26.9 108.2 26.7C107.8 26.6 107.2 26.4 106.5 26.2C106.1 26.2 105.8 26.1 105.5 26C105.2 25.9 105 25.8 104.9 25.7C104.7 25.5 104.6 25.3 104.6 25.1C104.6 24.8 104.8 24.6 105 24.5C105.2 24.3 105.6 24.2 106.1 24.2C106.5 24.2 106.9 24.3 107.1 24.4C107.4 24.6 107.5 24.8 107.6 25.1H109.7C109.6 24.5 109.4 24.1 109 23.7C108.7 23.3 108.3 23 107.8 22.8C107.3 22.6 106.7 22.5 106.1 22.5C105.4 22.5 104.7 22.6 104.2 22.9C103.7 23.1 103.3 23.4 103.1 23.8C102.8 24.2 102.7 24.6 102.7 25.1C102.7 25.8 102.8 26.3 103.1 26.6C103.5 27 103.8 27.3 104.3 27.5C104.7 27.6 105.3 27.8 105.9 27.9C106.4 28 106.7 28.1 107 28.2C107.2 28.2 107.4 28.3 107.6 28.5C107.7 28.6 107.8 28.8 107.8 29C107.8 29.3 107.7 29.5 107.4 29.7C107.1 29.9 106.7 30 106.1 30C105.6 30 105.3 29.9 105 29.7C104.7 29.5 104.5 29.3 104.4 29H102.4C102.5 29.5 102.7 30 103 30.4C103.3 30.8 103.7 31.1 104.3 31.4C104.8 31.6 105.4 31.7 106.1 31.7C106.8 31.7 107.5 31.6 108.1 31.4C108.6 31.1 109 30.8 109.3 30.4C109.6 30 109.8 29.6 109.8 29C109.8 28.4 109.6 27.9 109.3 27.5" fill="#6D2077"/><path d="M40.4 9.8H42.4L45.7 14.5H47.3L43.9 9.7C44.5 9.7 45 9.5 45.4 9.3C46 9 46.4 8.6 46.7 8.1C47 7.5 47.1 6.9 47.1 6.2C47.1 5.5 47 4.9 46.7 4.4C46.4 3.9 46 3.5 45.4 3.2C44.9 2.9 44.2 2.7 43.5 2.7H38.9V14.5H40.4V9.8V9.8ZM40.4 4H43.4C44.1 4 44.7 4.2 45.1 4.6C45.5 5 45.7 5.6 45.7 6.2C45.7 6.7 45.6 7.1 45.4 7.4C45.3 7.8 45 8 44.6 8.2C44.3 8.4 43.9 8.5 43.4 8.5H40.4V4H40.4Z" fill="#6D2077"/><path d="M53.8 14.3C54.3 14.2 54.7 13.9 55.1 13.5C55.4 13.2 55.7 12.7 55.9 12.2H54.5C54.3 12.6 54 12.9 53.6 13.1C53.2 13.3 52.8 13.4 52.3 13.4C51.7 13.4 51.2 13.3 50.8 13.1C50.4 12.8 50.1 12.4 49.8 11.9C49.7 11.5 49.6 11 49.5 10.5H56C56.1 10.4 56.1 10.3 56.1 10.2C56.1 10 56.1 9.8 56.1 9.7C56.1 9 56 8.4 55.7 7.8C55.4 7.1 54.9 6.6 54.3 6.2C53.8 5.8 53 5.6 52.2 5.6C51.4 5.6 50.7 5.7 50.1 6.1C49.5 6.4 49.1 7 48.7 7.6C48.4 8.3 48.2 9.1 48.2 10.1C48.2 11 48.4 11.9 48.8 12.5C49.1 13.2 49.6 13.7 50.2 14.1C50.8 14.4 51.5 14.6 52.3 14.6C52.8 14.6 53.3 14.5 53.8 14.3M50.7 7.2C51.1 6.9 51.6 6.7 52.2 6.7C52.7 6.7 53.2 6.9 53.6 7.1C54 7.3 54.3 7.7 54.5 8.1C54.7 8.4 54.8 8.9 54.8 9.3H49.5C49.6 9 49.7 8.7 49.8 8.4C50 7.9 50.3 7.5 50.7 7.2" fill="#6D2077"/><path d="M65.3 2.7H64.1V6.8H64C63.7 6.4 63.3 6.1 62.9 5.9C62.4 5.7 61.8 5.6 61.2 5.6C60.5 5.6 59.9 5.7 59.3 6.1C58.7 6.4 58.3 7 58 7.6C57.6 8.3 57.5 9.1 57.5 10.1C57.5 11 57.6 11.9 58 12.5C58.3 13.2 58.7 13.7 59.3 14.1C59.9 14.4 60.5 14.6 61.2 14.6C61.9 14.6 62.4 14.5 62.9 14.3C63.4 14 63.8 13.7 64.1 13.3H64.2L64.3 14.5H65.4V2.7L65.3 2.7ZM63.8 11.9C63.5 12.4 63.2 12.8 62.8 13.1C62.4 13.3 61.9 13.5 61.4 13.5C60.6 13.5 59.9 13.2 59.5 12.6C59 12 58.7 11.2 58.7 10.1C58.7 9.4 58.8 8.8 59.1 8.3C59.3 7.8 59.6 7.4 60 7.1C60.4 6.9 60.9 6.7 61.4 6.7C61.9 6.7 62.4 6.9 62.8 7.1C63.2 7.4 63.5 7.8 63.8 8.3C64 8.8 64.1 9.4 64.1 10.1C64.1 10.8 64 11.4 63.8 11.9" fill="#6D2077"/><path d="M73.5 12.2C73.2 12.6 72.9 12.9 72.5 13.1C72.2 13.3 71.7 13.4 71.2 13.4C70.7 13.4 70.2 13.3 69.8 13.1C69.3 12.8 69 12.4 68.8 11.9C68.6 11.5 68.5 11 68.5 10.5H75C75 10.4 75 10.3 75.1 10.2C75.1 10 75.1 9.8 75.1 9.7C75.1 9 74.9 8.4 74.6 7.8C74.3 7.1 73.9 6.6 73.3 6.2C72.7 5.8 72 5.6 71.1 5.6C70.4 5.6 69.7 5.7 69.1 6.1C68.5 6.4 68 7 67.7 7.6C67.4 8.3 67.2 9.1 67.2 10.1C67.2 11 67.4 11.9 67.7 12.5C68 13.2 68.5 13.7 69.1 14.1C69.7 14.4 70.4 14.6 71.2 14.6C71.8 14.6 72.3 14.5 72.8 14.3C73.2 14.2 73.7 13.9 74 13.5C74.4 13.2 74.6 12.7 74.8 12.2H73.5V12.2ZM69.6 7.2C70 6.9 70.5 6.7 71.1 6.7C71.7 6.7 72.2 6.9 72.5 7.1C72.9 7.3 73.2 7.7 73.4 8.1C73.6 8.4 73.8 8.9 73.8 9.3H68.5C68.5 9 68.6 8.7 68.7 8.4C68.9 7.9 69.2 7.5 69.6 7.2" fill="#6D2077"/></g><mask id="m1" maskUnits="userSpaceOnUse" x="0" y="0" width="35" height="32"><path d="M21.5 28.8C21.5 30.3 22.7 31.5 24.2 31.5H25.7L26.7 28.8H22.4C22.1 28.8 21.8 28.7 21.5 28.5C21.5 28.6 21.5 28.7 21.5 28.8M20.6 24.7C20.6 26.2 21.8 27.4 23.3 27.4H29.5L30.5 24.7H21.5C21.2 24.7 20.9 24.5 20.7 24.3C20.6 24.4 20.6 24.6 20.6 24.7ZM20 20.5C20 22 21.2 23.2 22.7 23.2H33.4L34.4 20.5H20.9C20.6 20.5 20.3 20.4 20.1 20.1C20 20.3 20 20.4 20 20.5M19.4 16.4C19.4 17.8 20.6 19 22.1 19H29.5L30.5 16.4H20.3C20 16.4 19.7 16.2 19.5 16C19.4 16.1 19.4 16.2 19.4 16.4M10.2 12.5L9.2 15.2H18.5C18.9 15.2 19.2 15.3 19.4 15.5C19.4 15.4 19.4 15.3 19.4 15.2C19.4 13.7 18.2 12.5 16.8 12.5H10.2H10.2ZM3.1 8.3L2.1 11H17.9C18.3 11 18.6 11.1 18.8 11.4C18.8 11.3 18.8 11.1 18.8 11C18.8 9.5 17.6 8.3 16.2 8.3H3.1ZM1 4.2L0 6.8H17.1C17.4 6.8 17.7 7 17.9 7.2C17.9 7.1 17.9 7 17.9 6.8C17.9 5.4 16.8 4.2 15.3 4.2H1ZM6.4 0L5.4 2.7H16.5C16.8 2.7 17.1 2.8 17.3 3.1C17.3 2.9 17.4 2.8 17.4 2.7C17.4 1.2 16.2 0 14.7 0H6.4Z" fill="white"/></mask><g mask="url(#m1)"><path d="M34.4 0H0V31.5H34.4V0Z" fill="url(#g0)"/></g><defs><linearGradient id="g0" x1="18.3" y1="2.4" x2="18.3" y2="33.2" gradientUnits="userSpaceOnUse"><stop stop-color="#6D2077"/><stop offset="0.5" stop-color="#D6BFDD"/><stop offset="1" stop-color="#84BD00"/></linearGradient></defs></svg>';
         window.LOGO_RA_URI = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(window.LOGO_RA_SVG);
-        window.VERSAO_SISTEMA = 'v2.1';
+        // ATENÇÃO: a cada publicação, troque este número (ex.: 'v2.3').
+        // O aviso "Nova versão disponível" usa este valor (e também detecta mudanças no arquivo).
+        window.VERSAO_SISTEMA = 'v2.2';
     </script>
 </head>
 <body class="h-screen flex overflow-hidden">
@@ -626,6 +641,14 @@
 
     <!-- TOAST CONTAINER -->
     <div id="toast-container"></div>
+
+    <!-- v2.2: AVISO DE NOVA VERSÃO PUBLICADA -->
+    <div id="aviso-nova-versao" class="aviso-versao" role="status" aria-live="polite" hidden>
+        <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <span id="aviso-nova-versao-texto">Nova versão do sistema disponível.</span>
+        <button type="button" id="btn-atualizar-versao" class="btn-aviso-atualizar">Atualizar agora</button>
+        <button type="button" id="btn-adiar-versao" class="btn-aviso-depois">Depois</button>
+    </div>
 
     <!-- MODAL: CONFIRMAÇÃO GENÉRICA -->
     <div id="modal-confirmacao" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-[100] flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true">
@@ -1868,6 +1891,96 @@
         if (window.VERSAO_SISTEMA) document.getElementById('versao-sistema').textContent = `Treinamentos ${window.VERSAO_SISTEMA}`;
 
         // ----------------------------------------------------------------------
+        // v2.2: AVISO DE "NOVA VERSÃO DISPONÍVEL"
+        // De tempos em tempos (e quando a pessoa volta para a aba), baixa a versão publicada
+        // do próprio site e compara com a que está aberta. Só funciona com o site hospedado
+        // (http/https); aberto direto do arquivo (file://) a verificação fica desligada.
+        // ----------------------------------------------------------------------
+        const VERSAO_INTERVALO_MS = 5 * 60 * 1000;   // verifica a cada 5 minutos
+        const VERSAO_MINIMO_ENTRE_CHECAGENS = 60 * 1000;
+        let versaoAssinaturaInicial = null;
+        let versaoUltimaChecagem = 0;
+        let versaoNovaDetectada = null;
+        let versaoAvisoAdiadoAte = 0;
+
+        const urlBaseDoSite = () => `${location.origin}${location.pathname}`;
+        const hashDoTexto = (txt) => {
+            // hash simples (FNV-1a) do conteúdo, para detectar qualquer mudança no arquivo
+            let h = 0x811c9dc5;
+            for (let i = 0; i < txt.length; i++) { h ^= txt.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+            return (h >>> 0).toString(16);
+        };
+
+        const baixarVersaoPublicada = async () => {
+            const resp = await fetch(`${urlBaseDoSite()}?checarVersao=${Date.now()}`, { cache: 'no-store' });
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const txt = await resp.text();
+            const achada = txt.match(/window\.VERSAO_SISTEMA\s*=\s*'([^']+)'/);
+            return { versao: achada ? achada[1] : null, assinatura: hashDoTexto(txt) };
+        };
+
+        const mostrarAvisoVersao = (versao) => {
+            if (Date.now() < versaoAvisoAdiadoAte) return;
+            const aviso = document.getElementById('aviso-nova-versao');
+            document.getElementById('aviso-nova-versao-texto').textContent = versao && versao !== window.VERSAO_SISTEMA
+                ? `Nova versão do sistema disponível (${versao}).`
+                : 'Nova versão do sistema disponível.';
+            if (aviso.hidden) {
+                aviso.hidden = false;
+                lucide.createIcons();
+            }
+        };
+
+        const verificarNovaVersao = async (forcar = false) => {
+            if (!location.protocol.startsWith('http')) return;
+            if (!forcar && Date.now() - versaoUltimaChecagem < VERSAO_MINIMO_ENTRE_CHECAGENS) return;
+            versaoUltimaChecagem = Date.now();
+            try {
+                const publicada = await baixarVersaoPublicada();
+                if (versaoAssinaturaInicial === null) {
+                    // primeira checagem: guarda a referência do que está publicado agora
+                    versaoAssinaturaInicial = publicada.assinatura;
+                    if (publicada.versao && window.VERSAO_SISTEMA && publicada.versao !== window.VERSAO_SISTEMA) {
+                        versaoNovaDetectada = publicada.versao; // a aba abriu com uma versão velha (cache)
+                    }
+                } else if (publicada.assinatura !== versaoAssinaturaInicial ||
+                           (publicada.versao && publicada.versao !== window.VERSAO_SISTEMA)) {
+                    versaoNovaDetectada = publicada.versao || 'nova';
+                }
+                if (versaoNovaDetectada) mostrarAvisoVersao(versaoNovaDetectada);
+            } catch (e) {
+                // sem internet ou bloqueado: tenta de novo na próxima vez, sem incomodar
+            }
+        };
+        window.verificarNovaVersao = verificarNovaVersao;
+
+        document.getElementById('btn-adiar-versao').addEventListener('click', () => {
+            document.getElementById('aviso-nova-versao').hidden = true;
+            versaoAvisoAdiadoAte = Date.now() + 30 * 60 * 1000; // lembra de novo em 30 minutos
+        });
+
+        document.getElementById('btn-atualizar-versao').addEventListener('click', async () => {
+            if (hasUnsavedChanges) {
+                const ok = await window.mostrarConfirmacao(
+                    'Você tem alterações não salvas. O ideal é clicar em "Salvar Alterações" antes. Se atualizar agora, elas ficam guardadas como rascunho neste computador e você poderá restaurá-las ao reabrir a turma.',
+                    'Atualizar mesmo assim', 'Voltar e salvar');
+                if (!ok) return;
+                salvarRascunhoAgora();
+            }
+            window.__recarregandoVersao = true; // evita o aviso do navegador "sair do site?"
+            // endereço único força a hospedagem a entregar o arquivo novo (sem cache antigo)
+            const marcador = encodeURIComponent(versaoNovaDetectada || Date.now());
+            location.replace(`${urlBaseDoSite()}?v=${marcador}${location.hash}`);
+        });
+
+        if (location.protocol.startsWith('http')) {
+            setTimeout(() => verificarNovaVersao(true), 3000);
+            setInterval(() => verificarNovaVersao(), VERSAO_INTERVALO_MS);
+            document.addEventListener('visibilitychange', () => { if (!document.hidden) verificarNovaVersao(); });
+            window.addEventListener('focus', () => verificarNovaVersao());
+        }
+
+        // ----------------------------------------------------------------------
         // FUNÇÕES UTILITÁRIAS
         // ----------------------------------------------------------------------
 
@@ -2781,6 +2894,7 @@
         });
 
         window.addEventListener('beforeunload', function (e) {
+            if (window.__recarregandoVersao) return; // v2.2: atualização de versão já guardou o rascunho
             if (hasUnsavedChanges) {
                 salvarRascunhoAgora(); // v2: guarda antes de fechar a aba
                 e.preventDefault();
