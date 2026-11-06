@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rede Américas - Treinamentos</title>
+    <title>Melhoria Contínua · Treinamentos | Rede Américas</title>
+    <meta name="theme-color" content="#6D2077">
+    <meta name="color-scheme" content="light">
     
     <!-- Tailwind CSS: o CDN (cdn.tailwindcss.com) foi bloqueado pela TI.
          As classes usadas agora estão embutidas no bloco <style id="tailwind-local"> no fim do <head>. -->
@@ -624,13 +626,391 @@
         .versao-sistema { font-size: 0.6875rem; color: #9ca3af; text-align: center; }
     </style>
 
+    <!-- =====================================================================
+         v2.3 — CAMADA DE DESIGN (UI/UX)
+         Só aparência: não muda ids, classes usadas pelo JavaScript nem a lógica.
+         Vem por último para refinar o Tailwind local e os blocos anteriores.
+         ===================================================================== -->
+    <style id="design-v23">
+        /* ---------- Tokens de interface ---------- */
+        :root {
+            --ui-bg: #f5f4f7;
+            --ui-surface: #ffffff;
+            --ui-surface-2: #faf9fb;
+            --ui-border: #e7e3ea;
+            --ui-border-strong: #d6d0db;
+            --ui-text: #24212a;
+            --ui-text-2: #514c59;
+            --ui-text-3: #6f6a78;
+            --ui-radius: 14px;
+            --ui-radius-sm: 10px;
+            --ui-shadow-sm: 0 1px 2px rgb(36 33 42 / 0.05);
+            --ui-shadow: 0 1px 2px rgb(36 33 42 / 0.04), 0 6px 18px -6px rgb(36 33 42 / 0.08);
+            --ui-shadow-lg: 0 24px 48px -12px rgb(36 33 42 / 0.30);
+            --ui-ring: 0 0 0 3px rgb(109 32 119 / 0.18);
+            /* Verde da marca escurecido para texto branco ter contraste (WCAG AA) */
+            --brand-success: #4d7c0f;
+            --brand-success-hover: #3f6a0a;
+        }
+
+        /* ---------- Base ---------- */
+        body {
+            background-color: var(--ui-bg);
+            color: var(--ui-text);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        ::selection { background-color: rgb(109 32 119 / 0.18); }
+        main.bg-gray-50 { background-color: var(--ui-bg); }
+        input[type="checkbox"], input[type="radio"] { accent-color: var(--brand-purple); }
+        .comp-checkbox { accent-color: #dc2626; }
+
+        /* Textos auxiliares mais legíveis (o cinza-400 não passava no contraste mínimo) */
+        p.text-gray-400, span.text-gray-400, label.text-gray-400 { color: #757080; }
+        p.text-brand-green, span.text-brand-green { color: var(--brand-success); }
+
+        /* Barras de rolagem discretas */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d4cdd9; border-radius: 9999px; border: 2px solid transparent; background-clip: padding-box; }
+        ::-webkit-scrollbar-thumb:hover { background: #b3aab9; background-clip: padding-box; }
+
+        /* ---------- Telas ---------- */
+        .view-section { max-width: 1600px; margin-left: auto; margin-right: auto; }
+        .view-section:not(.hidden) { animation: ui-entrar 0.22s ease-out; }
+        .view-section h1.text-2xl { font-size: 1.625rem; line-height: 2rem; letter-spacing: -0.02em; color: var(--ui-text); }
+        .view-section h1.text-2xl + p.text-sm { margin-top: 0.25rem; color: var(--ui-text-3); }
+
+        @keyframes ui-entrar { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+        @keyframes ui-modal { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+        @keyframes ui-fundo { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes ui-brilho { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+        /* ---------- Cartões ---------- */
+        .glass-card {
+            background: var(--ui-surface);
+            -webkit-backdrop-filter: none;
+            backdrop-filter: none; /* o desfoque pesava nas tabelas grandes e não aparecia (cartão é opaco) */
+            border-color: var(--ui-border);
+            border-radius: var(--ui-radius);
+            box-shadow: var(--ui-shadow);
+        }
+        .glass-card.border-orange-500 { border-left-color: #f97316; }
+        .glass-card > .bg-gray-50 { background-color: var(--ui-surface-2); }
+        .glass-card h3.font-semibold { color: var(--ui-text); letter-spacing: -0.005em; }
+
+        /* Indicadores do dashboard: faixa de cor no topo, sem "pular" no hover (não são clicáveis) */
+        .kpi-card { position: relative; overflow: hidden; padding: 1.25rem 1.25rem 1.125rem; }
+        .kpi-card::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--kpi-cor, var(--brand-purple)); }
+        .kpi-roxo { --kpi-cor: var(--brand-purple); }
+        .kpi-lavanda { --kpi-cor: linear-gradient(90deg, #d9b4d5, #b98bb4); }
+        .kpi-verde { --kpi-cor: var(--brand-green); }
+        .kpi-roxo-escuro { --kpi-cor: linear-gradient(90deg, var(--brand-purple-dark), var(--brand-purple)); }
+        .kpi-card p.text-xs { color: var(--ui-text-3); letter-spacing: 0.06em; }
+        .kpi-card [id^="dash-"] { font-size: 2rem; line-height: 2.5rem; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--ui-text); }
+        .kpi-card .w-12.h-12 { border-radius: 12px; }
+
+        /* Carregamento: brilho suave no lugar do "piscar" */
+        .animate-pulse.bg-gray-200 {
+            animation: ui-brilho 1.4s ease-in-out infinite;
+            background: linear-gradient(90deg, #eeeaf0 25%, #f8f5f9 37%, #eeeaf0 63%);
+            background-size: 400% 100%;
+        }
+
+        /* ---------- Botões ---------- */
+        :where(.btn-primary, .btn-secondary, .btn-success, .btn-danger) { font-size: 0.875rem; line-height: 1.25rem; }
+        .btn-primary, .btn-secondary, .btn-success, .btn-danger {
+            border-radius: var(--ui-radius-sm);
+            letter-spacing: 0.005em;
+            white-space: nowrap;
+            transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+        }
+        .btn-primary, .btn-success, .btn-danger {
+            background-image: linear-gradient(180deg, rgb(255 255 255 / 0.10), rgb(255 255 255 / 0));
+            box-shadow: 0 1px 2px rgb(36 33 42 / 0.18), inset 0 1px 0 rgb(255 255 255 / 0.12);
+        }
+        .btn-primary:hover:not(:disabled), .btn-secondary:hover:not(:disabled),
+        .btn-success:hover:not(:disabled), .btn-danger:hover:not(:disabled) { transform: none; }
+        .btn-primary:hover:not(:disabled) { box-shadow: 0 4px 12px -2px rgb(109 32 119 / 0.35); }
+        .btn-primary:active:not(:disabled), .btn-secondary:active:not(:disabled),
+        .btn-success:active:not(:disabled), .btn-danger:active:not(:disabled) { transform: scale(0.98); }
+
+        .btn-secondary { background-color: #fff; border-color: var(--ui-border-strong); box-shadow: var(--ui-shadow-sm); }
+        .btn-secondary:hover:not(:disabled) { background-color: var(--brand-purple-soft); border-color: #cfb3d4; }
+
+        .btn-success, .btn-primary.bg-brand-green { background-color: var(--brand-success); }
+        .btn-success:hover:not(:disabled), .btn-primary.bg-brand-green:hover:not(:disabled) {
+            background-color: var(--brand-success-hover); box-shadow: 0 4px 12px -2px rgb(77 124 15 / 0.35); }
+
+        .btn-primary:disabled, .btn-secondary:disabled, .btn-success:disabled, .btn-danger:disabled {
+            opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+
+        /* Botão "X" dos modais com área de clique maior */
+        .btn-close-modal:not(.btn-secondary):not(.btn-primary) {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 0.375rem; border-radius: 8px; transition: background-color 0.15s, color 0.15s; }
+        .btn-close-modal:not(.btn-secondary):not(.btn-primary):hover { background-color: rgb(36 33 42 / 0.06); color: var(--ui-text); }
+
+        /* ---------- Campos ---------- */
+        .input-premium {
+            border-color: var(--ui-border-strong);
+            border-radius: var(--ui-radius-sm);
+            color: var(--ui-text);
+            box-shadow: var(--ui-shadow-sm);
+            transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+        }
+        .input-premium.border-red-200 { border-color: #fecaca; }
+        .input-premium::placeholder { color: #9a94a1; }
+        .input-premium:hover:not(:disabled):not(:focus) { border-color: #bdb4c3; }
+        .input-premium:focus:not(:disabled) { border-color: var(--brand-purple); box-shadow: var(--ui-ring); }
+        select.input-premium {
+            -webkit-appearance: none; appearance: none; cursor: pointer; padding-right: 2.25rem;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236f6a78'%3E%3Cpath d='M5.3 7.3a1 1 0 0 1 1.4 0L10 10.6l3.3-3.3a1 1 0 1 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 0-1.4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 0.7rem center; background-size: 1rem;
+        }
+        label.text-sm.font-medium.text-gray-700 { color: var(--ui-text-2); }
+
+        /* ---------- Menu lateral ---------- */
+        #sidebar { border-right-color: var(--ui-border); }
+        #sidebar nav { padding-top: 0.5rem; }
+        .sidebar-link { position: relative; padding: 0.625rem 0.875rem; border-radius: 10px; color: var(--ui-text-2); font-size: 0.9rem; }
+        .sidebar-link svg { color: #8c8594; transition: color 0.15s; }
+        /* Hover sem negrito: o texto não "pula" ao passar o mouse */
+        .sidebar-link:hover { background-color: #f6f1f7; color: var(--brand-purple); font-weight: 500; }
+        .sidebar-link.active { background-color: var(--brand-purple-soft); color: var(--brand-purple); font-weight: 600; }
+        .sidebar-link.active::before { content: ''; position: absolute; left: -1rem; top: 0.5rem; bottom: 0.5rem; width: 3px;
+            border-radius: 0 3px 3px 0; background-color: var(--brand-purple); }
+        .sidebar-link:hover svg, .sidebar-link.active svg { color: var(--brand-purple); }
+        #user-role-badge { display: inline-flex; align-items: center; padding: 0.0625rem 0.5rem; border-radius: 9999px;
+            background-color: var(--brand-green-soft); color: var(--brand-success); font-size: 0.6875rem; font-weight: 600; }
+        #badge-pendencias { box-shadow: 0 0 0 2px #fff; }
+
+        /* Avatar com as iniciais do usuário */
+        .avatar-usuario { background: linear-gradient(135deg, var(--brand-purple), #8e3a99); border: 0; }
+        .avatar-usuario .avatar-iniciais { display: none; color: #fff; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.02em; }
+        .avatar-usuario .avatar-icone { color: #fff; }
+        .avatar-usuario.tem-iniciais .avatar-iniciais { display: inline; }
+        .avatar-usuario.tem-iniciais .avatar-icone { display: none; }
+        #btn-logout-sidebar { font-weight: 500; }
+
+        /* ---------- Tabelas ---------- */
+        .tabela-moderna thead th { background-color: var(--ui-surface-2); box-shadow: inset 0 -1px 0 var(--ui-border); color: var(--ui-text-3); }
+        .tabela-lista thead th { font-size: 0.6875rem; line-height: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
+        .tabela-moderna tbody td { vertical-align: middle; }
+        .tabela-moderna tbody tr:nth-child(even) > td { background-color: #fbfafc; }
+        .tabela-moderna.tabela-moderna tbody tr:hover > td { background-color: #f6f0f7; }
+        .tabela-moderna tbody tr > td { transition: background-color 0.12s ease; }
+
+        /* ---------- Modais ---------- */
+        div[id^="modal-"][aria-modal="true"] { background-color: rgb(28 22 33 / 0.55); }
+        #modal-troca-senha[aria-modal="true"] { background-color: rgb(28 22 33 / 0.82); }
+        div[id^="modal-"][aria-modal="true"]:not(.hidden) { animation: ui-fundo 0.18s ease-out; }
+        div[id^="modal-"][aria-modal="true"]:not(.hidden) > div { animation: ui-modal 0.22s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: var(--ui-shadow-lg); }
+        div[id^="modal-"][aria-modal="true"] h3.text-lg { letter-spacing: -0.01em; }
+
+        /* ---------- Avisos (toasts) ---------- */
+        #toast-container { max-width: calc(100vw - 2rem); }
+        .toast-item {
+            border-radius: 12px; max-width: 420px;
+            border-top: 1px solid var(--ui-border); border-right: 1px solid var(--ui-border); border-bottom: 1px solid var(--ui-border);
+            box-shadow: 0 12px 28px -8px rgb(36 33 42 / 0.25);
+        }
+
+        /* ---------- Detalhe da turma: barra de ações sempre visível ---------- */
+        .barra-acoes-turma {
+            position: sticky; top: -1rem; z-index: 35;
+            margin: -1rem -1rem 1.5rem; padding: 1rem;
+            background-color: rgb(245 244 247 / 0.94);
+            -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+            box-shadow: 0 1px 0 var(--ui-border);
+        }
+        @media (min-width: 768px) {
+            .barra-acoes-turma { top: -2rem; margin: -2rem -2rem 1.5rem; padding: 1.25rem 2rem; }
+        }
+        /* Status com a cor do selo */
+        .seletor-status { transition: background-color 0.15s, border-color 0.15s; }
+        .seletor-status select { cursor: pointer; font-weight: 600; }
+        .seletor-status[data-status="Programado"]   { background-color: #eff6ff; border-color: #bfdbfe; }
+        .seletor-status[data-status="Programado"] select { color: #1d4ed8; }
+        .seletor-status[data-status="Em andamento"] { background-color: #fefce8; border-color: #fde68a; }
+        .seletor-status[data-status="Em andamento"] select { color: #a16207; }
+        .seletor-status[data-status="Concluído"]    { background-color: #f0fdf4; border-color: #bbf7d0; }
+        .seletor-status[data-status="Concluído"] select { color: #15803d; }
+        .seletor-status[data-status="Cancelado"]    { background-color: #fef2f2; border-color: #fecaca; }
+        .seletor-status[data-status="Cancelado"] select { color: #b91c1c; }
+        .seletor-status[data-status="Reagendado"]   { background-color: #fff7ed; border-color: #fed7aa; }
+        .seletor-status[data-status="Reagendado"] select { color: #c2410c; }
+
+        /* ---------- Tela de login ---------- */
+        #login-view {
+            background:
+                radial-gradient(900px 520px at 0% 0%, rgb(109 32 119 / 0.14), transparent 60%),
+                radial-gradient(800px 480px at 100% 100%, rgb(132 189 0 / 0.12), transparent 60%),
+                var(--ui-bg);
+            overflow-y: auto;
+        }
+        .login-shell {
+            display: flex; width: 100%; max-width: 940px; margin: 1rem;
+            background-color: var(--ui-surface); border: 1px solid var(--ui-border);
+            border-radius: 20px; box-shadow: var(--ui-shadow-lg); overflow: hidden;
+        }
+        .login-marca {
+            display: none; position: relative; flex: 1 1 0%; flex-direction: column; justify-content: space-between; gap: 2rem;
+            padding: 2.5rem; color: #fff; overflow: hidden;
+            background: linear-gradient(150deg, #7a2585 0%, var(--brand-purple) 45%, #4a1351 100%);
+        }
+        .login-marca::after {
+            content: ''; position: absolute; width: 22rem; height: 22rem; right: -8rem; bottom: -9rem; border-radius: 9999px;
+            background: radial-gradient(circle, rgb(132 189 0 / 0.35), transparent 65%); pointer-events: none;
+        }
+        .login-logo-chip { display: inline-flex; align-items: center; padding: 0.625rem 0.875rem; border-radius: 12px; background-color: #fff; }
+        .login-marca-eyebrow { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: #e9d5ec; }
+        .login-marca-titulo { margin-top: 0.5rem; font-size: 1.875rem; line-height: 2.25rem; font-weight: 800; letter-spacing: -0.02em; }
+        .login-marca-texto { margin-top: 0.75rem; font-size: 0.9375rem; line-height: 1.5rem; color: #f3e8f5; max-width: 22rem; }
+        .login-marca-lista { margin-top: 1.75rem; display: flex; flex-direction: column; gap: 0.875rem; position: relative; z-index: 1; }
+        .login-marca-lista li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.875rem; line-height: 1.25rem; color: #fbf5fc; }
+        .login-marca-lista svg { width: 1.125rem; height: 1.125rem; flex-shrink: 0; margin-top: 0.0625rem; color: #c8e67a; }
+        .login-marca-rodape { position: relative; z-index: 1; font-size: 0.75rem; color: #dcc3e0; }
+        .login-card { flex: 1 1 0%; padding: 2.5rem 2rem; }
+        .login-card .login-titulo { font-size: 1.5rem; line-height: 2rem; font-weight: 700; letter-spacing: -0.02em; color: var(--ui-text); }
+        .login-card .login-sub { margin-top: 0.25rem; font-size: 0.875rem; color: var(--ui-text-3); }
+        .login-logo-mobile { display: block; height: 2.25rem; width: auto; margin-bottom: 1.5rem; }
+        @media (min-width: 768px) {
+            .login-marca { display: flex; }
+            .login-card { padding: 3rem 2.75rem; }
+            .login-logo-mobile { display: none; }
+        }
+
+        /* ---------- Toque (celular/tablet): áreas de clique maiores ---------- */
+        @media (pointer: coarse) {
+            .btn-lapis { padding: 0.5rem; opacity: 1; }
+            .sel-presenca { min-height: 2.25rem; }
+            .sidebar-link { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        }
+
+        /* ---------- Quem prefere menos movimento ---------- */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important; scroll-behavior: auto !important;
+            }
+        }
+    </style>
+
+    <!-- =====================================================================
+         v2.4 — BANCO DE PROVAS, CORREÇÃO POR PERGUNTA E PAINEL DE APRENDIZADO
+         ===================================================================== -->
+    <style id="design-v24">
+        /* ---------- Dashboard: seção "Aprendizado e prontidão" ---------- */
+        .secao-aprendizado { margin-top: 2rem; }
+        .secao-cabecalho { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem;
+            margin-bottom: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--ui-border); }
+        .secao-titulo { display: flex; align-items: center; gap: 0.5rem; font-size: 1.125rem; line-height: 1.75rem; font-weight: 700;
+            color: var(--ui-text); letter-spacing: -0.01em; }
+        .secao-filtro { min-width: 240px; }
+        .aviso-painel { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.75rem 1rem; margin-bottom: 1rem; border-radius: 10px;
+            background-color: #fffbeb; border: 1px solid #fde68a; color: #92400e; font-size: 0.8125rem; }
+        .aviso-painel[hidden] { display: none; }
+        .kpi-card .kpi-valor { margin-top: 0.25rem; font-size: 2rem; line-height: 2.5rem; font-weight: 700; letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums; color: var(--ui-text); }
+        .kpi-card .kpi-sub { margin-top: 0.125rem; font-size: 0.75rem; color: var(--ui-text-3); }
+        .kpi-alerta { --kpi-cor: #dc2626; }
+        .kpi-alerta .kpi-valor { color: #b91c1c; }
+        .mb-secao { margin-bottom: 1.5rem; }
+
+        .card-titulo { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+            padding-bottom: 0.75rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--ui-border); }
+        .card-titulo h3 { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--ui-text); }
+        .card-titulo .card-dica { font-size: 0.75rem; color: var(--ui-text-3); }
+
+        .barra-linha { display: grid; grid-template-columns: minmax(0, 1fr) 6.5rem 3.25rem; gap: 0.75rem; align-items: center; padding: 0.5rem 0; }
+        .barra-linha + .barra-linha { border-top: 1px solid #f3f0f5; }
+        .barra-titulo { font-size: 0.875rem; font-weight: 500; color: var(--ui-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .barra-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.375rem; margin-top: 0.125rem; font-size: 0.75rem; color: var(--ui-text-3); }
+        .barra-trilho { height: 0.5rem; border-radius: 9999px; background-color: #f1edf3; overflow: hidden; }
+        .barra-valor { height: 100%; border-radius: 9999px; background-color: var(--brand-purple); transition: width 0.6s ease-out; }
+        .barra-valor.alto { background-color: #dc2626; }
+        .barra-valor.medio { background-color: #f59e0b; }
+        .barra-valor.bom { background-color: var(--brand-green); }
+        .barra-pct { text-align: right; font-size: 0.875rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ui-text); }
+
+        .chip-tema { display: inline-flex; align-items: center; padding: 0 0.5rem; border-radius: 9999px; font-size: 0.6875rem; line-height: 1.125rem;
+            font-weight: 600; white-space: nowrap; background-color: var(--brand-purple-soft); color: var(--brand-purple); border: 1px solid #ead7ed; }
+        .chip-motivo { display: inline-flex; align-items: center; padding: 0 0.5rem; border-radius: 9999px; font-size: 0.6875rem; line-height: 1.125rem;
+            font-weight: 600; white-space: nowrap; background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+        .chip-motivo.neutro { background-color: #f6f5f8; color: var(--ui-text-2); border-color: var(--ui-border); }
+
+        .vazio-painel { padding: 1.5rem 1rem; text-align: center; font-size: 0.875rem; color: var(--ui-text-3); }
+        .tabela-mini { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+        .tabela-mini th { padding: 0.375rem 0.5rem; text-align: left; font-size: 0.6875rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.05em; color: var(--ui-text-3); border-bottom: 1px solid var(--ui-border); }
+        .tabela-mini td { padding: 0.5rem; border-bottom: 1px solid #f3f0f5; color: var(--ui-text); }
+        .tabela-mini tr:last-child td { border-bottom: 0; }
+
+        .lista-reforco-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; cursor: pointer; transition: background-color 0.12s; }
+        .lista-reforco-item + .lista-reforco-item { border-top: 1px solid #f3f0f5; }
+        .lista-reforco-item:hover { background-color: #faf6fb; }
+        .lista-reforco-item .motivos { display: flex; flex-wrap: wrap; gap: 0.375rem; justify-content: flex-end; }
+
+        /* ---------- Banco de provas: editor de perguntas ---------- */
+        .pergunta-cabecalho, .pergunta-linha { display: grid; grid-template-columns: 2rem minmax(0, 1fr) 11rem 4.25rem 6.5rem; gap: 0.5rem; align-items: start; }
+        .pergunta-cabecalho { padding: 0 0.5rem 0.25rem; font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ui-text-3); }
+        .pergunta-linha { padding: 0.5rem; border: 1px solid var(--ui-border); border-radius: 10px; background-color: #fff; }
+        .pergunta-linha + .pergunta-linha { margin-top: 0.5rem; }
+        .pergunta-num { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2.25rem; border-radius: 8px;
+            background-color: var(--brand-purple-soft); color: var(--brand-purple); font-weight: 700; font-size: 0.8125rem; }
+        .pergunta-linha textarea.input-premium { min-height: 2.25rem; resize: vertical; }
+        .pergunta-acoes { display: flex; gap: 0.125rem; justify-content: flex-end; }
+        .btn-icone { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2.25rem; border-radius: 8px; color: #8c8594;
+            transition: background-color 0.12s, color 0.12s; }
+        .btn-icone:hover:not(:disabled) { background-color: #f3eef5; color: var(--brand-purple); }
+        .btn-icone.perigo:hover:not(:disabled) { background-color: #fef2f2; color: #dc2626; }
+        .btn-icone:disabled { opacity: 0.3; cursor: default; }
+        @media (max-width: 700px) {
+            .pergunta-cabecalho { display: none; }
+            .pergunta-linha { grid-template-columns: 2rem minmax(0, 1fr); }
+            .pergunta-linha > :nth-child(n+3) { grid-column: 2; }
+        }
+
+        /* ---------- Correção da prova (grade alunos x perguntas) ---------- */
+        .corr-tabela { border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; font-size: 0.8125rem; }
+        .corr-tabela th, .corr-tabela td { padding: 0.375rem; border-bottom: 1px solid #f1edf3; white-space: nowrap; background-color: #fff; vertical-align: middle; }
+        .corr-tabela thead th { position: sticky; top: 0; z-index: 2; background-color: var(--ui-surface-2); font-size: 0.6875rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.05em; color: var(--ui-text-3); }
+        .corr-tabela .col-aluno { position: sticky; left: 0; z-index: 1; min-width: 12rem; max-width: 16rem; overflow: hidden; text-overflow: ellipsis;
+            box-shadow: inset -1px 0 0 var(--ui-border); padding-left: 1rem; }
+        .corr-tabela thead .col-aluno { z-index: 3; }
+        .corr-tabela .col-aluno small { display: block; font-size: 0.6875rem; color: var(--ui-text-3); }
+        .corr-th-q { text-align: center; cursor: help; min-width: 2.25rem; }
+        .corr-q { width: 1.875rem; height: 1.875rem; border-radius: 7px; border: 1px solid var(--ui-border); background-color: #fff;
+            font-size: 0.75rem; font-weight: 700; color: #b3aab9; transition: background-color 0.1s, border-color 0.1s, color 0.1s; }
+        .corr-q:hover { border-color: var(--brand-purple); }
+        .corr-q[data-estado="certo"] { color: #4d7c0f; background-color: #f3f9e6; border-color: #d5ebb0; }
+        .corr-q[data-estado="erro"] { color: #fff; background-color: #dc2626; border-color: #dc2626; }
+        tr.corr-naofez .corr-q { opacity: 0.3; }
+        tr.corr-naofez .col-aluno { color: var(--ui-text-3); }
+        .corr-tabela select.input-premium { width: 7.5rem; padding-top: 0.25rem; padding-bottom: 0.25rem; padding-left: 0.5rem; font-size: 0.75rem; }
+        .corr-tabela input.input-premium { width: 7rem; padding: 0.25rem 0.5rem; font-size: 0.8125rem; }
+        .corr-tabela input[aria-invalid="true"] { border-color: #dc2626; box-shadow: 0 0 0 3px rgb(220 38 38 / 0.15); }
+        .corr-nota { min-width: 3.25rem; text-align: right; font-weight: 800; font-variant-numeric: tabular-nums; padding-right: 1rem !important; }
+        .corr-nota.boa { color: #4d7c0f; }
+        .corr-nota.baixa { color: #dc2626; }
+        .corr-instrucoes { padding: 2.5rem 1.5rem; text-align: center; color: var(--ui-text-3); font-size: 0.875rem; }
+        .corr-perguntas { padding: 0.75rem 1rem; border-top: 1px solid var(--ui-border); background-color: var(--ui-surface-2); font-size: 0.8125rem; }
+        .corr-perguntas summary { cursor: pointer; font-weight: 600; color: var(--brand-purple); }
+        .corr-perguntas ol { margin-top: 0.5rem; display: grid; gap: 0.25rem; max-height: 9rem; overflow-y: auto; }
+        .corr-perguntas li { display: flex; gap: 0.5rem; align-items: baseline; }
+        .corr-perguntas li b { min-width: 1.75rem; color: var(--ui-text-3); }
+    </style>
+
     <!-- v2.1: logo oficial embutido (funciona offline e aparece também na imagem do relatório) -->
     <script>
         window.LOGO_RA_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="110" height="32" viewBox="0 0 110 32" fill="none"><mask id="m0" maskUnits="userSpaceOnUse" x="0" y="0" width="110" height="32"><path d="M109.8 0H0V32H109.8V0Z" fill="white"/></mask><g mask="url(#m0)"><path d="M42.5 19.8L38.2 31.5H40.3L41.1 29H46.2L47.1 31.5H49.3L45 19.8H42.4H42.5ZM41.8 27.2L43.6 22.1H43.7L45.6 27.2H41.8Z" fill="#6D2077"/><path d="M61.3 22.9C60.8 22.7 60.2 22.5 59.6 22.5C59 22.5 58.5 22.7 58 22.9C57.5 23.2 57.1 23.5 56.9 24H56.8C56.6 23.5 56.2 23.2 55.8 22.9C55.4 22.7 54.9 22.5 54.4 22.5C53.9 22.5 53.5 22.6 53.1 22.8C52.7 23 52.4 23.3 52.2 23.8H52.1L51.9 22.7H50.2V31.5H52.2V26.2C52.2 25.8 52.2 25.5 52.4 25.2C52.5 24.9 52.7 24.7 53 24.5C53.3 24.3 53.5 24.3 53.8 24.3C54.2 24.3 54.5 24.3 54.7 24.5C55 24.6 55.2 24.9 55.3 25.1C55.5 25.4 55.6 25.8 55.6 26.2V31.5H57.5V26.2C57.5 25.8 57.6 25.5 57.7 25.2C57.9 24.9 58.1 24.7 58.3 24.5C58.6 24.4 58.9 24.3 59.2 24.3C59.5 24.3 59.8 24.3 60.1 24.5C60.3 24.6 60.5 24.9 60.7 25.2C60.8 25.4 60.9 25.8 60.9 26.3V31.5H62.8V26C62.8 25.3 62.7 24.7 62.4 24.2C62.1 23.6 61.7 23.2 61.3 23" fill="#6D2077"/><path d="M71.2 19H69.3L67.7 21.4H69.3L71.2 19Z" fill="#6D2077"/><path d="M70.8 23.1C70.1 22.7 69.4 22.5 68.6 22.5C67.7 22.5 67 22.7 66.3 23.1C65.7 23.4 65.2 23.9 64.9 24.6C64.5 25.3 64.4 26.1 64.4 27.1C64.4 28.1 64.5 28.9 64.9 29.6C65.2 30.3 65.7 30.8 66.4 31.1C67 31.5 67.7 31.7 68.6 31.7C69.3 31.7 69.9 31.6 70.4 31.3C71 31.1 71.4 30.8 71.7 30.4C72.1 30 72.3 29.5 72.5 28.9H70.4C70.2 29.3 70 29.6 69.7 29.7C69.4 29.9 69 30 68.6 30C68.1 30 67.6 29.9 67.3 29.6C67 29.4 66.7 29.1 66.5 28.6C66.4 28.3 66.4 28 66.3 27.7H72.6C72.7 27.6 72.7 27.5 72.7 27.3C72.7 27.2 72.7 27 72.7 26.8C72.7 26 72.5 25.3 72.2 24.7C71.9 24 71.4 23.5 70.8 23.1ZM66.3 26.2C66.4 26 66.5 25.7 66.5 25.5C66.7 25.1 67 24.8 67.3 24.6C67.7 24.3 68.1 24.2 68.6 24.2C69 24.2 69.4 24.3 69.7 24.5C70 24.7 70.3 24.9 70.4 25.2C70.6 25.6 70.7 25.9 70.8 26.2H66.3L66.3 26.2Z" fill="#6D2077"/><path d="M77.2 22.9C76.8 23.1 76.5 23.4 76.3 23.8H76.2L76 22.7H74.3V31.5H76.3V26.7C76.3 26.3 76.4 25.9 76.6 25.6C76.7 25.2 77 25 77.4 24.8C77.7 24.6 78.1 24.5 78.6 24.5H79.5V22.7H78.5C78 22.7 77.5 22.8 77.2 22.9" fill="#6D2077"/><path d="M82.7 22.7H80.7V31.5H82.7V22.7Z" fill="#6D2077"/><path d="M81.7 19.1C81.4 19.1 81.1 19.2 80.9 19.4C80.6 19.6 80.5 19.9 80.5 20.2C80.5 20.6 80.6 20.8 80.9 21.1C81.1 21.3 81.4 21.4 81.7 21.4C82 21.4 82.3 21.3 82.5 21.1C82.7 20.8 82.9 20.6 82.9 20.2C82.9 19.9 82.7 19.6 82.5 19.4C82.3 19.2 82 19.1 81.7 19.1Z" fill="#6D2077"/><path d="M87.3 24.6C87.7 24.4 88.1 24.3 88.5 24.3C89 24.3 89.4 24.4 89.7 24.6C90 24.7 90.3 25 90.5 25.4H92.5C92.3 24.8 92 24.3 91.7 23.9C91.3 23.5 90.9 23.1 90.4 22.9C89.8 22.6 89.2 22.5 88.5 22.5C87.7 22.5 86.9 22.7 86.3 23.1C85.7 23.4 85.2 23.9 84.8 24.6C84.5 25.3 84.3 26.1 84.3 27.1C84.3 28.1 84.5 28.9 84.8 29.6C85.2 30.3 85.7 30.8 86.3 31.1C86.9 31.5 87.7 31.7 88.5 31.7C89.2 31.7 89.8 31.6 90.4 31.3C90.9 31.1 91.3 30.7 91.7 30.3C92 29.9 92.3 29.4 92.5 28.8H90.5C90.3 29.2 90 29.4 89.7 29.6C89.4 29.8 89 29.9 88.5 29.9C88.1 29.9 87.7 29.8 87.3 29.6C87 29.4 86.7 29.1 86.5 28.7C86.3 28.2 86.2 27.7 86.2 27.1C86.2 26.5 86.3 26 86.5 25.5C86.7 25.1 87 24.8 87.3 24.6" fill="#6D2077"/><path d="M99.3 22.9C98.8 22.6 98.1 22.5 97.4 22.5C96.4 22.5 95.6 22.8 95 23.2C94.4 23.7 94 24.4 93.8 25.2H95.7C95.8 24.9 96 24.6 96.3 24.5C96.6 24.3 96.9 24.2 97.3 24.2C97.9 24.2 98.3 24.3 98.6 24.6C98.9 24.9 99.1 25.2 99.1 25.7V26.2H96.8C96.1 26.2 95.5 26.3 95 26.6C94.5 26.8 94.1 27.1 93.9 27.5C93.6 27.9 93.5 28.4 93.5 28.9C93.5 29.5 93.6 29.9 93.8 30.3C94.1 30.8 94.4 31.1 94.9 31.3C95.4 31.6 95.9 31.7 96.5 31.7C97.2 31.7 97.7 31.5 98.1 31.3C98.5 31 98.9 30.8 99.1 30.4H99.2L99.4 31.5H101V25.8C101 25.1 100.9 24.5 100.6 24C100.3 23.5 99.9 23.2 99.3 22.9M98.8 29.1C98.6 29.4 98.4 29.6 98 29.8C97.7 30 97.3 30 96.9 30C96.4 30 96.1 29.9 95.8 29.7C95.5 29.5 95.4 29.2 95.4 28.8C95.4 28.5 95.5 28.2 95.8 28C96 27.8 96.4 27.7 96.9 27.7H99.1V28.1C99.1 28.5 99 28.8 98.8 29.1" fill="#6D2077"/><path d="M109.3 27.5C109 27.1 108.6 26.9 108.2 26.7C107.8 26.6 107.2 26.4 106.5 26.2C106.1 26.2 105.8 26.1 105.5 26C105.2 25.9 105 25.8 104.9 25.7C104.7 25.5 104.6 25.3 104.6 25.1C104.6 24.8 104.8 24.6 105 24.5C105.2 24.3 105.6 24.2 106.1 24.2C106.5 24.2 106.9 24.3 107.1 24.4C107.4 24.6 107.5 24.8 107.6 25.1H109.7C109.6 24.5 109.4 24.1 109 23.7C108.7 23.3 108.3 23 107.8 22.8C107.3 22.6 106.7 22.5 106.1 22.5C105.4 22.5 104.7 22.6 104.2 22.9C103.7 23.1 103.3 23.4 103.1 23.8C102.8 24.2 102.7 24.6 102.7 25.1C102.7 25.8 102.8 26.3 103.1 26.6C103.5 27 103.8 27.3 104.3 27.5C104.7 27.6 105.3 27.8 105.9 27.9C106.4 28 106.7 28.1 107 28.2C107.2 28.2 107.4 28.3 107.6 28.5C107.7 28.6 107.8 28.8 107.8 29C107.8 29.3 107.7 29.5 107.4 29.7C107.1 29.9 106.7 30 106.1 30C105.6 30 105.3 29.9 105 29.7C104.7 29.5 104.5 29.3 104.4 29H102.4C102.5 29.5 102.7 30 103 30.4C103.3 30.8 103.7 31.1 104.3 31.4C104.8 31.6 105.4 31.7 106.1 31.7C106.8 31.7 107.5 31.6 108.1 31.4C108.6 31.1 109 30.8 109.3 30.4C109.6 30 109.8 29.6 109.8 29C109.8 28.4 109.6 27.9 109.3 27.5" fill="#6D2077"/><path d="M40.4 9.8H42.4L45.7 14.5H47.3L43.9 9.7C44.5 9.7 45 9.5 45.4 9.3C46 9 46.4 8.6 46.7 8.1C47 7.5 47.1 6.9 47.1 6.2C47.1 5.5 47 4.9 46.7 4.4C46.4 3.9 46 3.5 45.4 3.2C44.9 2.9 44.2 2.7 43.5 2.7H38.9V14.5H40.4V9.8V9.8ZM40.4 4H43.4C44.1 4 44.7 4.2 45.1 4.6C45.5 5 45.7 5.6 45.7 6.2C45.7 6.7 45.6 7.1 45.4 7.4C45.3 7.8 45 8 44.6 8.2C44.3 8.4 43.9 8.5 43.4 8.5H40.4V4H40.4Z" fill="#6D2077"/><path d="M53.8 14.3C54.3 14.2 54.7 13.9 55.1 13.5C55.4 13.2 55.7 12.7 55.9 12.2H54.5C54.3 12.6 54 12.9 53.6 13.1C53.2 13.3 52.8 13.4 52.3 13.4C51.7 13.4 51.2 13.3 50.8 13.1C50.4 12.8 50.1 12.4 49.8 11.9C49.7 11.5 49.6 11 49.5 10.5H56C56.1 10.4 56.1 10.3 56.1 10.2C56.1 10 56.1 9.8 56.1 9.7C56.1 9 56 8.4 55.7 7.8C55.4 7.1 54.9 6.6 54.3 6.2C53.8 5.8 53 5.6 52.2 5.6C51.4 5.6 50.7 5.7 50.1 6.1C49.5 6.4 49.1 7 48.7 7.6C48.4 8.3 48.2 9.1 48.2 10.1C48.2 11 48.4 11.9 48.8 12.5C49.1 13.2 49.6 13.7 50.2 14.1C50.8 14.4 51.5 14.6 52.3 14.6C52.8 14.6 53.3 14.5 53.8 14.3M50.7 7.2C51.1 6.9 51.6 6.7 52.2 6.7C52.7 6.7 53.2 6.9 53.6 7.1C54 7.3 54.3 7.7 54.5 8.1C54.7 8.4 54.8 8.9 54.8 9.3H49.5C49.6 9 49.7 8.7 49.8 8.4C50 7.9 50.3 7.5 50.7 7.2" fill="#6D2077"/><path d="M65.3 2.7H64.1V6.8H64C63.7 6.4 63.3 6.1 62.9 5.9C62.4 5.7 61.8 5.6 61.2 5.6C60.5 5.6 59.9 5.7 59.3 6.1C58.7 6.4 58.3 7 58 7.6C57.6 8.3 57.5 9.1 57.5 10.1C57.5 11 57.6 11.9 58 12.5C58.3 13.2 58.7 13.7 59.3 14.1C59.9 14.4 60.5 14.6 61.2 14.6C61.9 14.6 62.4 14.5 62.9 14.3C63.4 14 63.8 13.7 64.1 13.3H64.2L64.3 14.5H65.4V2.7L65.3 2.7ZM63.8 11.9C63.5 12.4 63.2 12.8 62.8 13.1C62.4 13.3 61.9 13.5 61.4 13.5C60.6 13.5 59.9 13.2 59.5 12.6C59 12 58.7 11.2 58.7 10.1C58.7 9.4 58.8 8.8 59.1 8.3C59.3 7.8 59.6 7.4 60 7.1C60.4 6.9 60.9 6.7 61.4 6.7C61.9 6.7 62.4 6.9 62.8 7.1C63.2 7.4 63.5 7.8 63.8 8.3C64 8.8 64.1 9.4 64.1 10.1C64.1 10.8 64 11.4 63.8 11.9" fill="#6D2077"/><path d="M73.5 12.2C73.2 12.6 72.9 12.9 72.5 13.1C72.2 13.3 71.7 13.4 71.2 13.4C70.7 13.4 70.2 13.3 69.8 13.1C69.3 12.8 69 12.4 68.8 11.9C68.6 11.5 68.5 11 68.5 10.5H75C75 10.4 75 10.3 75.1 10.2C75.1 10 75.1 9.8 75.1 9.7C75.1 9 74.9 8.4 74.6 7.8C74.3 7.1 73.9 6.6 73.3 6.2C72.7 5.8 72 5.6 71.1 5.6C70.4 5.6 69.7 5.7 69.1 6.1C68.5 6.4 68 7 67.7 7.6C67.4 8.3 67.2 9.1 67.2 10.1C67.2 11 67.4 11.9 67.7 12.5C68 13.2 68.5 13.7 69.1 14.1C69.7 14.4 70.4 14.6 71.2 14.6C71.8 14.6 72.3 14.5 72.8 14.3C73.2 14.2 73.7 13.9 74 13.5C74.4 13.2 74.6 12.7 74.8 12.2H73.5V12.2ZM69.6 7.2C70 6.9 70.5 6.7 71.1 6.7C71.7 6.7 72.2 6.9 72.5 7.1C72.9 7.3 73.2 7.7 73.4 8.1C73.6 8.4 73.8 8.9 73.8 9.3H68.5C68.5 9 68.6 8.7 68.7 8.4C68.9 7.9 69.2 7.5 69.6 7.2" fill="#6D2077"/></g><mask id="m1" maskUnits="userSpaceOnUse" x="0" y="0" width="35" height="32"><path d="M21.5 28.8C21.5 30.3 22.7 31.5 24.2 31.5H25.7L26.7 28.8H22.4C22.1 28.8 21.8 28.7 21.5 28.5C21.5 28.6 21.5 28.7 21.5 28.8M20.6 24.7C20.6 26.2 21.8 27.4 23.3 27.4H29.5L30.5 24.7H21.5C21.2 24.7 20.9 24.5 20.7 24.3C20.6 24.4 20.6 24.6 20.6 24.7ZM20 20.5C20 22 21.2 23.2 22.7 23.2H33.4L34.4 20.5H20.9C20.6 20.5 20.3 20.4 20.1 20.1C20 20.3 20 20.4 20 20.5M19.4 16.4C19.4 17.8 20.6 19 22.1 19H29.5L30.5 16.4H20.3C20 16.4 19.7 16.2 19.5 16C19.4 16.1 19.4 16.2 19.4 16.4M10.2 12.5L9.2 15.2H18.5C18.9 15.2 19.2 15.3 19.4 15.5C19.4 15.4 19.4 15.3 19.4 15.2C19.4 13.7 18.2 12.5 16.8 12.5H10.2H10.2ZM3.1 8.3L2.1 11H17.9C18.3 11 18.6 11.1 18.8 11.4C18.8 11.3 18.8 11.1 18.8 11C18.8 9.5 17.6 8.3 16.2 8.3H3.1ZM1 4.2L0 6.8H17.1C17.4 6.8 17.7 7 17.9 7.2C17.9 7.1 17.9 7 17.9 6.8C17.9 5.4 16.8 4.2 15.3 4.2H1ZM6.4 0L5.4 2.7H16.5C16.8 2.7 17.1 2.8 17.3 3.1C17.3 2.9 17.4 2.8 17.4 2.7C17.4 1.2 16.2 0 14.7 0H6.4Z" fill="white"/></mask><g mask="url(#m1)"><path d="M34.4 0H0V31.5H34.4V0Z" fill="url(#g0)"/></g><defs><linearGradient id="g0" x1="18.3" y1="2.4" x2="18.3" y2="33.2" gradientUnits="userSpaceOnUse"><stop stop-color="#6D2077"/><stop offset="0.5" stop-color="#D6BFDD"/><stop offset="1" stop-color="#84BD00"/></linearGradient></defs></svg>';
         window.LOGO_RA_URI = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(window.LOGO_RA_SVG);
         // ATENÇÃO: a cada publicação, troque este número (ex.: 'v2.3').
         // O aviso "Nova versão disponível" usa este valor (e também detecta mudanças no arquivo).
-        window.VERSAO_SISTEMA = 'v2.2';
+        window.VERSAO_SISTEMA = 'v2.4';
     </script>
 </head>
 <body class="h-screen flex overflow-hidden">
@@ -640,7 +1020,7 @@
     </div>
 
     <!-- TOAST CONTAINER -->
-    <div id="toast-container"></div>
+    <div id="toast-container" role="status" aria-live="polite"></div>
 
     <!-- v2.2: AVISO DE NOVA VERSÃO PUBLICADA -->
     <div id="aviso-nova-versao" class="aviso-versao" role="status" aria-live="polite" hidden>
@@ -651,10 +1031,10 @@
     </div>
 
     <!-- MODAL: CONFIRMAÇÃO GENÉRICA -->
-    <div id="modal-confirmacao" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-[100] flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true">
+    <div id="modal-confirmacao" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-[100] flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="titulo-confirmacao" aria-describedby="msg-confirmacao-gen">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm m-4 outline-none" tabindex="-1">
             <div class="p-6">
-                <h3 class="text-lg font-bold text-gray-800 mb-2 flex items-center gap-2">
+                <h3 id="titulo-confirmacao" class="text-lg font-bold text-gray-800 mb-2 flex items-center gap-2">
                     <i data-lucide="help-circle" class="w-5 h-5 text-brand-purple"></i> Confirmação
                 </h3>
                 <p id="msg-confirmacao-gen" class="text-sm text-gray-600 mb-6 leading-relaxed"></p>
@@ -667,10 +1047,10 @@
     </div>
 
     <!-- MODAL: FORÇAR TROCA DE SENHA -->
-    <div id="modal-troca-senha" class="fixed inset-0 bg-gray-900 bg-opacity-90 z-[60]flex items-center justify-center hidden backdrop-blur-md" role="dialog" aria-modal="true">
+    <div id="modal-troca-senha" class="fixed inset-0 bg-gray-900 bg-opacity-90 z-[60] flex items-center justify-center hidden backdrop-blur-md" role="dialog" aria-modal="true" aria-labelledby="titulo-troca-senha">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md m-4 overflow-hidden">
             <div class="bg-brand-purple p-6 text-center">
-                <h3 class="text-xl font-bold text-white">Bem-vindo(a)!</h3>
+                <h3 id="titulo-troca-senha" class="text-xl font-bold text-white">Bem-vindo(a)!</h3>
                 <p class="text-purple-200 text-sm mt-1">Este é o seu primeiro acesso ao sistema.</p>
             </div>
             <div class="p-6 space-y-4">
@@ -682,15 +1062,15 @@
                 </div>
                 
                 <div class="relative">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nova Senha</label>
-                    <input type="password" id="nova-senha-1" class="input-premium pr-10" required placeholder="Mínimo de 6 caracteres">
+                    <label for="nova-senha-1" class="block text-sm font-medium text-gray-700 mb-1">Nova Senha</label>
+                    <input type="password" id="nova-senha-1" class="input-premium pr-10" required placeholder="Mínimo de 6 caracteres" autocomplete="new-password">
                     <button type="button" class="btn-toggle-password absolute inset-y-0 right-0 pr-3 pt-6 flex items-center text-gray-500 hover:text-gray-700" aria-label="Mostrar senha" data-target="nova-senha-1">
                         <i data-lucide="eye" class="w-5 h-5"></i>
                     </button>
                 </div>
                 <div class="relative">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Confirmar Nova Senha</label>
-                    <input type="password" id="nova-senha-2" class="input-premium pr-10" required placeholder="Repita a nova senha">
+                    <label for="nova-senha-2" class="block text-sm font-medium text-gray-700 mb-1">Confirmar Nova Senha</label>
+                    <input type="password" id="nova-senha-2" class="input-premium pr-10" required placeholder="Repita a nova senha" autocomplete="new-password">
                     <button type="button" class="btn-toggle-password absolute inset-y-0 right-0 pr-3 pt-6 flex items-center text-gray-500 hover:text-gray-700" aria-label="Mostrar senha" data-target="nova-senha-2">
                         <i data-lucide="eye" class="w-5 h-5"></i>
                     </button>
@@ -705,10 +1085,10 @@
     </div>
 
     <!-- MODAL: PRÉVIA DA IMAGEM DO RELATÓRIO -->
-    <div id="modal-imagem-relatorio" class="fixed inset-0 bg-gray-900 bg-opacity-80 z-[60]flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true">
+    <div id="modal-imagem-relatorio" class="fixed inset-0 bg-gray-900 bg-opacity-80 z-[60] flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="titulo-imagem-relatorio">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col m-4">
             <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-xl">
-                <h3 class="text-lg font-bold text-brand-purple flex items-center gap-2">
+                <h3 id="titulo-imagem-relatorio" class="text-lg font-bold text-brand-purple flex items-center gap-2">
                     <i data-lucide="image" class="w-5 h-5"></i> Relatório Gerado
                 </h3>
                 <button class="btn-close-modal text-gray-400 hover:text-gray-600" aria-label="Fechar" data-target="modal-imagem-relatorio"><i data-lucide="x"></i></button>
@@ -727,7 +1107,7 @@
                     </div>
                     <div id="email-destinatarios" class="flex flex-wrap gap-2"></div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <input type="text" id="email-extras" class="input-premium py-1.5 text-sm" placeholder="Outros e-mails (separe com ;)">
+                        <input type="text" id="email-extras" class="input-premium py-1.5 text-sm" placeholder="Outros e-mails (separe com ;)" aria-label="Outros e-mails, separados por ponto e vírgula">
                         <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none">
                             <input type="checkbox" id="email-cc-mim" checked> Enviar cópia para mim
                         </label>
@@ -762,22 +1142,42 @@
 
     <!-- TELA DE LOGIN -->
     <div id="login-view" class="w-full h-full flex items-center justify-center bg-brand-offwhite absolute inset-0 z-40">
-        <div class="glass-card w-full max-w-md p-8 m-4">
-            <div class="flex flex-col items-center mb-8">
-                <img src="https://agendamento.saudeamericas.com.br/_next/static/media/Logo.e784160f.svg" data-logo-ra alt="Rede Américas" class="h-12 mb-4 drop-shadow-sm">
-                
-                <h1 class="text-2xl font-bold text-brand-purple">Melhoria Contínua</h1>
-                <p class="text-sm text-gray-500 mt-1">Gestão de Treinamentos</p>
+        <div class="login-shell">
+            <!-- v2.3: painel da marca (só no computador) -->
+            <section class="login-marca" aria-hidden="true">
+                <div>
+                    <span class="login-logo-chip">
+                        <img src="https://agendamento.saudeamericas.com.br/_next/static/media/Logo.e784160f.svg" data-logo-ra alt="" class="logo-ra">
+                    </span>
+                </div>
+                <div>
+                    <p class="login-marca-eyebrow">Melhoria Contínua</p>
+                    <h2 class="login-marca-titulo">Gestão de Treinamentos</h2>
+                    <p class="login-marca-texto">Presenças, provas e avaliações das turmas em um só lugar.</p>
+                    <ul class="login-marca-lista">
+                        <li><i data-lucide="calendar-check"></i> Presença por dia, com atrasos e faltas justificadas</li>
+                        <li><i data-lucide="award"></i> Média de conhecimento e nota comportamental</li>
+                        <li><i data-lucide="mail"></i> Relatórios prontos para enviar aos responsáveis</li>
+                    </ul>
+                </div>
+                <p class="login-marca-rodape">Rede Américas · Qualidade CX</p>
+            </section>
+
+            <div class="login-card">
+            <div class="mb-8">
+                <img src="https://agendamento.saudeamericas.com.br/_next/static/media/Logo.e784160f.svg" data-logo-ra alt="Rede Américas" class="login-logo-mobile">
+                <h1 class="login-titulo">Entrar no sistema</h1>
+                <p class="login-sub">Use seu e-mail corporativo e a senha cadastrada.</p>
             </div>
 
             <form id="login-form" class="space-y-5">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">E-mail corporativo</label>
-                    <input type="email" id="login-email" class="input-premium" required placeholder="usuario@americasmed.com.br">
+                    <label for="login-email" class="block text-sm font-medium text-gray-700 mb-1">E-mail corporativo</label>
+                    <input type="email" id="login-email" class="input-premium" required placeholder="usuario@americasmed.com.br" autocomplete="username" inputmode="email">
                 </div>
                 <div class="relative">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
-                    <input type="password" id="login-password" class="input-premium pr-10" required placeholder="••••••••">
+                    <label for="login-password" class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                    <input type="password" id="login-password" class="input-premium pr-10" required placeholder="••••••••" autocomplete="current-password">
                     <button type="button" class="btn-toggle-password absolute inset-y-0 right-0 pr-3 pt-6 flex items-center text-gray-500 hover:text-gray-700" aria-label="Mostrar senha" data-target="login-password">
                         <i data-lucide="eye" class="w-5 h-5"></i>
                     </button>
@@ -790,6 +1190,7 @@
                     Esqueci minha senha
                 </button>
             </form>
+            </div>
         </div>
     </div>
 
@@ -813,7 +1214,7 @@
                 </button>
             </div>
 
-            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto" aria-label="Menu principal">
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-4 px-2">Menu</p>
                 
                 <a id="nav-dashboard" class="sidebar-link active btn-nav" role="button" tabindex="0" data-target="dashboard">
@@ -828,6 +1229,11 @@
                     <i data-lucide="book-open" class="w-5 h-5"></i> Turmas
                     <!-- v2: quantidade de pendências -->
                     <span id="badge-pendencias" class="hidden ml-auto bg-red-500 text-white text-[10px] font-bold rounded-full px-2 py-0.5" title="Pendências">0</span>
+                </a>
+
+                <!-- v2.4: banco de provas (perguntas e temas) -->
+                <a id="nav-provas" class="sidebar-link border border-transparent hover:border-purple-100 btn-nav" role="button" tabindex="0" data-target="provas">
+                    <i data-lucide="clipboard-check" class="w-5 h-5"></i> Banco de Provas
                 </a>
 
                 <div id="menu-admin" class="hidden space-y-2 mt-2">
@@ -852,8 +1258,10 @@
 
             <div class="p-4 border-t border-gray-200">
                 <div class="flex items-center gap-3 mb-4 px-2">
-                    <div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center border border-purple-100">
-                        <i data-lucide="user" class="w-5 h-5 text-brand-purple"></i>
+                    <div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center border border-purple-100 shrink-0 avatar-usuario">
+                        <!-- v2.3: iniciais do usuário (preenchidas pelo script de interface no fim da página) -->
+                        <span id="user-avatar-iniciais" class="avatar-iniciais" aria-hidden="true"></span>
+                        <i data-lucide="user" class="w-5 h-5 text-brand-purple avatar-icone"></i>
                     </div>
                     <div class="overflow-hidden">
                         <p id="user-display-name" class="text-sm font-medium text-gray-700 truncate">Usuário</p>
@@ -864,7 +1272,7 @@
                     <i data-lucide="log-out" class="w-4 h-4"></i> Sair do sistema
                 </button>
                 <!-- v2.1: versão discreta no rodapé -->
-                <p id="versao-sistema" class="versao-sistema mt-2">Treinamentos v2.1</p>
+                <p id="versao-sistema" class="versao-sistema mt-2">Treinamentos v2.4</p>
             </div>
         </aside>
 
@@ -893,7 +1301,7 @@
                             <p class="text-sm text-gray-500">Visão geral dos indicadores de capacitação e turmas.</p>
                         </div>
                         <div class="flex gap-2">
-                            <button id="btn-nav-relatorios-dash" class="btn-success shrink-0 btn-nav" title="Ir para aba de Filtros e Extração" data-target="relatorios">
+                            <button id="btn-nav-relatorios-dash" class="btn-secondary shrink-0 btn-nav" title="Ir para aba de Filtros e Extração" data-target="relatorios">
                                 <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Filtros e BI
                             </button>
                             <button id="btn-atualizar-dash" class="btn-secondary shrink-0 bg-white" title="Sincronizar com o banco de dados">
@@ -949,7 +1357,7 @@
 
                     <!-- Cards -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                        <div class="glass-card p-5 border-l-4 border-brand-purple flex items-center justify-between hover:-translate-y-1 transition-transform">
+                        <div class="glass-card kpi-card kpi-roxo flex items-center justify-between">
                             <div>
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total de Turmas</p>
                                 <div id="dash-turmas" class="text-3xl font-bold text-gray-800 mt-1"><div class="h-8 w-16 bg-gray-200 animate-pulse rounded mt-1"></div></div>
@@ -958,7 +1366,7 @@
                                 <i data-lucide="layers" class="w-6 h-6 text-brand-purple"></i>
                             </div>
                         </div>
-                        <div class="glass-card p-5 border-l-4 border-brand-lavender flex items-center justify-between hover:-translate-y-1 transition-transform">
+                        <div class="glass-card kpi-card kpi-lavanda flex items-center justify-between">
                             <div>
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Alunos Treinados</p>
                                 <div id="dash-alunos" class="text-3xl font-bold text-gray-800 mt-1"><div class="h-8 w-16 bg-gray-200 animate-pulse rounded mt-1"></div></div>
@@ -967,7 +1375,7 @@
                                 <i data-lucide="users" class="w-6 h-6 text-brand-purple-dark"></i>
                             </div>
                         </div>
-                        <div class="glass-card p-5 border-l-4 border-brand-green flex items-center justify-between hover:-translate-y-1 transition-transform">
+                        <div class="glass-card kpi-card kpi-verde flex items-center justify-between">
                             <div>
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Taxa de Presença</p>
                                 <div id="dash-presenca" class="text-3xl font-bold text-gray-800 mt-1"><div class="h-8 w-16 bg-gray-200 animate-pulse rounded mt-1"></div></div>
@@ -976,11 +1384,11 @@
                                 <i data-lucide="user-check" class="w-6 h-6 text-brand-green-dark"></i>
                             </div>
                         </div>
-                        <div class="glass-card p-5 border-l-4 border-brand-purple-dark flex items-center justify-between hover:-translate-y-1 transition-transform">
+                        <div class="glass-card kpi-card kpi-roxo-escuro flex items-center justify-between">
                             <div>
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center">
                                     Média Geral Provas
-                                    <i data-lucide="info" class="w-4 h-4 text-gray-400 cursor-help ml-1" title="Média de conhecimento ponderada pelas provas individuais lançadas pelos instrutores."></i>
+                                    <span class="inline-flex ml-1 cursor-help" title="Média de conhecimento ponderada pelas provas individuais lançadas pelos instrutores." aria-label="Média de conhecimento ponderada pelas provas individuais lançadas pelos instrutores." tabindex="0" role="img"><i data-lucide="info" class="w-4 h-4 text-gray-400"></i></span>
                                 </p>
                                 <div id="dash-notas" class="text-3xl font-bold text-gray-800 mt-1"><div class="h-8 w-16 bg-gray-200 animate-pulse rounded mt-1"></div></div>
                             </div>
@@ -1030,6 +1438,98 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- v2.4: APRENDIZADO E PRONTIDÃO (insumos para a operação e para o time de treinamentos) -->
+                    <section id="painel-aprendizado" class="secao-aprendizado" aria-labelledby="titulo-aprendizado">
+                        <div class="secao-cabecalho">
+                            <div>
+                                <h2 id="titulo-aprendizado" class="secao-titulo">
+                                    <i data-lucide="graduation-cap" class="w-5 h-5 text-brand-purple"></i> Aprendizado e prontidão
+                                </h2>
+                                <p class="text-sm text-gray-500 mt-1">Com base nas provas corrigidas por pergunta e na presença. Apto para a operação: nota ≥ 7 e presença ≥ 75%.</p>
+                            </div>
+                            <div class="secao-filtro">
+                                <label for="dash-aprend-prova" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Prova analisada</label>
+                                <select id="dash-aprend-prova" class="input-premium py-1.5 text-sm">
+                                    <option value="">Todas as provas</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="aprend-aviso" class="aviso-painel" role="status" hidden>
+                            <i data-lucide="info" class="w-4 h-4 shrink-0 mt-0.5"></i>
+                            <span id="aprend-aviso-texto"></span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-secao">
+                            <div class="glass-card kpi-card kpi-verde">
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Aptos para a operação</p>
+                                <div id="aprend-aptos" class="kpi-valor">-</div>
+                                <p id="aprend-aptos-sub" class="kpi-sub">Nota ≥ 7 e presença ≥ 75%</p>
+                            </div>
+                            <div class="glass-card kpi-card kpi-roxo">
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Média nas provas do banco</p>
+                                <div id="aprend-media" class="kpi-valor">-</div>
+                                <p id="aprend-media-sub" class="kpi-sub">Nenhuma prova corrigida</p>
+                            </div>
+                            <div class="glass-card kpi-card kpi-lavanda">
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Taxa de acerto</p>
+                                <div id="aprend-acerto" class="kpi-valor">-</div>
+                                <p id="aprend-acerto-sub" class="kpi-sub">Das perguntas respondidas</p>
+                            </div>
+                            <div class="glass-card kpi-card kpi-alerta">
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Precisam de reforço</p>
+                                <div id="aprend-reforco" class="kpi-valor">-</div>
+                                <p id="aprend-reforco-sub" class="kpi-sub">Nota &lt; 7 ou presença &lt; 75%</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-secao">
+                            <div class="glass-card p-5">
+                                <div class="card-titulo">
+                                    <h3><i data-lucide="circle-x" class="w-5 h-5 text-red-500"></i> Perguntas que mais erram</h3>
+                                    <span class="card-dica">% de alunos que erraram</span>
+                                </div>
+                                <div id="aprend-perguntas"><p class="vazio-painel">Carregando...</p></div>
+                            </div>
+                            <div class="glass-card p-5">
+                                <div class="card-titulo">
+                                    <h3><i data-lucide="target" class="w-5 h-5 text-brand-purple"></i> Erros por tema</h3>
+                                    <span class="card-dica">Onde reforçar o conteúdo</span>
+                                </div>
+                                <div id="aprend-temas"><p class="vazio-painel">Carregando...</p></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-secao">
+                            <div class="glass-card p-5">
+                                <div class="card-titulo">
+                                    <h3><i data-lucide="trending-up" class="w-5 h-5 text-brand-purple"></i> Evolução por turma</h3>
+                                    <span class="card-dica">Média nas provas do banco</span>
+                                </div>
+                                <div id="aprend-evolucao"><p class="vazio-painel">Carregando...</p></div>
+                            </div>
+                            <div class="glass-card p-5">
+                                <div class="card-titulo">
+                                    <h3><i data-lucide="building-2" class="w-5 h-5 text-brand-purple"></i> Prontidão por unidade</h3>
+                                    <span class="card-dica">Alunos avaliados</span>
+                                </div>
+                                <div id="aprend-unidades" class="overflow-x-auto"><p class="vazio-painel">Carregando...</p></div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card overflow-hidden">
+                            <div class="p-4 border-b border-gray-100 flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="life-buoy" class="w-5 h-5 text-red-500"></i>
+                                    <h3 class="font-semibold text-gray-700">Alunos que precisam de reforço</h3>
+                                    <span id="aprend-reforco-total" class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-semibold">0</span>
+                                </div>
+                                <span class="text-xs text-gray-500">Clique para abrir a turma</span>
+                            </div>
+                            <div id="aprend-reforco-lista" class="max-h-[450px] overflow-y-auto"><p class="vazio-painel">Carregando...</p></div>
+                        </div>
+                    </section>
                 </div>
 
                 <!-- VIEW: RELATÓRIOS -->
@@ -1052,7 +1552,7 @@
                     <!-- Filtros Analíticos -->
                     <div class="glass-card p-4 mb-6 grid grid-cols-1 md:grid-cols-5 gap-4 bg-white border border-gray-200">
                         <div class="md:col-span-1">
-                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Busca Livre</label>
+                            <label for="filtro-busca-relatorio" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Busca Livre</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
                                     <i data-lucide="search" class="w-3.5 h-3.5 text-gray-400"></i>
@@ -1061,7 +1561,7 @@
                             </div>
                         </div>
                         <div class="md:col-span-1">
-                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Status da Turma</label>
+                            <label for="filtro-status" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Status da Turma</label>
                             <select id="filtro-status" class="input-premium py-1.5 text-sm">
                                 <option value="">Todos os status</option>
                                 <option value="Concluído">Concluído</option>
@@ -1072,17 +1572,17 @@
                             </select>
                         </div>
                         <div class="md:col-span-1">
-                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Unidade / Local</label>
+                            <label for="filtro-unidade" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Unidade / Local</label>
                             <select id="filtro-unidade" class="input-premium py-1.5 text-sm">
                                 <option value="">Todas as unidades</option>
                             </select>
                         </div>
                         <div class="md:col-span-1">
-                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Início (A partir de)</label>
+                            <label for="filtro-data-inicio" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Início (A partir de)</label>
                             <input type="date" id="filtro-data-inicio" class="input-premium py-1.5 text-sm">
                         </div>
                         <div class="md:col-span-1">
-                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Fim (Até)</label>
+                            <label for="filtro-data-fim" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Fim (Até)</label>
                             <input type="date" id="filtro-data-fim" class="input-premium py-1.5 text-sm">
                         </div>
                     </div>
@@ -1090,7 +1590,7 @@
                     <!-- Tabela de Preview -->
                     <div class="glass-card overflow-hidden flex flex-col">
                         <div class="tabela-rolagem">
-                            <table class="w-full text-left border-collapse relative tabela-moderna">
+                            <table class="w-full text-left border-collapse relative tabela-moderna tabela-lista">
                                 <thead>
                                     <tr class="bg-gray-50 border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider">
                                         <th class="p-3 font-medium min-w-[200px]">Turma (Curso)</th>
@@ -1138,7 +1638,7 @@
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
                                 </div>
-                                <input type="text" id="search-turmas" class="input-premium pl-10 py-1.5 text-sm" placeholder="Buscar turma, instrutor ou unidade...">
+                                <input type="search" id="search-turmas" class="input-premium pl-10 py-1.5 text-sm" placeholder="Buscar turma, instrutor ou unidade..." aria-label="Buscar turma, instrutor ou unidade">
                             </div>
                             <!-- v2: filtros rápidos da lista de turmas -->
                             <select id="filtro-turmas-status" class="input-premium py-1.5 text-sm sm:w-auto" aria-label="Filtrar por status">
@@ -1155,7 +1655,7 @@
                             <span class="text-xs text-gray-500 ml-auto"><span id="turmas-count" class="font-bold text-brand-purple">0</span> turma(s)</span>
                         </div>
                         <div class="tabela-rolagem">
-                            <table class="w-full text-left border-collapse tabela-moderna">
+                            <table class="w-full text-left border-collapse tabela-moderna tabela-lista">
                                 <thead>
                                     <tr class="bg-gray-50 border-b border-gray-200 text-sm text-gray-500">
                                         <th class="p-4 font-medium min-w-[200px]">Nome do Treinamento</th>
@@ -1178,7 +1678,7 @@
 
                 <!-- VIEW: DETALHE TURMA (AVALIAÇÃO E PRESENÇA) -->
                 <div id="view-detalhe-turma" class="view-section hidden">
-                     <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                     <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 barra-acoes-turma">
                         <div class="flex items-center gap-3 w-full md:w-auto">
                             <button id="btn-voltar-turmas" class="btn-secondary p-2 border-gray-300 text-gray-600 hover:bg-gray-100 btn-nav" title="Voltar para lista" aria-label="Voltar para a lista de turmas" data-target="turmas">
                                 <i data-lucide="arrow-left" class="w-5 h-5"></i>
@@ -1195,7 +1695,7 @@
                         </div>
                         
                         <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
-                            <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-1.5 shadow-sm">
+                            <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-1.5 shadow-sm seletor-status">
                                 <label for="detalhe-turma-status-select" class="text-xs font-semibold text-gray-500 uppercase">Status:</label>
                                 <select id="detalhe-turma-status-select" class="text-sm font-medium outline-none bg-transparent" title="Alterar o status grava na hora, após confirmação">
                                     <option value="Programado">Programado</option>
@@ -1250,10 +1750,14 @@
                             <div class="flex gap-2">
                                 <!-- Mobile Day Selector -->
                                 <div class="md:hidden flex items-center gap-2">
-                                     <label class="text-xs text-gray-500">Dia:</label>
+                                     <label for="mobile-day-selector" class="text-xs text-gray-500">Dia:</label>
                                      <select id="mobile-day-selector" class="input-premium py-1 px-2 text-sm max-w-[120px]">
                                      </select>
                                 </div>
+                                <!-- v2.4: correção por pergunta das provas do banco -->
+                                <button id="btn-corrigir-prova" class="btn-secondary py-1 px-3 text-xs" title="Escolher uma prova do banco e marcar o que cada aluno errou">
+                                    <i data-lucide="list-checks" class="w-4 h-4"></i> Corrigir prova
+                                </button>
                                 <button id="btn-add-aluno-turma" class="btn-primary py-1 px-3 text-xs">
                                     <i data-lucide="user-plus" class="w-4 h-4"></i> Adicionar Aluno
                                 </button>
@@ -1286,6 +1790,56 @@
                     </div>
                 </div>
 
+                <!-- VIEW: BANCO DE PROVAS (v2.4) -->
+                <div id="view-provas" class="view-section hidden">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-800">Banco de Provas</h1>
+                            <p class="text-sm text-gray-500">Cadastre as provas com as perguntas e o tema de cada uma. Na turma, use "Corrigir prova" para marcar o que cada aluno errou.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="btn-atualizar-provas" class="btn-secondary shrink-0 bg-white" aria-label="Atualizar banco de provas" title="Sincronizar com o banco de dados">
+                                <i data-lucide="refresh-cw" class="w-4 h-4 text-brand-purple"></i>
+                            </button>
+                            <button id="btn-nova-prova" class="btn-primary shrink-0">
+                                <i data-lucide="plus" class="w-4 h-4"></i> Nova prova
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="glass-card overflow-hidden">
+                        <div class="p-4 border-b border-gray-200 bg-gray-50 flex flex-wrap gap-3 items-center">
+                            <div class="relative w-full max-w-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
+                                </div>
+                                <input type="search" id="search-provas" class="input-premium pl-10 py-1.5 text-sm" placeholder="Buscar prova, tipo ou tema..." aria-label="Buscar prova, tipo ou tema">
+                            </div>
+                            <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none">
+                                <input type="checkbox" id="filtro-provas-arquivadas"> Mostrar arquivadas
+                            </label>
+                            <span class="text-xs text-gray-500 ml-auto"><span id="provas-count" class="font-bold text-brand-purple">0</span> prova(s)</span>
+                        </div>
+                        <div class="tabela-rolagem">
+                            <table class="w-full text-left border-collapse tabela-moderna tabela-lista">
+                                <thead>
+                                    <tr class="bg-gray-50 border-b border-gray-200 text-sm text-gray-500">
+                                        <th class="p-4 font-medium min-w-[240px]">Prova</th>
+                                        <th class="p-4 font-medium">Tipo</th>
+                                        <th class="p-4 font-medium num">Perguntas</th>
+                                        <th class="p-4 font-medium min-w-[200px]">Temas</th>
+                                        <th class="p-4 font-medium num" title="Turmas do período carregado que já usaram a prova">Turmas</th>
+                                        <th class="p-4 font-medium min-w-[150px]">Atualizada</th>
+                                        <th class="p-4 font-medium text-center">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-banco-provas" class="divide-y divide-gray-100 text-sm">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- VIEW: INSTRUTORES -->
                 <div id="view-instrutores" class="view-section hidden">
                     <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
@@ -1304,11 +1858,11 @@
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
                                 </div>
-                                <input type="text" id="search-instrutores" class="input-premium pl-10 py-1.5 text-sm" placeholder="Buscar usuário por nome...">
+                                <input type="search" id="search-instrutores" class="input-premium pl-10 py-1.5 text-sm" placeholder="Buscar usuário por nome..." aria-label="Buscar usuário por nome">
                             </div>
                         </div>
                         <div class="tabela-rolagem">
-                            <table class="w-full text-left border-collapse tabela-moderna">
+                            <table class="w-full text-left border-collapse tabela-moderna tabela-lista">
                                 <thead>
                                     <tr class="bg-gray-50 border-b border-gray-200 text-sm text-gray-500">
                                         <th class="p-4 font-medium min-w-[200px]">Nome</th>
@@ -1329,11 +1883,11 @@
     </div>
 
     <!-- MODAL: PROVAS DO ALUNO (CÁLCULO DE MÉDIA DE CONHECIMENTO) -->
-    <div id="modal-provas" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true">
+    <div id="modal-provas" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-provas">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg m-4 outline-none flex flex-col max-h-[90vh]">
             <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-purple-50 rounded-t-xl shrink-0">
                 <div>
-                    <h3 class="text-lg font-bold text-brand-purple flex items-center gap-2">
+                    <h3 id="titulo-modal-provas" class="text-lg font-bold text-brand-purple flex items-center gap-2">
                         <i data-lucide="file-check" class="w-5 h-5 text-brand-purple"></i> Registro de Provas
                     </h3>
                     <p id="modal-provas-aluno-nome" class="text-xs text-gray-600 font-medium mt-0.5">Aluno: -</p>
@@ -1377,7 +1931,7 @@
     </div>
 
     <!-- MODAL: NOVA/EDITAR TURMA -->
-    <div id="modal-nova-turma" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true">
+    <div id="modal-nova-turma" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-turma">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col m-4">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-xl shrink-0">
                 <h3 id="titulo-modal-turma" class="text-lg font-bold text-brand-graphite">Criar Nova Turma</h3>
@@ -1393,12 +1947,12 @@
                         <h4 class="font-semibold text-brand-purple border-b pb-2 mb-4">Informações Básicas</h4>
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nome do Treinamento *</label>
+                                <label for="nt-nome" class="block text-sm font-medium text-gray-700 mb-1">Nome do Treinamento *</label>
                                 <input type="text" id="nt-nome" class="input-premium" required>
                             </div>
                             
-                            <div class="space-y-2 border border-gray-200 bg-gray-50 p-3 rounded-lg">
-                                <label class="block text-sm font-medium text-gray-700">Unidades * <span class="text-xs text-gray-500 font-normal">(Selecione uma ou mais)</span></label>
+                            <div class="space-y-2 border border-gray-200 bg-gray-50 p-3 rounded-lg" role="group" aria-labelledby="rotulo-unidades">
+                                <label id="rotulo-unidades" class="block text-sm font-medium text-gray-700">Unidades * <span class="text-xs text-gray-500 font-normal">(Selecione uma ou mais)</span></label>
                                 <div class="max-h-32 overflow-y-auto bg-white border border-gray-200 p-2 rounded grid grid-cols-1 sm:grid-cols-2 gap-1">
                                     <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded"><input type="checkbox" value="DF - HAC | HBR | MTN" class="cb-unidade rounded text-brand-purple focus:ring-brand-purple"> <span class="text-xs text-gray-700">DF - HAC | HBR | MTN</span></label>
                                     <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded"><input type="checkbox" value="NE - AMO ARACAJU" class="cb-unidade rounded text-brand-purple focus:ring-brand-purple"> <span class="text-xs text-gray-700">NE - AMO ARACAJU</span></label>
@@ -1422,8 +1976,8 @@
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div class="border border-gray-200 bg-gray-50 p-3 rounded-lg">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Canal de Atendimento *</label>
+                                <div class="border border-gray-200 bg-gray-50 p-3 rounded-lg" role="group" aria-labelledby="rotulo-canal">
+                                    <label id="rotulo-canal" class="block text-sm font-medium text-gray-700 mb-1">Canal de Atendimento *</label>
                                     <div class="flex flex-wrap gap-3 mt-2">
                                         <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" value="VOZ" class="cb-canal rounded text-brand-purple focus:ring-brand-purple"> <span class="text-sm text-gray-700">VOZ</span></label>
                                         <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" value="TEXTO" class="cb-canal rounded text-brand-purple focus:ring-brand-purple"> <span class="text-sm text-gray-700">TEXTO</span></label>
@@ -1432,7 +1986,7 @@
                                 </div>
                                 <div class="space-y-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo *</label>
+                                        <label for="nt-tipo" class="block text-sm font-medium text-gray-700 mb-1">Tipo *</label>
                                         <select id="nt-tipo" class="input-premium" required>
                                             <option value="">Selecione...</option>
                                             <option value="Treinamento Inicial">Treinamento Inicial</option>
@@ -1444,7 +1998,7 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Status Inicial *</label>
+                                        <label for="nt-status" class="block text-sm font-medium text-gray-700 mb-1">Status Inicial *</label>
                                         <select id="nt-status" class="input-premium" required>
                                             <option value="Programado">Programado</option>
                                             <option value="Em andamento">Em andamento</option>
@@ -1457,7 +2011,7 @@
                             </div>
                             
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Instrutor Responsável *</label>
+                                <label for="nt-instrutor" class="block text-sm font-medium text-gray-700 mb-1">Instrutor Responsável *</label>
                                 <select id="nt-instrutor" class="input-premium" required>
                                     <option value="">Carregando instrutores...</option>
                                 </select>
@@ -1471,22 +2025,22 @@
                         <div class="space-y-4">
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Data Início *</label>
+                                    <label for="nt-data-inicio" class="block text-sm font-medium text-gray-700 mb-1">Data Início *</label>
                                     <input type="date" id="nt-data-inicio" class="input-premium" required>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Data Fim *</label>
+                                    <label for="nt-data-fim" class="block text-sm font-medium text-gray-700 mb-1">Data Fim *</label>
                                     <input type="date" id="nt-data-fim" class="input-premium" required>
                                 </div>
                             </div>
                             
                             <!-- Opção de selecionar o horário das aulas -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Horário das Aulas</label>
+                                <label for="nt-hora-inicio" class="block text-sm font-medium text-gray-700 mb-1">Horário das Aulas</label>
                                 <div class="flex gap-2">
-                                    <input type="time" id="nt-hora-inicio" class="input-premium" placeholder="Início">
+                                    <input type="time" id="nt-hora-inicio" class="input-premium" placeholder="Início" aria-label="Horário de início">
                                     <span class="flex items-center text-gray-500">até</span>
-                                    <input type="time" id="nt-hora-fim" class="input-premium" placeholder="Fim">
+                                    <input type="time" id="nt-hora-fim" class="input-premium" placeholder="Fim" aria-label="Horário de término">
                                 </div>
                             </div>
                             
@@ -1505,11 +2059,11 @@
                                 <p class="text-xs text-gray-500 mb-3">Receberão os relatórios de presença por e-mail.</p>
                                 <div class="flex flex-col sm:flex-row gap-2 items-end">
                                     <div class="w-full sm:w-1/2">
-                                        <label class="block text-xs text-gray-500 mb-1">Nome</label>
+                                        <label for="add-resp-nome" class="block text-xs text-gray-500 mb-1">Nome</label>
                                         <input type="text" id="add-resp-nome" class="input-premium text-sm input-resp" placeholder="Ex: Maria">
                                     </div>
                                     <div class="w-full sm:w-1/2">
-                                        <label class="block text-xs text-gray-500 mb-1">E-mail</label>
+                                        <label for="add-resp-email" class="block text-xs text-gray-500 mb-1">E-mail</label>
                                         <input type="email" id="add-resp-email" class="input-premium text-sm input-resp" placeholder="maria@americasmed.com.br">
                                     </div>
                                     <button type="button" id="btn-add-resp" class="btn-secondary p-2 w-full sm:w-auto mt-2 sm:mt-0" title="Adicionar Responsável" aria-label="Adicionar responsável">
@@ -1537,11 +2091,11 @@
                         
                         <div id="add-aluno-individual" class="flex flex-col sm:flex-row gap-2 items-end">
                             <div class="w-full sm:w-1/3">
-                                <label class="block text-xs text-gray-500 mb-1">Matrícula</label>
+                                <label for="add-aluno-mat" class="block text-xs text-gray-500 mb-1">Matrícula</label>
                                 <input type="text" id="add-aluno-mat" class="input-premium text-sm input-aluno" placeholder="Ex: 1234">
                             </div>
                             <div class="w-full sm:flex-1">
-                                <label class="block text-xs text-gray-500 mb-1">Nome Completo</label>
+                                <label for="add-aluno-nome" class="block text-xs text-gray-500 mb-1">Nome Completo</label>
                                 <input type="text" id="add-aluno-nome" class="input-premium text-sm input-aluno" placeholder="Ex: João da Silva">
                             </div>
                             <button type="button" id="btn-add-aluno-lista" class="btn-primary p-3 w-full sm:w-auto mt-2 sm:mt-0" title="Adicionar Aluno" aria-label="Adicionar aluno">
@@ -1550,7 +2104,7 @@
                         </div>
 
                         <div id="add-aluno-massa" class="hidden flex-col gap-2">
-                            <label class="block text-xs text-gray-500">Cole a lista: "Matrícula;Nome" por linha, ou copie as colunas Matrícula e Nome direto do Excel</label>
+                            <label for="import-alunos-text" class="block text-xs text-gray-500">Cole a lista: "Matrícula;Nome" por linha, ou copie as colunas Matrícula e Nome direto do Excel</label>
                             <textarea id="import-alunos-text" class="input-premium text-sm h-24 resize-none" placeholder="1234;João da Silva&#10;5678;Maria Souza"></textarea>
                             <div class="flex justify-end gap-2">
                                 <button type="button" id="btn-cancelar-import" class="btn-secondary py-1 px-3 text-xs">Cancelar</button>
@@ -1582,10 +2136,10 @@
     </div>
 
     <!-- MODAL: CONFIRMAR EXCLUSÃO -->
-    <div id="modal-confirmar-exclusao" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true">
+    <div id="modal-confirmar-exclusao" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="alertdialog" aria-modal="true" aria-labelledby="titulo-exclusao" aria-describedby="msg-exclusao">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md m-4 outline-none" tabindex="-1">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-red-50 rounded-t-xl">
-                <h3 class="text-lg font-bold text-red-600 flex items-center gap-2">
+                <h3 id="titulo-exclusao" class="text-lg font-bold text-red-600 flex items-center gap-2">
                     <i data-lucide="alert-triangle" class="w-5 h-5"></i> Excluir Registro
                 </h3>
                 <button class="btn-close-modal text-gray-400 hover:text-gray-600" aria-label="Fechar" data-target="modal-confirmar-exclusao"><i data-lucide="x"></i></button>
@@ -1597,7 +2151,7 @@
                 <div class="bg-red-50 p-3 rounded border border-red-100">
                      <p class="text-sm font-semibold text-red-800 mb-1">Para confirmar, digite o nome exato:</p>
                      <p id="nome-confirmacao-exclusao" class="text-xs font-mono bg-white p-1 rounded border border-red-200 select-all mb-2"></p>
-                    <input type="text" id="input-nome-exclusao" class="input-premium border-red-200 focus:border-red-500" placeholder="Digite o nome para confirmar" required autocomplete="off">
+                    <input type="text" id="input-nome-exclusao" class="input-premium border-red-200 focus:border-red-500" placeholder="Digite o nome para confirmar" required autocomplete="off" aria-label="Digite o nome exato para confirmar a exclusão">
                 </div>
             </div>
             <div class="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 rounded-b-xl">
@@ -1610,10 +2164,10 @@
     </div>
 
     <!-- MODAL: RESET DE SENHA POR EMAIL -->
-    <div id="modal-reset-senha" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true">
+    <div id="modal-reset-senha" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="titulo-reset-senha">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md m-4 outline-none" tabindex="-1">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-blue-50 rounded-t-xl">
-                <h3 class="text-lg font-bold text-blue-700 flex items-center gap-2">
+                <h3 id="titulo-reset-senha" class="text-lg font-bold text-blue-700 flex items-center gap-2">
                     <i data-lucide="key" class="w-5 h-5"></i> Redefinir Senha
                 </h3>
                 <button class="btn-close-modal text-gray-400 hover:text-gray-600" aria-label="Fechar" data-target="modal-reset-senha"><i data-lucide="x"></i></button>
@@ -1639,10 +2193,10 @@
     </div>
 
     <!-- MODAL: AVALIAÇÃO COMPORTAMENTAL -->
-    <div id="modal-comportamento" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true">
+    <div id="modal-comportamento" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="titulo-comportamento">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md m-4 outline-none" tabindex="-1">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-brand-graphite">Registro Comportamental</h3>
+                <h3 id="titulo-comportamento" class="text-lg font-bold text-brand-graphite">Registro Comportamental</h3>
                 <button class="btn-close-modal text-gray-400 hover:text-gray-600" aria-label="Fechar" data-target="modal-comportamento"><i data-lucide="x"></i></button>
             </div>
             <div class="p-6 space-y-4">
@@ -1651,8 +2205,8 @@
                 <p id="modal-comp-aviso-atraso" class="text-xs text-orange-700 bg-orange-50 border border-orange-200 rounded-lg p-2"></p>
                 <input type="hidden" id="modal-comp-index">
                 
-                <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">Itens de Despontuação (Infrações)</label>
+                <div class="space-y-2" role="group" aria-labelledby="rotulo-infracoes">
+                    <label id="rotulo-infracoes" class="block text-sm font-medium text-gray-700">Itens de Despontuação (Infrações)</label>
                     <div class="grid grid-cols-1 gap-2 bg-red-50 p-3 rounded-lg border border-red-100">
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="Atraso" class="comp-checkbox rounded text-red-600 focus:ring-red-500">
@@ -1682,7 +2236,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Outras observações</label>
+                    <label for="modal-comp-obs" class="block text-sm font-medium text-gray-700 mb-1">Outras observações</label>
                     <textarea id="modal-comp-obs" class="input-premium resize-none h-20" placeholder="Detalhes adicionais..."></textarea>
                 </div>
             </div>
@@ -1694,26 +2248,26 @@
     </div>
 
     <!-- MODAL: EDITAR USUÁRIO -->
-    <div id="modal-editar-usuario" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true">
+    <div id="modal-editar-usuario" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="titulo-editar-usuario">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md m-4 outline-none" tabindex="-1">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-brand-graphite">Editar Usuário</h3>
+                <h3 id="titulo-editar-usuario" class="text-lg font-bold text-brand-graphite">Editar Usuário</h3>
                 <button class="btn-close-modal text-gray-400 hover:text-gray-600" aria-label="Fechar" data-target="modal-editar-usuario"><i data-lucide="x"></i></button>
             </div>
             <div class="p-6 space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
+                    <label for="edit-user-nome" class="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
                     <input type="text" id="edit-user-nome" class="input-premium" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Perfil de Acesso</label>
+                    <label for="edit-user-role" class="block text-sm font-medium text-gray-700 mb-1">Perfil de Acesso</label>
                     <select id="edit-user-role" class="input-premium" required>
                         <option value="instrutor">Instrutor</option>
                         <option value="admin">Administrador</option>
                     </select>
                 </div>
                 <div class="bg-gray-50 border border-gray-200 p-3 rounded-lg relative overflow-hidden">
-                    <label class="block text-xs font-semibold text-gray-500 mb-1 flex items-center gap-1">
+                    <label for="edit-user-email" class="block text-xs font-semibold text-gray-500 mb-1 flex items-center gap-1">
                         <i data-lucide="lock" class="w-3 h-3"></i> E-mail Corporativo (Login)
                     </label>
                     <input type="email" id="edit-user-email" class="w-full bg-transparent text-sm text-gray-500 outline-none cursor-not-allowed" disabled>
@@ -1728,10 +2282,10 @@
     </div>
 
     <!-- MODAL: NOVO INSTRUTOR -->
-    <div id="modal-novo-instrutor" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true">
+    <div id="modal-novo-instrutor" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="titulo-novo-instrutor">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md m-4 outline-none" tabindex="-1">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-brand-graphite">Cadastrar Usuário</h3>
+                <h3 id="titulo-novo-instrutor" class="text-lg font-bold text-brand-graphite">Cadastrar Usuário</h3>
                 <button class="btn-close-modal text-gray-400 hover:text-gray-600" aria-label="Fechar" data-target="modal-novo-instrutor"><i data-lucide="x"></i></button>
             </div>
             <div class="p-6 space-y-4">
@@ -1739,23 +2293,23 @@
                     O usuário utilizará este e-mail e senha para o primeiro acesso. Ele será obrigado a alterar a senha ao logar.
                 </p>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
-                    <input type="text" id="inst-nome" class="input-premium" required>
+                    <label for="inst-nome" class="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
+                    <input type="text" id="inst-nome" class="input-premium" required autocomplete="off">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">E-mail corporativo</label>
-                    <input type="email" id="inst-email" class="input-premium" required>
+                    <label for="inst-email" class="block text-sm font-medium text-gray-700 mb-1">E-mail corporativo</label>
+                    <input type="email" id="inst-email" class="input-premium" required autocomplete="off">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Perfil de Acesso</label>
+                    <label for="inst-role" class="block text-sm font-medium text-gray-700 mb-1">Perfil de Acesso</label>
                     <select id="inst-role" class="input-premium" required>
                         <option value="instrutor">Instrutor</option>
                         <option value="admin">Administrador</option>
                     </select>
                 </div>
                 <div class="relative">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Senha Temporária</label>
-                    <input type="password" id="inst-senha" class="input-premium pr-20" required>
+                    <label for="inst-senha" class="block text-sm font-medium text-gray-700 mb-1">Senha Temporária</label>
+                    <input type="password" id="inst-senha" class="input-premium pr-20" required autocomplete="new-password">
                     <button type="button" id="btn-gerar-senha" class="btn-secondary py-1 px-2 text-[10px] absolute right-10 top-7 font-bold border-gray-300 text-gray-600" title="Gerar Senha Segura" aria-label="Gerar senha segura"><i data-lucide="zap" class="w-3 h-3"></i></button>
                     <button type="button" class="btn-toggle-password absolute inset-y-0 right-0 pr-3 pt-6 flex items-center text-gray-500 hover:text-gray-700" aria-label="Mostrar senha" data-target="inst-senha">
                         <i data-lucide="eye" class="w-5 h-5"></i>
@@ -1770,13 +2324,13 @@
     </div>
     
     <!-- MODAL: CONFIRMAR CRIAÇÃO INSTRUTOR -->
-    <div id="modal-instrutor-sucesso" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true">
+    <div id="modal-instrutor-sucesso" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="titulo-instrutor-sucesso">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm m-4 text-center outline-none" tabindex="-1">
             <div class="p-6">
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                     <i data-lucide="check" class="h-6 w-6 text-green-600"></i>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">Usuário Cadastrado</h3>
+                <h3 id="titulo-instrutor-sucesso" class="text-lg font-medium text-gray-900 mb-2">Usuário Cadastrado</h3>
                 <p class="text-sm text-gray-500 mb-4">Copie as credenciais abaixo e envie para o usuário de forma segura.</p>
                 
                 <div class="bg-gray-50 p-3 rounded text-left mb-4 border border-gray-200">
@@ -1797,10 +2351,10 @@
     </div>
 
     <!-- MODAL: CONTEÚDO DO DIA -->
-    <div id="modal-conteudo-dia" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true">
+    <div id="modal-conteudo-dia" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="titulo-conteudo-dia">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-xl m-4 outline-none" tabindex="-1">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-xl">
-                <h3 class="text-lg font-bold text-brand-purple flex items-center gap-2">
+                <h3 id="titulo-conteudo-dia" class="text-lg font-bold text-brand-purple flex items-center gap-2">
                     <i data-lucide="file-text" class="w-5 h-5"></i> Resumo do Dia
                 </h3>
                 <button class="btn-close-modal text-gray-400 hover:text-gray-600" aria-label="Fechar" data-target="modal-conteudo-dia"><i data-lucide="x"></i></button>
@@ -1811,7 +2365,7 @@
                 </p>
                 <input type="hidden" id="cd-dia-index">
                 <div>
-                    <textarea id="cd-conteudo" class="input-premium resize-none h-32" placeholder="Ex: Introdução, O que é Rede Américas, Dicas sobre o sistema X..."></textarea>
+                    <textarea id="cd-conteudo" aria-label="Resumo do que foi ministrado no dia" class="input-premium resize-none h-32" placeholder="Ex: Introdução, O que é Rede Américas, Dicas sobre o sistema X..."></textarea>
                 </div>
             </div>
             <div class="p-6 border-t border-gray-100 bg-gray-50 flex flex-col sm:flex-row justify-end gap-3 rounded-b-xl">
@@ -1820,6 +2374,135 @@
                 <button type="button" id="btn-continuar-relatorio" class="btn-primary w-full sm:w-auto">
                     <i data-lucide="arrow-right" class="w-4 h-4"></i> Continuar para Relatório
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: BANCO DE PROVAS — CADASTRAR / EDITAR (v2.4) -->
+    <div id="modal-prova-editor" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="titulo-prova-editor">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col m-4">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-xl shrink-0">
+                <div>
+                    <h3 id="titulo-prova-editor" class="text-lg font-bold text-brand-purple flex items-center gap-2">
+                        <i data-lucide="clipboard-check" class="w-5 h-5"></i> <span id="titulo-prova-editor-texto">Nova prova</span>
+                    </h3>
+                    <p class="text-xs text-gray-500 mt-0.5">Cada pergunta ganha um número fixo. O tema agrupa as perguntas nos gráficos do dashboard.</p>
+                </div>
+                <button class="btn-close-modal text-gray-400 hover:text-gray-600" aria-label="Fechar" data-target="modal-prova-editor"><i data-lucide="x"></i></button>
+            </div>
+
+            <div class="p-6 overflow-y-auto flex-1 space-y-4">
+                <div id="prova-editor-aviso" class="hidden bg-yellow-50 border border-yellow-200 p-3 rounded-lg text-xs text-yellow-800 flex items-start gap-2">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 shrink-0 mt-0.5"></i>
+                    <p id="prova-editor-aviso-texto"></p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="prova-titulo" class="block text-sm font-medium text-gray-700 mb-1">Nome da prova *</label>
+                        <input type="text" id="prova-titulo" class="input-premium" placeholder="Ex.: Integração Voz — Prova final" autocomplete="off">
+                    </div>
+                    <div>
+                        <label for="prova-tipo" class="block text-sm font-medium text-gray-700 mb-1">Tipo de treinamento</label>
+                        <select id="prova-tipo" class="input-premium">
+                            <option value="">Qualquer tipo</option>
+                            <option value="Treinamento Inicial">Treinamento Inicial</option>
+                            <option value="Reciclagem">Reciclagem</option>
+                            <option value="Atualização">Atualização</option>
+                            <option value="Comportamental">Comportamental</option>
+                            <option value="Sistema">Sistema</option>
+                            <option value="Processo">Processo</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label for="prova-descricao" class="block text-sm font-medium text-gray-700 mb-1">Descrição <span class="text-xs text-gray-500 font-normal">(opcional)</span></label>
+                    <input type="text" id="prova-descricao" class="input-premium" placeholder="Ex.: Aplicada no último dia da integração" autocomplete="off">
+                </div>
+
+                <div class="pt-4 border-t border-gray-100">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <h4 class="font-semibold text-brand-purple flex items-center gap-2">
+                            Perguntas <span id="prova-perguntas-count" class="text-xs bg-purple-100 text-brand-purple px-2 py-0.5 rounded-full font-semibold">0</span>
+                        </h4>
+                        <button type="button" id="btn-toggle-colar-perguntas" class="text-xs text-brand-purple font-medium hover:underline flex items-center gap-1">
+                            <i data-lucide="clipboard-paste" class="w-3.5 h-3.5"></i> Colar várias de uma vez
+                        </button>
+                    </div>
+
+                    <div id="prova-colar-area" class="hidden mb-4 border border-gray-200 bg-gray-50 p-3 rounded-lg space-y-2">
+                        <label for="prova-colar-texto" class="block text-xs text-gray-600">
+                            Uma pergunta por linha. Para informar o tema, use <strong>Tema | Pergunta</strong> (ou cole duas colunas do Excel: Tema e Pergunta).
+                        </label>
+                        <textarea id="prova-colar-texto" class="input-premium text-sm h-32 resize-none" placeholder="Convênios | Qual a carência do plano Essencial?&#10;Autorizações | Qual o prazo para autorizar um exame SADT?&#10;Sistema | Como reagendar uma consulta?"></textarea>
+                        <div class="flex justify-end gap-2">
+                            <button type="button" id="btn-cancelar-colar-perguntas" class="btn-secondary py-1 px-3 text-xs">Cancelar</button>
+                            <button type="button" id="btn-processar-colar-perguntas" class="btn-primary py-1 px-3 text-xs">Adicionar perguntas</button>
+                        </div>
+                    </div>
+
+                    <div class="pergunta-cabecalho" aria-hidden="true">
+                        <span>Nº</span><span>Pergunta</span><span>Tema</span><span>Peso</span><span></span>
+                    </div>
+                    <div id="prova-perguntas-lista"></div>
+                    <datalist id="lista-temas-provas"></datalist>
+
+                    <button type="button" id="btn-add-pergunta" class="btn-secondary py-1.5 px-3 text-sm mt-4">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Adicionar pergunta
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-gray-100 bg-gray-50 flex flex-col sm:flex-row justify-end gap-3 rounded-b-xl shrink-0">
+                <button type="button" class="btn-close-modal btn-secondary w-full sm:w-auto" data-target="modal-prova-editor">Cancelar</button>
+                <button type="button" id="btn-salvar-prova" class="btn-primary w-full sm:w-auto">
+                    <i data-lucide="save" class="w-4 h-4"></i> Salvar prova
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CORRIGIR PROVA NA TURMA (v2.4) -->
+    <div id="modal-corrigir-prova" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="titulo-corrigir-prova">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col m-4">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-xl shrink-0">
+                <div>
+                    <h3 id="titulo-corrigir-prova" class="text-lg font-bold text-brand-purple flex items-center gap-2">
+                        <i data-lucide="list-checks" class="w-5 h-5"></i> Corrigir prova
+                    </h3>
+                    <p class="text-xs text-gray-500 mt-0.5">Marque só o que cada aluno errou. A nota é calculada pelos acertos.</p>
+                </div>
+                <button class="btn-close-modal text-gray-400 hover:text-gray-600" aria-label="Fechar" data-target="modal-corrigir-prova"><i data-lucide="x"></i></button>
+            </div>
+
+            <div class="p-4 border-b border-gray-100 flex flex-wrap items-end gap-3 shrink-0">
+                <div class="w-full max-w-sm">
+                    <label for="corr-prova-select" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Prova aplicada</label>
+                    <select id="corr-prova-select" class="input-premium py-1.5 text-sm"></select>
+                </div>
+                <button type="button" id="btn-corr-pendentes-sem-erro" class="btn-secondary py-1.5 px-3 text-xs" disabled>
+                    <i data-lucide="check-check" class="w-4 h-4"></i> Pendentes sem erros
+                </button>
+                <p id="corr-resumo" class="text-xs text-gray-500 ml-auto" aria-live="polite"></p>
+            </div>
+
+            <div id="corr-conteudo" class="flex-1 overflow-y-auto overflow-x-auto">
+                <p class="corr-instrucoes">Escolha acima a prova que foi aplicada nesta turma.</p>
+            </div>
+
+            <details id="corr-perguntas-detalhe" class="corr-perguntas hidden">
+                <summary>Ver as perguntas e temas desta prova</summary>
+                <ol id="corr-perguntas-lista"></ol>
+            </details>
+
+            <div class="p-4 border-t border-gray-100 bg-gray-50 flex flex-col sm:flex-row justify-between items-center gap-3 rounded-b-xl shrink-0">
+                <p class="text-xs text-gray-500">Dica: digite os números das erradas (ex.: <strong>3, 7</strong> ou <strong>2-4</strong>) e tecle Enter para ir ao próximo aluno.</p>
+                <div class="flex gap-3 w-full sm:w-auto justify-end">
+                    <button type="button" class="btn-close-modal btn-secondary w-full sm:w-auto" data-target="modal-corrigir-prova">Cancelar</button>
+                    <button type="button" id="btn-aplicar-correcao" class="btn-primary w-full sm:w-auto" disabled>
+                        <i data-lucide="check" class="w-4 h-4"></i> Aplicar na turma
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -2221,6 +2904,8 @@
                 carregarTurmas();
             } else if (viewId === 'instrutores') {
                 carregarInstrutores();
+            } else if (viewId === 'provas') {
+                carregarBancoProvasView(); // v2.4
             }
         };
 
@@ -2238,7 +2923,7 @@
                     abrirGestaoTurma(id, true);
                     return;
                 }
-            } else if (['dashboard', 'relatorios', 'turmas', 'instrutores'].includes(hash)) {
+            } else if (['dashboard', 'relatorios', 'turmas', 'instrutores', 'provas'].includes(hash)) {
                 window.navigateTo(hash, true);
                 return;
             }
@@ -2661,6 +3346,15 @@
                 iconRemove.className = 'w-4 h-4';
                 btnRemove.appendChild(iconRemove);
                 
+                // v2.4: prova do banco é corrigida por pergunta; nome e nota vêm da correção
+                if (prova.modeloId) {
+                    inputNome.disabled = true;
+                    inputNota.disabled = true;
+                    labelNome.textContent = 'Prova do banco · corrigida por pergunta';
+                    inputNome.title = 'Para alterar, use "Corrigir prova" na turma';
+                    inputNota.title = 'Nota calculada pelos acertos. Para alterar, use "Corrigir prova" na turma';
+                }
+
                 divContainer.appendChild(divNome);
                 divContainer.appendChild(divNota);
                 divContainer.appendChild(btnRemove);
@@ -3247,6 +3941,13 @@
                      dashRecentesList.appendChild(p);
                 }
 
+                // v2.4: painel de aprendizado e prontidão (falha aqui não derruba o resto do dashboard)
+                try {
+                    await renderPainelAprendizado(turmas);
+                } catch (erroPainel) {
+                    console.error("Erro no painel de aprendizado:", erroPainel);
+                }
+
             } catch (error) {
                 console.error("Erro ao carregar dashboard:", error);
                 window.showToast("Erro ao processar dados do painel.", "error");
@@ -3340,7 +4041,10 @@
                                 faltas: faltas,
                                 atrasos: atrasos,
                                 justificadas: justificadas,
-                                percPresenca: percPresenca
+                                percPresenca: percPresenca,
+                                // v2.4: referências usadas nas abas de provas do Excel
+                                turmaId: t.id,
+                                alunoRef: a
                             });
                         });
                     }
@@ -3539,11 +4243,12 @@
         document.getElementById('filtro-data-inicio').addEventListener('change', aplicarFiltrosDebounce);
         document.getElementById('filtro-data-fim').addEventListener('change', aplicarFiltrosDebounce);
 
-        const exportarExcelFiltrado = () => {
+        const exportarExcelFiltrado = async () => {
             if (!window.dadosFiltradosRelatorio || window.dadosFiltradosRelatorio.length === 0) {
                 window.showToast("Não há dados para exportar com os filtros atuais.", "error");
                 return;
             }
+            await garantirBancoProvas(); // v2.4: textos e temas das perguntas
 
             const dadosExcel = window.dadosFiltradosRelatorio.map(row => ({
                 "Turma (Curso)": row.nomeTreinamento,
@@ -3589,7 +4294,29 @@
 
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Dados Analíticos");
-            
+
+            // v2.4: abas das provas corrigidas por pergunta (só quando houver dados)
+            try {
+                const abas = montarAbasProvasExcel(window.dadosFiltradosRelatorio);
+                if (abas.porPergunta.length > 0) {
+                    const wsPerguntas = XLSX.utils.json_to_sheet(abas.porPergunta);
+                    wsPerguntas['!cols'] = [{wch: 35}, {wch: 6}, {wch: 60}, {wch: 22}, {wch: 12}, {wch: 10}, {wch: 10}];
+                    const rp = XLSX.utils.decode_range(wsPerguntas['!ref']);
+                    for (let R = rp.s.r + 1; R <= rp.e.r; ++R) {
+                        const ref = XLSX.utils.encode_cell({ c: 6, r: R });
+                        if (wsPerguntas[ref]) wsPerguntas[ref].z = '0%';
+                    }
+                    XLSX.utils.book_append_sheet(workbook, wsPerguntas, "Erros por Pergunta");
+                }
+                if (abas.porAluno.length > 0) {
+                    const wsAlunos = XLSX.utils.json_to_sheet(abas.porAluno);
+                    wsAlunos['!cols'] = [{wch: 35}, {wch: 14}, {wch: 22}, {wch: 12}, {wch: 35}, {wch: 35}, {wch: 8}, {wch: 10}, {wch: 22}, {wch: 40}];
+                    XLSX.utils.book_append_sheet(workbook, wsAlunos, "Provas por Aluno");
+                }
+            } catch (erroAbas) {
+                console.error("Erro ao montar abas de provas:", erroAbas);
+            }
+
             XLSX.writeFile(workbook, `Analitico_Treinamentos_${new Date().toISOString().slice(0,10)}.xlsx`);
             window.showToast("Relatório exportado em Excel (.xlsx) com sucesso!");
         };
@@ -4710,6 +5437,8 @@
                         btnAddAluno.classList.remove('hidden');
                         avisoReadonly.classList.add('hidden');
                     }
+                    // v2.4: correção por pergunta segue a mesma permissão da turma
+                    document.getElementById('btn-corrigir-prova').classList.toggle('hidden', window.isTurmaReadOnly);
 
                     let unidadeDisplay = '-';
                     if (Array.isArray(data.unidade)) {
@@ -5027,8 +5756,9 @@
             
             window.isRelatorioFinal = true;
             window.conteudoDiaAtual = ""; // Não há resumo de atividades no final
-            
+
             try {
+                await garantirBancoProvas(); // v2.4: perguntas e temas para o resumo das provas
                 const data = dadosTurmaAtual;
                 let linhasTabelaHTML = '';
                 const totalDias = diasTreinamentoAtual.length;
@@ -5098,7 +5828,9 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
+                        ${resumoProvasTurmaHTML(alunosCarregadosAtual)}
+
                         ${rodapeRelatorioHTML(data.instrutorNome)}
                     </div>
                 `;
@@ -5905,6 +6637,1226 @@
             lucide.createIcons();
         };
 
+        // ----------------------------------------------------------------------
+        // v2.4: BANCO DE PROVAS, CORREÇÃO POR PERGUNTA E PAINEL DE APRENDIZADO
+        //
+        // Coleção "bancoProvas" (uma prova por documento):
+        //   { titulo, tipo, descricao, perguntas: [{ id, texto, tema, peso, removida? }], proxNumero, ativa,
+        //     criadoPorId, criadoPorNome, criadoEm, atualizadoPorId, atualizadoPorNome, ultimaAtualizacao }
+        // O "id" de cada pergunta (p1, p2...) nunca muda nem é reaproveitado; o número exibido
+        // (1, 2, 3...) é só a posição atual. Pergunta removida de prova já salva fica como
+        // "removida: true" para o histórico das turmas continuar legível.
+        //
+        // Na turma, cada prova corrigida fica dentro de aluno.provas:
+        //   { id, nome, nota, modeloId, erros: [ids], respondidas: [ids], corrigidoEm }
+        // "nome" e "nota" continuam existindo: média, relatórios e Excel antigos seguem iguais.
+        // ----------------------------------------------------------------------
+        const COLECAO_PROVAS = 'bancoProvas';
+        const NOTA_MINIMA_APTO = 7;
+        const PRESENCA_MINIMA_APTO = 75;
+        let cacheBancoProvas = null;
+        let erroBancoProvas = null;
+
+        const garantirBancoProvas = async (forcar = false) => {
+            if (cacheBancoProvas && !forcar && !erroBancoProvas) return cacheBancoProvas;
+            try {
+                const snap = await getDocs(collection(db, COLECAO_PROVAS));
+                const lista = [];
+                snap.forEach(d => lista.push({ id: d.id, ...d.data() }));
+                lista.sort((a, b) => (a.titulo || '').localeCompare(b.titulo || '', 'pt-BR'));
+                cacheBancoProvas = lista;
+                erroBancoProvas = null;
+            } catch (error) {
+                console.error("Erro ao carregar o banco de provas:", error);
+                erroBancoProvas = error;
+                if (!cacheBancoProvas) cacheBancoProvas = [];
+            }
+            return cacheBancoProvas;
+        };
+
+        const buscarProvaModelo = (id) => (cacheBancoProvas || []).find(p => p.id === id) || null;
+        const perguntasAtivas = (modelo) => (modelo && Array.isArray(modelo.perguntas)) ? modelo.perguntas.filter(q => !q.removida) : [];
+        const temaDaPergunta = (q) => (q && String(q.tema || '').trim()) || 'Sem tema';
+        const pesoDaPergunta = (q) => { const p = parseFloat(q && q.peso); return p > 0 ? p : 1; };
+        const nomeUsuarioAtual = () => (currentUserData && (currentUserData.nome || currentUserData.email)) || (currentUser && currentUser.email) || '';
+        const podeArquivarProva = (p) => !!currentUserData && !!currentUser && (currentUserData.role === 'admin' || p.criadoPorId === currentUser.uid);
+        const ehErroPermissao = (e) => !!e && (e.code === 'permission-denied' || /permission/i.test(e.message || ''));
+        const AVISO_SEM_PERMISSAO_PROVAS = 'Sem permissão para acessar o banco de provas. Peça ao administrador para publicar a regra da coleção "bancoProvas" no Firestore.';
+
+        const dataCurta = (ts) => {
+            try {
+                const d = ts && typeof ts.toDate === 'function' ? ts.toDate() : null;
+                return d ? d.toLocaleDateString('pt-BR') : '';
+            } catch (e) { return ''; }
+        };
+
+        // Quantas turmas do período carregado já têm esta prova corrigida
+        const usosDaProva = (modeloId) => {
+            let total = 0;
+            (cacheTurmas || []).forEach(t => {
+                if ((t.alunos || []).some(a => Array.isArray(a.provas) && a.provas.some(p => p.modeloId === modeloId))) total++;
+            });
+            return total;
+        };
+
+        // Nota de 0 a 10 pelos acertos, respeitando o peso de cada pergunta
+        const calcularNotaPorErros = (modelo, erros) => {
+            const ativas = perguntasAtivas(modelo);
+            const pesoTotal = ativas.reduce((s, q) => s + pesoDaPergunta(q), 0);
+            if (pesoTotal <= 0) return '';
+            const errSet = new Set(erros || []);
+            const pesoErros = ativas.reduce((s, q) => s + (errSet.has(q.id) ? pesoDaPergunta(q) : 0), 0);
+            return (((pesoTotal - pesoErros) / pesoTotal) * 10).toFixed(1);
+        };
+
+        // Percorre as perguntas respondidas de uma prova corrigida (com texto, tema e número atuais)
+        const percorrerRespostas = (registro, aoResponder) => {
+            const modelo = buscarProvaModelo(registro.modeloId);
+            const ativas = perguntasAtivas(modelo);
+            const respondidas = (Array.isArray(registro.respondidas) && registro.respondidas.length > 0)
+                ? registro.respondidas : ativas.map(q => q.id);
+            const errSet = new Set(registro.erros || []);
+            respondidas.forEach(qid => {
+                const q = modelo ? (modelo.perguntas || []).find(x => x.id === qid) : null;
+                aoResponder({
+                    qid,
+                    modelo,
+                    titulo: (modelo && modelo.titulo) || registro.nome || 'Prova',
+                    texto: q ? (q.texto || '') : 'Pergunta removida do banco',
+                    tema: temaDaPergunta(q),
+                    numero: ativas.findIndex(x => x.id === qid) + 1,
+                    errou: errSet.has(qid)
+                });
+            });
+        };
+
+        const criarBotaoIcone = (icone, rotulo, aoClicar, perigo = false) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = `btn-icone${perigo ? ' perigo' : ''}`;
+            b.title = rotulo;
+            b.setAttribute('aria-label', rotulo);
+            const i = document.createElement('i');
+            i.setAttribute('data-lucide', icone);
+            i.className = 'w-4 h-4';
+            b.appendChild(i);
+            b.addEventListener('click', aoClicar);
+            return b;
+        };
+
+        // ---------- Tela "Banco de Provas" ----------
+        const carregarBancoProvasView = async (forcar = false) => {
+            const tbody = document.getElementById('table-banco-provas');
+            tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-gray-400 animate-pulse">Carregando provas...</td></tr>';
+            try { await garantirCacheTurmas(false); } catch (e) { /* sem turmas, a coluna "Turmas" fica zerada */ }
+            await garantirBancoProvas(forcar);
+            renderTabelaBancoProvas();
+            if (forcar && !erroBancoProvas) window.showToast("Banco de provas atualizado.");
+        };
+
+        const renderTabelaBancoProvas = () => {
+            const tbody = document.getElementById('table-banco-provas');
+            tbody.innerHTML = '';
+            const linhaMensagem = (texto, classe = 'text-gray-500') => {
+                const tr = document.createElement('tr');
+                const td = document.createElement('td');
+                td.colSpan = 7;
+                td.className = `p-8 text-center text-sm ${classe}`;
+                td.textContent = texto;
+                tr.appendChild(td);
+                tbody.appendChild(tr);
+            };
+
+            if (erroBancoProvas) {
+                document.getElementById('provas-count').textContent = 0;
+                linhaMensagem(ehErroPermissao(erroBancoProvas) ? AVISO_SEM_PERMISSAO_PROVAS : 'Não foi possível carregar o banco de provas. Tente atualizar.', 'text-red-600');
+                return;
+            }
+
+            const termo = normalizarTexto(document.getElementById('search-provas').value);
+            const mostrarArquivadas = document.getElementById('filtro-provas-arquivadas').checked;
+            const lista = (cacheBancoProvas || []).filter(p => {
+                if (p.ativa === false && !mostrarArquivadas) return false;
+                if (!termo) return true;
+                const temas = perguntasAtivas(p).map(q => q.tema || '').join(' ');
+                return normalizarTexto(`${p.titulo || ''} ${p.tipo || ''} ${p.descricao || ''} ${temas}`).includes(termo);
+            });
+            document.getElementById('provas-count').textContent = lista.length;
+
+            if (lista.length === 0) {
+                linhaMensagem((cacheBancoProvas || []).length === 0
+                    ? 'Nenhuma prova cadastrada ainda. Clique em "Nova prova" para começar.'
+                    : 'Nenhuma prova encontrada com esse filtro.');
+                return;
+            }
+
+            lista.forEach(p => {
+                const ativas = perguntasAtivas(p);
+                const temas = [...new Set(ativas.map(temaDaPergunta))];
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-gray-100';
+
+                const tdNome = document.createElement('td');
+                tdNome.className = 'p-4';
+                const pNome = document.createElement('p');
+                pNome.className = 'font-semibold text-gray-800';
+                pNome.textContent = p.titulo || 'Prova sem nome';
+                if (p.ativa === false) {
+                    const tag = document.createElement('span');
+                    tag.className = 'chip-motivo neutro ml-2';
+                    tag.textContent = 'Arquivada';
+                    pNome.appendChild(tag);
+                }
+                tdNome.appendChild(pNome);
+                if (p.descricao) {
+                    const pDesc = document.createElement('p');
+                    pDesc.className = 'text-xs text-gray-500 mt-0.5';
+                    pDesc.textContent = p.descricao;
+                    tdNome.appendChild(pDesc);
+                }
+
+                const tdTipo = document.createElement('td');
+                tdTipo.className = 'p-4 text-gray-600';
+                tdTipo.textContent = p.tipo || 'Qualquer tipo';
+
+                const tdQtd = document.createElement('td');
+                tdQtd.className = 'p-4 num font-semibold';
+                tdQtd.textContent = ativas.length;
+
+                const tdTemas = document.createElement('td');
+                tdTemas.className = 'p-4';
+                const caixaTemas = document.createElement('div');
+                caixaTemas.className = 'flex flex-wrap gap-1';
+                temas.slice(0, 3).forEach(t => {
+                    const chip = document.createElement('span');
+                    chip.className = 'chip-tema';
+                    chip.textContent = t;
+                    caixaTemas.appendChild(chip);
+                });
+                if (temas.length > 3) {
+                    const mais = document.createElement('span');
+                    mais.className = 'chip-motivo neutro';
+                    mais.textContent = `+${temas.length - 3}`;
+                    mais.title = temas.slice(3).join(', ');
+                    caixaTemas.appendChild(mais);
+                }
+                tdTemas.appendChild(caixaTemas);
+
+                const tdUso = document.createElement('td');
+                tdUso.className = 'p-4 num';
+                tdUso.textContent = usosDaProva(p.id);
+
+                const tdAtual = document.createElement('td');
+                tdAtual.className = 'p-4 text-gray-600';
+                const pData = document.createElement('p');
+                pData.textContent = dataCurta(p.ultimaAtualizacao) || dataCurta(p.criadoEm) || '-';
+                tdAtual.appendChild(pData);
+                if (p.atualizadoPorNome || p.criadoPorNome) {
+                    const pPor = document.createElement('p');
+                    pPor.className = 'text-xs text-gray-500';
+                    pPor.textContent = `por ${p.atualizadoPorNome || p.criadoPorNome}`;
+                    tdAtual.appendChild(pPor);
+                }
+
+                const tdAcoes = document.createElement('td');
+                tdAcoes.className = 'p-4';
+                const caixaAcoes = document.createElement('div');
+                caixaAcoes.className = 'flex items-center justify-center gap-1';
+                caixaAcoes.appendChild(criarBotaoIcone('pencil', `Editar ${p.titulo || 'prova'}`, () => abrirEditorProva(p)));
+                caixaAcoes.appendChild(criarBotaoIcone('copy', `Duplicar ${p.titulo || 'prova'}`, () => abrirEditorProva(p, true)));
+                if (podeArquivarProva(p)) {
+                    const arquivada = p.ativa === false;
+                    caixaAcoes.appendChild(criarBotaoIcone(arquivada ? 'archive-restore' : 'archive',
+                        `${arquivada ? 'Reativar' : 'Arquivar'} ${p.titulo || 'prova'}`, () => alternarArquivoProva(p), !arquivada));
+                }
+                tdAcoes.appendChild(caixaAcoes);
+
+                [tdNome, tdTipo, tdQtd, tdTemas, tdUso, tdAtual, tdAcoes].forEach(td => tr.appendChild(td));
+                tbody.appendChild(tr);
+            });
+            lucide.createIcons();
+        };
+
+        const alternarArquivoProva = async (p) => {
+            const arquivar = p.ativa !== false;
+            const ok = await window.mostrarConfirmacao(
+                arquivar
+                    ? `Arquivar a prova "${p.titulo || ''}"? Ela deixa de aparecer para correção, mas o histórico das turmas e os gráficos continuam.`
+                    : `Reativar a prova "${p.titulo || ''}"?`,
+                arquivar ? "Arquivar" : "Reativar", "Cancelar");
+            if (!ok) return;
+            try {
+                await updateDoc(doc(db, COLECAO_PROVAS, p.id), {
+                    ativa: !arquivar,
+                    atualizadoPorId: currentUser.uid,
+                    atualizadoPorNome: nomeUsuarioAtual(),
+                    ultimaAtualizacao: serverTimestamp()
+                });
+                await garantirBancoProvas(true);
+                renderTabelaBancoProvas();
+                window.showToast(arquivar ? "Prova arquivada." : "Prova reativada.");
+            } catch (error) {
+                console.error("Erro ao arquivar prova:", error);
+                window.showToast(ehErroPermissao(error) ? AVISO_SEM_PERMISSAO_PROVAS : mensagemErroFirebase(error, "Não foi possível alterar a prova."), "error");
+            }
+        };
+
+        document.getElementById('search-provas').addEventListener('input', renderTabelaBancoProvas);
+        document.getElementById('filtro-provas-arquivadas').addEventListener('change', renderTabelaBancoProvas);
+        document.getElementById('btn-atualizar-provas').addEventListener('click', () => carregarBancoProvasView(true));
+        document.getElementById('btn-nova-prova').addEventListener('click', () => abrirEditorProva());
+
+        // ---------- Editor de prova (cadastrar / editar / duplicar) ----------
+        let provaEmEdicao = null;
+
+        const abrirEditorProva = (prova = null, duplicar = false) => {
+            const base = prova ? JSON.parse(JSON.stringify(prova)) : null;
+            const perguntas = base
+                ? (base.perguntas || [])
+                    .filter(q => !(duplicar && q.removida))
+                    .map(q => ({ id: q.id, texto: q.texto || '', tema: q.tema || '', peso: pesoDaPergunta(q), removida: !!q.removida }))
+                : [];
+            let prox = base && base.proxNumero ? base.proxNumero : 1;
+            perguntas.forEach(q => {
+                const n = parseInt(String(q.id).replace(/\D/g, ''), 10);
+                if (!isNaN(n) && n >= prox) prox = n + 1;
+            });
+
+            provaEmEdicao = {
+                id: base && !duplicar ? prova.id : null,
+                perguntas,
+                proxNumero: prox,
+                idsSalvos: new Set(base && !duplicar ? perguntas.map(q => q.id) : [])
+            };
+            if (provaEmEdicao.perguntas.filter(q => !q.removida).length === 0) adicionarPerguntaEditor(false);
+
+            document.getElementById('titulo-prova-editor-texto').textContent = !base ? 'Nova prova' : (duplicar ? 'Duplicar prova' : 'Editar prova');
+            document.getElementById('prova-titulo').value = base ? (duplicar ? `${base.titulo || ''} (cópia)` : (base.titulo || '')) : '';
+            document.getElementById('prova-tipo').value = base ? (base.tipo || '') : '';
+            document.getElementById('prova-descricao').value = base ? (base.descricao || '') : '';
+
+            const usos = provaEmEdicao.id ? usosDaProva(provaEmEdicao.id) : 0;
+            const aviso = document.getElementById('prova-editor-aviso');
+            aviso.classList.toggle('hidden', usos === 0);
+            document.getElementById('prova-editor-aviso-texto').textContent = usos > 0
+                ? `Esta prova já foi corrigida em ${usos} turma(s) do período. Mudar o texto ou o tema de uma pergunta muda também a análise dessas turmas. Perguntas removidas continuam no histórico. Para uma versão nova da prova, prefira "Duplicar".`
+                : '';
+
+            document.getElementById('prova-colar-area').classList.add('hidden');
+            document.getElementById('prova-colar-texto').value = '';
+            renderPerguntasEditor();
+            openModal('modal-prova-editor');
+        };
+
+        const adicionarPerguntaEditor = (focar = true, texto = '', tema = '') => {
+            if (!provaEmEdicao) return;
+            provaEmEdicao.perguntas.push({ id: `p${provaEmEdicao.proxNumero++}`, texto, tema, peso: 1, removida: false });
+            if (focar) {
+                renderPerguntasEditor();
+                const campos = document.querySelectorAll('#prova-perguntas-lista textarea');
+                if (campos.length) campos[campos.length - 1].focus();
+            }
+        };
+
+        const renderPerguntasEditor = () => {
+            const lista = document.getElementById('prova-perguntas-lista');
+            lista.innerHTML = '';
+            const visiveis = provaEmEdicao.perguntas.filter(q => !q.removida);
+            document.getElementById('prova-perguntas-count').textContent = visiveis.length;
+
+            // Temas já usados viram sugestão (evita "Convênio" e "Convênios" separados)
+            const temas = new Set();
+            (cacheBancoProvas || []).forEach(p => (p.perguntas || []).forEach(q => { if (q.tema && q.tema.trim()) temas.add(q.tema.trim()); }));
+            provaEmEdicao.perguntas.forEach(q => { if (q.tema && q.tema.trim()) temas.add(q.tema.trim()); });
+            const datalist = document.getElementById('lista-temas-provas');
+            datalist.innerHTML = '';
+            [...temas].sort((a, b) => a.localeCompare(b, 'pt-BR')).forEach(t => {
+                const o = document.createElement('option');
+                o.value = t;
+                datalist.appendChild(o);
+            });
+
+            visiveis.forEach((q, pos) => {
+                const linha = document.createElement('div');
+                linha.className = 'pergunta-linha';
+
+                const num = document.createElement('span');
+                num.className = 'pergunta-num';
+                num.textContent = pos + 1;
+
+                const texto = document.createElement('textarea');
+                texto.className = 'input-premium text-sm';
+                texto.rows = 1;
+                texto.value = q.texto;
+                texto.placeholder = 'Enunciado da pergunta';
+                texto.setAttribute('aria-label', `Pergunta ${pos + 1}`);
+                texto.addEventListener('input', (e) => { q.texto = e.target.value; });
+
+                const tema = document.createElement('input');
+                tema.type = 'text';
+                tema.className = 'input-premium text-sm';
+                tema.value = q.tema;
+                tema.placeholder = 'Ex.: Convênios';
+                tema.setAttribute('list', 'lista-temas-provas');
+                tema.setAttribute('aria-label', `Tema da pergunta ${pos + 1}`);
+                tema.addEventListener('input', (e) => { q.tema = e.target.value; });
+
+                const peso = document.createElement('input');
+                peso.type = 'number';
+                peso.min = '0.5';
+                peso.step = '0.5';
+                peso.className = 'input-premium text-sm';
+                peso.value = q.peso;
+                peso.title = 'Peso da pergunta na nota (padrão 1)';
+                peso.setAttribute('aria-label', `Peso da pergunta ${pos + 1}`);
+                peso.addEventListener('input', (e) => { q.peso = e.target.value; });
+
+                const acoes = document.createElement('div');
+                acoes.className = 'pergunta-acoes';
+                const btnSobe = criarBotaoIcone('arrow-up', `Mover pergunta ${pos + 1} para cima`, () => moverPerguntaEditor(q, -1));
+                btnSobe.disabled = pos === 0;
+                const btnDesce = criarBotaoIcone('arrow-down', `Mover pergunta ${pos + 1} para baixo`, () => moverPerguntaEditor(q, 1));
+                btnDesce.disabled = pos === visiveis.length - 1;
+                const btnRemove = criarBotaoIcone('trash-2', `Remover pergunta ${pos + 1}`, () => removerPerguntaEditor(q), true);
+                acoes.appendChild(btnSobe);
+                acoes.appendChild(btnDesce);
+                acoes.appendChild(btnRemove);
+
+                linha.appendChild(num);
+                linha.appendChild(texto);
+                linha.appendChild(tema);
+                linha.appendChild(peso);
+                linha.appendChild(acoes);
+                lista.appendChild(linha);
+            });
+            lucide.createIcons();
+        };
+
+        const moverPerguntaEditor = (q, direcao) => {
+            const todas = provaEmEdicao.perguntas;
+            const visiveis = todas.filter(x => !x.removida);
+            const alvo = visiveis[visiveis.indexOf(q) + direcao];
+            if (!alvo) return;
+            const i = todas.indexOf(q), j = todas.indexOf(alvo);
+            [todas[i], todas[j]] = [todas[j], todas[i]];
+            renderPerguntasEditor();
+        };
+
+        const removerPerguntaEditor = (q) => {
+            if (provaEmEdicao.idsSalvos.has(q.id)) q.removida = true;
+            else provaEmEdicao.perguntas.splice(provaEmEdicao.perguntas.indexOf(q), 1);
+            if (provaEmEdicao.perguntas.filter(x => !x.removida).length === 0) adicionarPerguntaEditor(false);
+            renderPerguntasEditor();
+        };
+
+        const processarColarPerguntas = () => {
+            const linhas = document.getElementById('prova-colar-texto').value.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+            if (linhas.length === 0) {
+                window.showToast("Cole pelo menos uma pergunta.", "error");
+                return;
+            }
+            // Tira a linha em branco inicial do editor (se for a única)
+            const visiveis = provaEmEdicao.perguntas.filter(q => !q.removida);
+            if (visiveis.length === 1 && !visiveis[0].texto.trim() && !provaEmEdicao.idsSalvos.has(visiveis[0].id)) {
+                provaEmEdicao.perguntas.splice(provaEmEdicao.perguntas.indexOf(visiveis[0]), 1);
+            }
+            let adicionadas = 0;
+            linhas.forEach(l => {
+                let tema = '', pergunta = l;
+                const separador = l.includes('\t') ? '\t' : (l.includes('|') ? '|' : null);
+                if (separador) {
+                    const i = l.indexOf(separador);
+                    tema = l.slice(0, i).trim();
+                    pergunta = l.slice(i + 1).trim();
+                }
+                pergunta = pergunta.replace(/^\d{1,3}\s*[).:\-–]\s*/, '').trim(); // tira "1) ", "2. ", "3 - "
+                if (!pergunta) return;
+                adicionarPerguntaEditor(false, pergunta, tema);
+                adicionadas++;
+            });
+            document.getElementById('prova-colar-texto').value = '';
+            document.getElementById('prova-colar-area').classList.add('hidden');
+            renderPerguntasEditor();
+            window.showToast(`${adicionadas} pergunta(s) adicionada(s).`);
+        };
+
+        const salvarProvaEditor = async () => {
+            if (!provaEmEdicao) return;
+            const titulo = document.getElementById('prova-titulo').value.trim();
+            if (!titulo) {
+                window.showToast("Dê um nome para a prova.", "error");
+                document.getElementById('prova-titulo').focus();
+                return;
+            }
+            // Linha nova em branco é descartada; pergunta já salva que ficou em branco vira "removida"
+            provaEmEdicao.perguntas = provaEmEdicao.perguntas.filter(q => q.removida || String(q.texto).trim() || provaEmEdicao.idsSalvos.has(q.id));
+            provaEmEdicao.perguntas.forEach(q => { if (!q.removida && !String(q.texto).trim()) q.removida = true; });
+            if (provaEmEdicao.perguntas.filter(q => !q.removida).length === 0) {
+                window.showToast("Inclua pelo menos uma pergunta.", "error");
+                adicionarPerguntaEditor(true);
+                return;
+            }
+
+            const dados = {
+                titulo,
+                tipo: document.getElementById('prova-tipo').value,
+                descricao: document.getElementById('prova-descricao').value.trim(),
+                perguntas: provaEmEdicao.perguntas.map(q => {
+                    const item = { id: q.id, texto: String(q.texto).trim(), tema: String(q.tema || '').trim(), peso: pesoDaPergunta(q) };
+                    if (q.removida) item.removida = true;
+                    return item;
+                }),
+                proxNumero: provaEmEdicao.proxNumero,
+                atualizadoPorId: currentUser.uid,
+                atualizadoPorNome: nomeUsuarioAtual(),
+                ultimaAtualizacao: serverTimestamp()
+            };
+
+            const btn = document.getElementById('btn-salvar-prova');
+            const textoOriginal = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Salvando...';
+            lucide.createIcons();
+            try {
+                if (provaEmEdicao.id) {
+                    await updateDoc(doc(db, COLECAO_PROVAS, provaEmEdicao.id), dados);
+                } else {
+                    await addDoc(collection(db, COLECAO_PROVAS), {
+                        ...dados,
+                        ativa: true,
+                        criadoPorId: currentUser.uid,
+                        criadoPorNome: nomeUsuarioAtual(),
+                        criadoEm: serverTimestamp()
+                    });
+                }
+                provaEmEdicao = null;
+                closeModal('modal-prova-editor');
+                await garantirBancoProvas(true);
+                if (!document.getElementById('view-provas').classList.contains('hidden')) renderTabelaBancoProvas();
+                window.showToast("Prova salva no banco de provas.");
+            } catch (error) {
+                console.error("Erro ao salvar prova:", error);
+                window.showToast(ehErroPermissao(error) ? AVISO_SEM_PERMISSAO_PROVAS : mensagemErroFirebase(error, "Não foi possível salvar a prova."), "error");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = textoOriginal;
+                lucide.createIcons();
+            }
+        };
+
+        document.getElementById('btn-add-pergunta').addEventListener('click', () => adicionarPerguntaEditor(true));
+        document.getElementById('btn-toggle-colar-perguntas').addEventListener('click', () => {
+            const area = document.getElementById('prova-colar-area');
+            area.classList.toggle('hidden');
+            if (!area.classList.contains('hidden')) document.getElementById('prova-colar-texto').focus();
+        });
+        document.getElementById('btn-cancelar-colar-perguntas').addEventListener('click', () => {
+            document.getElementById('prova-colar-area').classList.add('hidden');
+            document.getElementById('prova-colar-texto').value = '';
+        });
+        document.getElementById('btn-processar-colar-perguntas').addEventListener('click', processarColarPerguntas);
+        document.getElementById('btn-salvar-prova').addEventListener('click', salvarProvaEditor);
+
+        // ---------- Correção da prova na turma ----------
+        let correcaoAtual = null; // { modelo, ativas, estados: [{ situacao: 'pendente'|'corrigida'|'naofez', erros: Set }] }
+
+        const abrirCorrecaoProva = async () => {
+            if (window.isTurmaReadOnly || !turmaAtualId) return;
+            sincronizarStateAlunos();
+            if (alunosCarregadosAtual.length === 0) {
+                window.showToast("Adicione os alunos da turma antes de corrigir uma prova.", "info");
+                return;
+            }
+            await garantirBancoProvas();
+            if (erroBancoProvas) {
+                window.showToast(ehErroPermissao(erroBancoProvas) ? AVISO_SEM_PERMISSAO_PROVAS : "Não foi possível carregar o banco de provas.", "error");
+                return;
+            }
+
+            const usadas = new Set();
+            alunosCarregadosAtual.forEach(a => (a.provas || []).forEach(p => { if (p.modeloId) usadas.add(p.modeloId); }));
+
+            const sel = document.getElementById('corr-prova-select');
+            sel.innerHTML = '';
+            sel.appendChild(new Option('Selecione a prova...', ''));
+            const grupoUsadas = document.createElement('optgroup');
+            grupoUsadas.label = 'Já corrigidas nesta turma';
+            const grupoTipo = document.createElement('optgroup');
+            grupoTipo.label = `Do tipo "${(dadosTurmaAtual && dadosTurmaAtual.tipo) || '-'}"`;
+            const grupoBanco = document.createElement('optgroup');
+            grupoBanco.label = 'Outras provas do banco';
+            (cacheBancoProvas || []).forEach(p => {
+                if (perguntasAtivas(p).length === 0) return;
+                const rotulo = `${p.titulo || 'Prova'} (${perguntasAtivas(p).length} perguntas)`;
+                if (usadas.has(p.id)) grupoUsadas.appendChild(new Option(rotulo, p.id));
+                else if (p.ativa === false) return;
+                else if (p.tipo && dadosTurmaAtual && p.tipo === dadosTurmaAtual.tipo) grupoTipo.appendChild(new Option(rotulo, p.id));
+                else grupoBanco.appendChild(new Option(rotulo, p.id));
+            });
+            [grupoUsadas, grupoTipo, grupoBanco].forEach(g => { if (g.children.length) sel.appendChild(g); });
+            const temOpcoes = sel.options.length > 1;
+
+            correcaoAtual = null;
+            document.getElementById('corr-conteudo').innerHTML = temOpcoes
+                ? '<p class="corr-instrucoes">Escolha acima a prova que foi aplicada nesta turma.</p>'
+                : '<p class="corr-instrucoes">Nenhuma prova cadastrada ainda. Cadastre em <strong>Banco de Provas</strong>, no menu lateral, e volte aqui.</p>';
+            document.getElementById('corr-perguntas-detalhe').classList.add('hidden');
+            document.getElementById('corr-resumo').textContent = '';
+            document.getElementById('btn-corr-pendentes-sem-erro').disabled = true;
+            document.getElementById('btn-aplicar-correcao').disabled = true;
+            openModal('modal-corrigir-prova');
+            setTimeout(() => sel.focus(), 60);
+        };
+
+        const selecionarProvaCorrecao = (modeloId) => {
+            const modelo = buscarProvaModelo(modeloId);
+            const detalhe = document.getElementById('corr-perguntas-detalhe');
+            if (!modelo) {
+                correcaoAtual = null;
+                document.getElementById('corr-conteudo').innerHTML = '<p class="corr-instrucoes">Escolha acima a prova que foi aplicada nesta turma.</p>';
+                detalhe.classList.add('hidden');
+                document.getElementById('corr-resumo').textContent = '';
+                document.getElementById('btn-corr-pendentes-sem-erro').disabled = true;
+                document.getElementById('btn-aplicar-correcao').disabled = true;
+                return;
+            }
+            const ativas = perguntasAtivas(modelo);
+            const idsAtivos = new Set(ativas.map(q => q.id));
+            correcaoAtual = {
+                modelo,
+                ativas,
+                estados: alunosCarregadosAtual.map(a => {
+                    const reg = Array.isArray(a.provas) ? a.provas.find(p => p.modeloId === modelo.id) : null;
+                    return reg
+                        ? { situacao: 'corrigida', erros: new Set((reg.erros || []).filter(id => idsAtivos.has(id))) }
+                        : { situacao: 'pendente', erros: new Set() };
+                })
+            };
+
+            const listaPerguntas = document.getElementById('corr-perguntas-lista');
+            listaPerguntas.innerHTML = '';
+            ativas.forEach((q, i) => {
+                const li = document.createElement('li');
+                const b = document.createElement('b');
+                b.textContent = `${i + 1}.`;
+                const span = document.createElement('span');
+                span.textContent = q.texto;
+                const chip = document.createElement('span');
+                chip.className = 'chip-tema';
+                chip.textContent = temaDaPergunta(q);
+                li.appendChild(b);
+                li.appendChild(span);
+                li.appendChild(chip);
+                listaPerguntas.appendChild(li);
+            });
+            detalhe.classList.remove('hidden');
+            renderGradeCorrecao();
+        };
+
+        const numerosDosErros = (estado) => correcaoAtual.ativas
+            .map((q, i) => estado.erros.has(q.id) ? i + 1 : null)
+            .filter(n => n !== null);
+
+        // Aceita "3, 7", "3 7", "3;7" e faixas "2-4"
+        const interpretarNumerosErros = (texto) => {
+            const total = correcaoAtual.ativas.length;
+            const ids = new Set();
+            const invalidos = [];
+            String(texto || '').split(/[\s,;]+/).filter(Boolean).forEach(tok => {
+                const faixa = tok.match(/^(\d+)[-–](\d+)$/);
+                if (faixa) {
+                    let ini = parseInt(faixa[1], 10), fim = parseInt(faixa[2], 10);
+                    if (ini > fim) [ini, fim] = [fim, ini];
+                    if (ini < 1 || fim > total) { invalidos.push(tok); return; }
+                    for (let n = ini; n <= fim; n++) ids.add(correcaoAtual.ativas[n - 1].id);
+                    return;
+                }
+                const n = /^\d+$/.test(tok) ? parseInt(tok, 10) : NaN;
+                if (n >= 1 && n <= total) ids.add(correcaoAtual.ativas[n - 1].id);
+                else invalidos.push(tok);
+            });
+            return { ids: [...ids], invalidos };
+        };
+
+        const renderGradeCorrecao = () => {
+            const { ativas, estados } = correcaoAtual;
+            const conteudo = document.getElementById('corr-conteudo');
+            conteudo.innerHTML = '';
+
+            const tabela = document.createElement('table');
+            tabela.className = 'corr-tabela';
+            const thead = document.createElement('thead');
+            const trHead = document.createElement('tr');
+            const criarTh = (texto, classe = '') => {
+                const th = document.createElement('th');
+                th.scope = 'col';
+                th.textContent = texto;
+                if (classe) th.className = classe;
+                return th;
+            };
+            trHead.appendChild(criarTh('Aluno', 'col-aluno'));
+            trHead.appendChild(criarTh('Situação'));
+            trHead.appendChild(criarTh('Erradas'));
+            ativas.forEach((q, i) => {
+                const th = criarTh(String(i + 1), 'corr-th-q');
+                th.title = `${i + 1}. ${q.texto}\nTema: ${temaDaPergunta(q)}${pesoDaPergunta(q) !== 1 ? `\nPeso: ${pesoDaPergunta(q)}` : ''}`;
+                trHead.appendChild(th);
+            });
+            trHead.appendChild(criarTh('Nota', 'corr-nota'));
+            thead.appendChild(trHead);
+            tabela.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+            estados.forEach((estado, idx) => tbody.appendChild(criarLinhaCorrecao(idx)));
+            tabela.appendChild(tbody);
+            conteudo.appendChild(tabela);
+            atualizarResumoCorrecao();
+        };
+
+        const criarLinhaCorrecao = (idx) => {
+            const { ativas, estados } = correcaoAtual;
+            const estado = estados[idx];
+            const aluno = alunosCarregadosAtual[idx];
+            const nomeAluno = aluno.nome || `Aluno ${idx + 1}`;
+
+            const tr = document.createElement('tr');
+            tr.dataset.idx = idx;
+
+            const tdNome = document.createElement('td');
+            tdNome.className = 'col-aluno';
+            tdNome.title = nomeAluno;
+            tdNome.appendChild(document.createTextNode(nomeAluno));
+            if (aluno.matricula) {
+                const small = document.createElement('small');
+                small.textContent = `Mat. ${aluno.matricula}`;
+                tdNome.appendChild(small);
+            }
+
+            const tdSituacao = document.createElement('td');
+            const sel = document.createElement('select');
+            sel.className = 'input-premium';
+            sel.setAttribute('aria-label', `Situação da prova de ${nomeAluno}`);
+            [['pendente', 'Pendente'], ['corrigida', 'Corrigida'], ['naofez', 'Não fez']].forEach(([v, t]) => sel.appendChild(new Option(t, v)));
+            sel.value = estado.situacao;
+            sel.addEventListener('change', () => {
+                estado.situacao = sel.value;
+                atualizarLinhaCorrecao(idx);
+            });
+            tdSituacao.appendChild(sel);
+
+            const tdErradas = document.createElement('td');
+            const inp = document.createElement('input');
+            inp.type = 'text';
+            inp.className = 'input-premium';
+            inp.autocomplete = 'off';
+            inp.setAttribute('aria-label', `Números das perguntas que ${nomeAluno} errou`);
+            inp.addEventListener('input', () => {
+                const { ids, invalidos } = interpretarNumerosErros(inp.value);
+                estado.erros = new Set(ids);
+                estado.situacao = 'corrigida';
+                inp.setAttribute('aria-invalid', invalidos.length ? 'true' : 'false');
+                inp.title = invalidos.length ? `Ignorado: ${invalidos.join(', ')} (a prova tem ${ativas.length} perguntas)` : '';
+                atualizarLinhaCorrecao(idx, { manterTexto: true });
+            });
+            inp.addEventListener('blur', () => {
+                if (inp.getAttribute('aria-invalid') !== 'true' && estado.situacao === 'corrigida') inp.value = numerosDosErros(estado).join(', ');
+            });
+            inp.addEventListener('keydown', (e) => {
+                if (e.key !== 'Enter') return;
+                e.preventDefault();
+                const proximo = document.querySelector(`#corr-conteudo tr[data-idx="${idx + 1}"] input`);
+                if (proximo && !proximo.disabled) proximo.focus();
+                else document.getElementById('btn-aplicar-correcao').focus();
+            });
+            tdErradas.appendChild(inp);
+
+            tr.appendChild(tdNome);
+            tr.appendChild(tdSituacao);
+            tr.appendChild(tdErradas);
+
+            ativas.forEach((q, i) => {
+                const td = document.createElement('td');
+                td.className = 'text-center';
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'corr-q';
+                b.tabIndex = -1; // pelo teclado, o campo "Erradas" é mais rápido
+                b.textContent = i + 1;
+                b.dataset.qid = q.id;
+                b.addEventListener('click', () => {
+                    if (estado.erros.has(q.id)) estado.erros.delete(q.id);
+                    else estado.erros.add(q.id);
+                    estado.situacao = 'corrigida';
+                    atualizarLinhaCorrecao(idx);
+                });
+                td.appendChild(b);
+                tr.appendChild(td);
+            });
+
+            const tdNota = document.createElement('td');
+            tdNota.className = 'corr-nota';
+            tr.appendChild(tdNota);
+
+            pintarLinhaCorrecao(tr, idx);
+            return tr;
+        };
+
+        const pintarLinhaCorrecao = (tr, idx, opcoes = {}) => {
+            const { modelo, estados } = correcaoAtual;
+            const estado = estados[idx];
+            const corrigida = estado.situacao === 'corrigida';
+            const naoFez = estado.situacao === 'naofez';
+
+            tr.classList.toggle('corr-naofez', naoFez);
+            const sel = tr.querySelector('select');
+            if (sel.value !== estado.situacao) sel.value = estado.situacao;
+
+            const inp = tr.querySelector('input');
+            if (!opcoes.manterTexto) {
+                inp.value = numerosDosErros(estado).join(', ');
+                inp.setAttribute('aria-invalid', 'false');
+                inp.title = '';
+            }
+            inp.placeholder = corrigida ? 'nenhuma' : 'ex.: 3, 7';
+            inp.disabled = naoFez;
+
+            tr.querySelectorAll('.corr-q').forEach((b, i) => {
+                const errou = estado.erros.has(b.dataset.qid);
+                b.dataset.estado = naoFez ? 'pendente' : (errou ? 'erro' : (corrigida ? 'certo' : 'pendente'));
+                b.setAttribute('aria-pressed', errou ? 'true' : 'false');
+                b.setAttribute('aria-label', `Pergunta ${i + 1}: ${errou ? 'errou' : (corrigida ? 'acertou' : 'não corrigida')}`);
+                b.disabled = naoFez;
+            });
+
+            const tdNota = tr.querySelector('.corr-nota');
+            if (corrigida) {
+                const nota = calcularNotaPorErros(modelo, [...estado.erros]);
+                tdNota.textContent = nota;
+                tdNota.className = `corr-nota ${parseFloat(nota) >= NOTA_MINIMA_APTO ? 'boa' : 'baixa'}`;
+            } else {
+                tdNota.textContent = naoFez ? 'não fez' : '–';
+                tdNota.className = 'corr-nota';
+            }
+        };
+
+        const atualizarLinhaCorrecao = (idx, opcoes) => {
+            const tr = document.querySelector(`#corr-conteudo tr[data-idx="${idx}"]`);
+            if (tr) pintarLinhaCorrecao(tr, idx, opcoes);
+            atualizarResumoCorrecao();
+        };
+
+        const atualizarResumoCorrecao = () => {
+            if (!correcaoAtual) return;
+            const { modelo, estados } = correcaoAtual;
+            let corrigidas = 0, pendentes = 0, naoFizeram = 0, soma = 0;
+            estados.forEach(e => {
+                if (e.situacao === 'corrigida') {
+                    corrigidas++;
+                    soma += parseFloat(calcularNotaPorErros(modelo, [...e.erros])) || 0;
+                } else if (e.situacao === 'naofez') naoFizeram++;
+                else pendentes++;
+            });
+            document.getElementById('corr-resumo').textContent =
+                `${corrigidas} corrigida(s) · ${pendentes} pendente(s) · ${naoFizeram} não fez${corrigidas ? ` · média ${(soma / corrigidas).toFixed(1)}` : ''}`;
+            document.getElementById('btn-corr-pendentes-sem-erro').disabled = pendentes === 0;
+            document.getElementById('btn-aplicar-correcao').disabled = (corrigidas + naoFizeram) === 0;
+        };
+
+        const aplicarCorrecao = () => {
+            if (!correcaoAtual || window.isTurmaReadOnly) return;
+            const { modelo, ativas, estados } = correcaoAtual;
+            const ids = ativas.map(q => q.id);
+            const hoje = hojeISO();
+            let corrigidos = 0, removidos = 0;
+
+            alunosCarregadosAtual.forEach((aluno, i) => {
+                const estado = estados[i];
+                if (!estado || estado.situacao === 'pendente') return;
+                if (!Array.isArray(aluno.provas)) aluno.provas = [];
+
+                // Nota antiga digitada sem lista de provas vira "Prova 1", para não sumir da média
+                if (aluno.provas.length === 0 && estado.situacao === 'corrigida'
+                    && aluno.nota !== undefined && aluno.nota !== null && aluno.nota !== '' && !isNaN(parseFloat(aluno.nota))) {
+                    aluno.provas.push({ id: Date.now() + i + 100000, nome: 'Prova 1', nota: aluno.nota });
+                }
+
+                const pos = aluno.provas.findIndex(p => p.modeloId === modelo.id);
+                if (estado.situacao === 'corrigida') {
+                    const erros = ids.filter(id => estado.erros.has(id));
+                    const registro = {
+                        id: pos > -1 ? aluno.provas[pos].id : Date.now() + i,
+                        nome: modelo.titulo || 'Prova',
+                        nota: calcularNotaPorErros(modelo, erros),
+                        modeloId: modelo.id,
+                        erros,
+                        respondidas: ids.slice(),
+                        corrigidoEm: hoje
+                    };
+                    if (pos > -1) aluno.provas[pos] = registro;
+                    else aluno.provas.push(registro);
+                    corrigidos++;
+                } else if (estado.situacao === 'naofez') {
+                    if (pos > -1) { aluno.provas.splice(pos, 1); removidos++; }
+                    else return;
+                }
+                const media = calcularMediaProvas(aluno.provas);
+                aluno.nota = media !== '-' ? media : '';
+            });
+
+            if (corrigidos + removidos === 0) {
+                window.showToast("Nada para aplicar: corrija pelo menos um aluno.", "info");
+                return;
+            }
+            window.marcarAlteracoesNaoSalvas();
+            closeModal('modal-corrigir-prova');
+            correcaoAtual = null;
+            renderTabelaAvaliacoes();
+            window.showToast(`Correção aplicada (${corrigidos} aluno(s)). Clique em "Salvar Alterações" para gravar.`, "info");
+        };
+
+        document.getElementById('btn-corrigir-prova').addEventListener('click', abrirCorrecaoProva);
+        document.getElementById('corr-prova-select').addEventListener('change', (e) => selecionarProvaCorrecao(e.target.value));
+        document.getElementById('btn-corr-pendentes-sem-erro').addEventListener('click', () => {
+            if (!correcaoAtual) return;
+            correcaoAtual.estados.forEach((e, idx) => {
+                if (e.situacao === 'pendente') {
+                    e.situacao = 'corrigida';
+                    e.erros = new Set();
+                    const tr = document.querySelector(`#corr-conteudo tr[data-idx="${idx}"]`);
+                    if (tr) pintarLinhaCorrecao(tr, idx);
+                }
+            });
+            atualizarResumoCorrecao();
+        });
+        document.getElementById('btn-aplicar-correcao').addEventListener('click', aplicarCorrecao);
+
+        // ---------- Dashboard: aprendizado e prontidão ----------
+        const classeBarraErro = (pct) => pct >= 50 ? 'alto' : (pct >= 30 ? 'medio' : '');
+        const classeBarraNota = (nota) => nota >= NOTA_MINIMA_APTO ? 'bom' : (nota >= 5 ? 'medio' : 'alto');
+
+        const htmlBarra = ({ titulo, meta = '', largura, classe = '', rotulo }) => `
+            <div class="barra-linha">
+                <div class="overflow-hidden">
+                    <p class="barra-titulo" title="${escapeHTML(titulo)}">${escapeHTML(titulo)}</p>
+                    ${meta ? `<div class="barra-meta">${meta}</div>` : ''}
+                </div>
+                <div class="barra-trilho" aria-hidden="true"><div class="barra-valor ${classe}" style="width: ${Math.max(2, Math.min(100, largura))}%;"></div></div>
+                <span class="barra-pct">${escapeHTML(rotulo)}</span>
+            </div>`;
+
+        const renderPainelAprendizado = async (turmas) => {
+            if (!document.getElementById('painel-aprendizado')) return;
+            await garantirBancoProvas();
+            const hoje = hojeISO();
+            const turmasValidas = (turmas || []).filter(t => !['Cancelado', 'Reagendado'].includes(t.status || 'Programado'));
+
+            // Seletor de prova: só as que aparecem nas turmas filtradas
+            const sel = document.getElementById('dash-aprend-prova');
+            const usadas = new Map();
+            turmasValidas.forEach(t => (t.alunos || []).forEach(a => (a.provas || []).forEach(p => {
+                if (p.modeloId && !usadas.has(p.modeloId)) usadas.set(p.modeloId, (buscarProvaModelo(p.modeloId) || {}).titulo || p.nome || 'Prova');
+            })));
+            const selecionadaAntes = sel.value;
+            sel.innerHTML = '';
+            sel.appendChild(new Option('Todas as provas', ''));
+            [...usadas.entries()].sort((a, b) => a[1].localeCompare(b[1], 'pt-BR')).forEach(([id, titulo]) => sel.appendChild(new Option(titulo, id)));
+            sel.value = usadas.has(selecionadaAntes) ? selecionadaAntes : '';
+            const provaSel = sel.value;
+
+            const aviso = document.getElementById('aprend-aviso');
+            const avisoTexto = document.getElementById('aprend-aviso-texto');
+            if (erroBancoProvas) {
+                aviso.hidden = false;
+                avisoTexto.textContent = ehErroPermissao(erroBancoProvas) ? AVISO_SEM_PERMISSAO_PROVAS : 'Não foi possível carregar o banco de provas; textos e temas das perguntas podem não aparecer.';
+            } else if (usadas.size === 0) {
+                aviso.hidden = false;
+                avisoTexto.textContent = 'Ainda não há provas corrigidas por pergunta nas turmas filtradas. Cadastre as provas no Banco de Provas e use "Corrigir prova" na turma. A prontidão abaixo já usa as notas e presenças atuais.';
+            } else {
+                aviso.hidden = true;
+            }
+
+            // 1) Prontidão de cada aluno (turmas com pelo menos uma aula realizada)
+            const registros = [];
+            turmasValidas.forEach(t => {
+                const dias = (t.diasTreinamento || []).filter(d => { const iso = diaBRparaISO(d); return iso && iso <= hoje; });
+                if (dias.length === 0) return;
+                (t.alunos || []).forEach(a => {
+                    let presentes = 0;
+                    dias.forEach(d => { const e = obterEstadoPresenca(a, d); if (e === 'P' || e === 'A') presentes++; });
+                    const perc = Math.round((presentes / dias.length) * 100);
+                    const mediaStr = calcularMediaProvas(a.provas, a.nota);
+                    const nota = mediaStr !== '-' ? parseFloat(mediaStr) : null;
+                    let comp = null;
+                    try { comp = calcularNotaComp(a.comportamental && a.comportamental.infractions, a); } catch (e) { comp = null; }
+                    const avaliado = nota !== null;
+                    registros.push({
+                        turma: t, aluno: a, perc, nota, comp, avaliado,
+                        apto: avaliado && nota >= NOTA_MINIMA_APTO && perc >= PRESENCA_MINIMA_APTO,
+                        reforco: (avaliado && nota < NOTA_MINIMA_APTO) || perc < PRESENCA_MINIMA_APTO
+                    });
+                });
+            });
+            const avaliados = registros.filter(r => r.avaliado);
+            const aptos = avaliados.filter(r => r.apto).length;
+            const reforcos = registros.filter(r => r.reforco);
+
+            document.getElementById('aprend-aptos').textContent = avaliados.length ? `${Math.round((aptos / avaliados.length) * 100)}%` : '-';
+            document.getElementById('aprend-aptos-sub').textContent = avaliados.length
+                ? `${aptos} de ${avaliados.length} alunos avaliados` : 'Nenhum aluno com nota no período';
+            document.getElementById('aprend-reforco').textContent = registros.length ? reforcos.length : '-';
+            document.getElementById('aprend-reforco-sub').textContent = registros.length
+                ? `de ${registros.length} alunos com aula realizada` : 'Nota < 7 ou presença < 75%';
+
+            // 2) Provas do banco: perguntas, temas e evolução por turma
+            const porPergunta = new Map();
+            const porTema = new Map();
+            const porTurma = [];
+            let somaNotas = 0, qtdNotas = 0, totalRespostas = 0, totalErros = 0;
+            turmasValidas.forEach(t => {
+                let somaTurma = 0, qtdTurma = 0;
+                (t.alunos || []).forEach(a => (a.provas || []).forEach(p => {
+                    if (!p.modeloId || (provaSel && p.modeloId !== provaSel)) return;
+                    percorrerRespostas(p, (r) => {
+                        const chave = `${p.modeloId}|${r.qid}`;
+                        const s = porPergunta.get(chave) || { titulo: r.titulo, texto: r.texto, tema: r.tema, numero: r.numero, resp: 0, erros: 0 };
+                        s.resp++;
+                        const tm = porTema.get(r.tema) || { resp: 0, erros: 0 };
+                        tm.resp++;
+                        totalRespostas++;
+                        if (r.errou) { s.erros++; tm.erros++; totalErros++; }
+                        porPergunta.set(chave, s);
+                        porTema.set(r.tema, tm);
+                    });
+                    const n = parseFloat(p.nota);
+                    if (!isNaN(n)) { somaNotas += n; qtdNotas++; somaTurma += n; qtdTurma++; }
+                }));
+                if (qtdTurma > 0) porTurma.push({ turma: t, media: somaTurma / qtdTurma, qtd: qtdTurma });
+            });
+
+            document.getElementById('aprend-media').textContent = qtdNotas ? (somaNotas / qtdNotas).toFixed(1) : '-';
+            document.getElementById('aprend-media-sub').textContent = qtdNotas ? `${qtdNotas} prova(s) corrigida(s) por pergunta` : 'Nenhuma prova corrigida';
+            document.getElementById('aprend-acerto').textContent = totalRespostas ? `${Math.round((1 - totalErros / totalRespostas) * 100)}%` : '-';
+            document.getElementById('aprend-acerto-sub').textContent = totalRespostas ? `${totalRespostas} respostas analisadas` : 'Das perguntas respondidas';
+
+            const semProvas = '<p class="vazio-painel">Sem provas corrigidas por pergunta nas turmas filtradas.</p>';
+
+            const topPerguntas = [...porPergunta.values()]
+                .filter(s => s.resp > 0 && s.erros > 0)
+                .sort((a, b) => (b.erros / b.resp) - (a.erros / a.resp) || b.resp - a.resp)
+                .slice(0, 8);
+            document.getElementById('aprend-perguntas').innerHTML = topPerguntas.length
+                ? topPerguntas.map(s => {
+                    const pct = Math.round((s.erros / s.resp) * 100);
+                    const meta = `<span class="chip-tema">${escapeHTML(s.tema)}</span>${!provaSel ? `<span>${escapeHTML(s.titulo)}</span>` : ''}<span>${s.erros} de ${s.resp} erraram</span>`;
+                    return htmlBarra({ titulo: `${s.numero ? `Q${s.numero} · ` : ''}${s.texto}`, meta, largura: pct, classe: classeBarraErro(pct), rotulo: `${pct}%` });
+                }).join('')
+                : (totalRespostas ? '<p class="vazio-painel">Nenhum erro registrado nas provas corrigidas.</p>' : semProvas);
+
+            const temas = [...porTema.entries()].filter(([, v]) => v.resp > 0)
+                .sort((a, b) => (b[1].erros / b[1].resp) - (a[1].erros / a[1].resp)).slice(0, 8);
+            document.getElementById('aprend-temas').innerHTML = temas.length
+                ? temas.map(([tema, v]) => {
+                    const pct = Math.round((v.erros / v.resp) * 100);
+                    return htmlBarra({ titulo: tema, meta: `<span>${v.erros} erro(s) em ${v.resp} respostas</span>`, largura: pct, classe: classeBarraErro(pct), rotulo: `${pct}%` });
+                }).join('')
+                : semProvas;
+
+            const evolucao = porTurma.sort((a, b) => (a.turma.dataInicio || '').localeCompare(b.turma.dataInicio || '')).slice(-8);
+            let htmlEvolucao = evolucao.map(e => htmlBarra({
+                titulo: `${formatarData(e.turma.dataInicio)} · ${e.turma.nomeTreinamento || 'Turma'}`,
+                meta: `<span>${escapeHTML(e.turma.instrutorNome || '-')}</span><span>${e.qtd} prova(s)</span>`,
+                largura: e.media * 10, classe: classeBarraNota(e.media), rotulo: e.media.toFixed(1)
+            })).join('');
+            if (evolucao.length >= 2) {
+                const dif = evolucao[evolucao.length - 1].media - evolucao[0].media;
+                htmlEvolucao += `<p class="text-xs text-gray-500 mt-2">Da primeira para a última turma da lista: <strong class="${dif >= 0 ? 'text-green-700' : 'text-red-600'}">${dif >= 0 ? '+' : ''}${dif.toFixed(1)}</strong> ponto(s) na média${provaSel ? '' : ' (todas as provas; escolha uma prova para comparar a mesma avaliação)'}.</p>`;
+            }
+            document.getElementById('aprend-evolucao').innerHTML = htmlEvolucao || semProvas;
+
+            // 3) Prontidão por unidade
+            const porUnidade = new Map();
+            registros.forEach(r => {
+                const unidades = unidadesDaTurma(r.turma);
+                (unidades.length ? unidades : ['Sem unidade']).forEach(u => {
+                    const g = porUnidade.get(u) || { alunos: 0, avaliados: 0, aptos: 0, somaNota: 0, somaPres: 0 };
+                    g.alunos++;
+                    g.somaPres += r.perc;
+                    if (r.avaliado) { g.avaliados++; g.somaNota += r.nota; if (r.apto) g.aptos++; }
+                    porUnidade.set(u, g);
+                });
+            });
+            const linhasUnidade = [...porUnidade.entries()]
+                .map(([u, g]) => ({ u, ...g, pctAptos: g.avaliados ? g.aptos / g.avaliados : null }))
+                .sort((a, b) => (a.pctAptos === null) - (b.pctAptos === null) || (a.pctAptos || 0) - (b.pctAptos || 0));
+            document.getElementById('aprend-unidades').innerHTML = linhasUnidade.length
+                ? `<table class="tabela-mini">
+                        <thead><tr><th>Unidade</th><th class="num">Alunos</th><th class="num">% aptos</th><th class="num">Média</th><th class="num">Presença</th></tr></thead>
+                        <tbody>${linhasUnidade.map(l => `
+                            <tr>
+                                <td>${escapeHTML(l.u)}</td>
+                                <td class="num">${l.alunos}</td>
+                                <td class="num" style="font-weight: 700; color: ${l.pctAptos === null ? '#6f6a78' : (l.pctAptos >= 0.8 ? '#4d7c0f' : (l.pctAptos >= 0.6 ? '#b45309' : '#b91c1c'))};">${l.pctAptos === null ? '-' : Math.round(l.pctAptos * 100) + '%'}</td>
+                                <td class="num">${l.avaliados ? (l.somaNota / l.avaliados).toFixed(1) : '-'}</td>
+                                <td class="num">${Math.round(l.somaPres / l.alunos)}%</td>
+                            </tr>`).join('')}
+                        </tbody>
+                    </table>`
+                : '<p class="vazio-painel">Nenhuma turma com aula realizada nos filtros atuais.</p>';
+
+            // 4) Lista de reforço (pior situação primeiro)
+            const temasErradosDoAluno = (a) => {
+                const contagem = new Map();
+                (a.provas || []).forEach(p => {
+                    if (!p.modeloId || (provaSel && p.modeloId !== provaSel)) return;
+                    percorrerRespostas(p, (r) => { if (r.errou) contagem.set(r.tema, (contagem.get(r.tema) || 0) + 1); });
+                });
+                return [...contagem.entries()].sort((x, y) => y[1] - x[1]).slice(0, 2).map(([t]) => t);
+            };
+            const ordenados = reforcos.sort((a, b) =>
+                (a.nota === null) - (b.nota === null) || (a.nota ?? 99) - (b.nota ?? 99) || a.perc - b.perc);
+            const LIMITE_REFORCO = 50;
+            document.getElementById('aprend-reforco-total').textContent = reforcos.length;
+            const listaReforco = document.getElementById('aprend-reforco-lista');
+            if (ordenados.length === 0) {
+                listaReforco.innerHTML = `<p class="vazio-painel">${registros.length ? 'Nenhum aluno abaixo dos critérios. Todos os avaliados estão aptos.' : 'Nenhuma turma com aula realizada nos filtros atuais.'}</p>`;
+            } else {
+                listaReforco.innerHTML = ordenados.slice(0, LIMITE_REFORCO).map(r => {
+                    const chips = [];
+                    if (r.avaliado && r.nota < NOTA_MINIMA_APTO) chips.push(`<span class="chip-motivo">Nota ${r.nota.toFixed(1)}</span>`);
+                    if (r.perc < PRESENCA_MINIMA_APTO) chips.push(`<span class="chip-motivo">Presença ${r.perc}%</span>`);
+                    if (!r.avaliado) chips.push('<span class="chip-motivo neutro">Sem nota</span>');
+                    if (r.comp !== null && r.comp < 7) chips.push(`<span class="chip-motivo neutro">Comportamental ${r.comp}</span>`);
+                    temasErradosDoAluno(r.aluno).forEach(t => chips.push(`<span class="chip-tema">Reforçar: ${escapeHTML(t)}</span>`));
+                    const unidades = unidadesDaTurma(r.turma).join(', ');
+                    return `
+                        <div class="lista-reforco-item" role="button" tabindex="0" data-turma="${escapeHTML(r.turma.id)}" aria-label="Abrir turma de ${escapeHTML(r.aluno.nome || 'aluno')}">
+                            <div class="flex-1 overflow-hidden">
+                                <p class="text-sm font-semibold text-gray-800 truncate">${escapeHTML(r.aluno.nome || 'Sem nome')}${r.aluno.matricula ? ` <span class="text-xs font-normal text-gray-500">· Mat. ${escapeHTML(String(r.aluno.matricula))}</span>` : ''}</p>
+                                <p class="text-xs text-gray-500 truncate">${escapeHTML(r.turma.nomeTreinamento || 'Turma')} · ${escapeHTML(r.turma.instrutorNome || '-')}${unidades ? ` · ${escapeHTML(unidades)}` : ''}</p>
+                            </div>
+                            <div class="motivos">${chips.join('')}</div>
+                        </div>`;
+                }).join('') + (ordenados.length > LIMITE_REFORCO
+                    ? `<p class="vazio-painel">Mostrando ${LIMITE_REFORCO} de ${ordenados.length}. Use os filtros acima ou exporte em Relatórios.</p>` : '');
+                listaReforco.querySelectorAll('.lista-reforco-item').forEach(item => {
+                    const abrir = () => abrirGestaoTurma(item.dataset.turma);
+                    item.addEventListener('click', abrir);
+                    item.addEventListener('keydown', (e) => { if (e.key === 'Enter') abrir(); });
+                });
+            }
+        };
+
+        document.getElementById('dash-aprend-prova').addEventListener('change', () => {
+            renderPainelAprendizado(filtrarTurmasDashboard(cacheTurmas || [])).catch(e => console.error("Erro no painel de aprendizado:", e));
+        });
+
+        // ---------- Relatório Final: resumo das provas por pergunta ----------
+        const resumoProvasTurmaHTML = (alunos) => {
+            const porModelo = new Map();
+            (alunos || []).forEach(a => (a.provas || []).forEach(p => {
+                if (!p.modeloId) return;
+                let m = porModelo.get(p.modeloId);
+                if (!m) {
+                    const modelo = buscarProvaModelo(p.modeloId);
+                    m = { titulo: (modelo && modelo.titulo) || p.nome || 'Prova', qtd: 0, soma: 0, perguntas: new Map(), temas: new Map() };
+                    porModelo.set(p.modeloId, m);
+                }
+                m.qtd++;
+                const nota = parseFloat(p.nota);
+                if (!isNaN(nota)) m.soma += nota;
+                percorrerRespostas(p, (r) => {
+                    const s = m.perguntas.get(r.qid) || { texto: r.texto, tema: r.tema, numero: r.numero, resp: 0, erros: 0 };
+                    s.resp++;
+                    if (r.errou) s.erros++;
+                    m.perguntas.set(r.qid, s);
+                    const tm = m.temas.get(r.tema) || { resp: 0, erros: 0 };
+                    tm.resp++;
+                    if (r.errou) tm.erros++;
+                    m.temas.set(r.tema, tm);
+                });
+            }));
+            if (porModelo.size === 0) return '';
+
+            let blocos = '';
+            porModelo.forEach(m => {
+                const media = m.qtd ? (m.soma / m.qtd).toFixed(1) : '-';
+                const top = [...m.perguntas.values()].filter(s => s.erros > 0)
+                    .sort((a, b) => (b.erros / b.resp) - (a.erros / a.resp)).slice(0, 5);
+                const temas = [...m.temas.entries()].filter(([, v]) => v.erros > 0)
+                    .sort((a, b) => (b[1].erros / b[1].resp) - (a[1].erros / a[1].resp)).slice(0, 3);
+                const textoTemas = temas.length
+                    ? ` · Temas para reforçar: <strong>${temas.map(([t, v]) => `${escapeHTML(t)} (${Math.round((v.erros / v.resp) * 100)}% de erro)`).join(', ')}</strong>`
+                    : '';
+                const linhas = top.map(s => `
+                    <tr>
+                        <td style="padding: 5px 0; color: #1e293b; font-size: 12px;">${s.numero ? `Q${s.numero}. ` : ''}${escapeHTML(s.texto)} <span style="color: #6D2077;">(${escapeHTML(s.tema)})</span></td>
+                        <td style="padding: 5px 0 5px 12px; text-align: right; white-space: nowrap; font-size: 12px; font-weight: bold; color: ${(s.erros / s.resp) >= 0.5 ? '#dc2626' : '#b45309'};">${s.erros}/${s.resp} erraram</td>
+                    </tr>`).join('');
+                blocos += `
+                    <table role="presentation" style="width: 100%; border-collapse: collapse; border: 1px solid #e2e8f0; margin-bottom: 12px;">
+                        <tr><td style="padding: 12px 15px; background-color: #f7eff8; border-bottom: 1px solid #e2e8f0;">
+                            <p style="margin: 0; font-size: 14px; font-weight: bold; color: #6D2077;">Prova: ${escapeHTML(m.titulo)}</p>
+                            <p style="margin: 4px 0 0 0; font-size: 12px; color: #475569;">${m.qtd} aluno(s) corrigido(s) · Média ${media}${textoTemas}</p>
+                        </td></tr>
+                        <tr><td style="padding: 8px 15px 10px 15px;">
+                            ${top.length
+                                ? `<p style="margin: 0 0 4px 0; font-size: 12px; font-weight: bold; color: #475569;">Perguntas com mais erros</p>
+                                   <table role="presentation" style="width: 100%; border-collapse: collapse;">${linhas}</table>`
+                                : '<p style="margin: 0; font-size: 12px; font-weight: bold; color: #4d7c0f;">Nenhum erro registrado nesta prova.</p>'}
+                        </td></tr>
+                    </table>`;
+            });
+            return `
+                <div style="padding: 0 24px 16px 24px;">
+                    <p style="margin: 0 0 10px 0; font-size: 15px; font-weight: bold; color: #1e293b;">Desempenho por pergunta</p>
+                    ${blocos}
+                </div>`;
+        };
+
+        // ---------- Excel: abas "Erros por Pergunta" e "Provas por Aluno" ----------
+        const montarAbasProvasExcel = (linhas) => {
+            const porPergunta = new Map();
+            const porAluno = [];
+            (linhas || []).forEach(row => {
+                const a = row.alunoRef;
+                if (!a || !Array.isArray(a.provas)) return;
+                a.provas.forEach(p => {
+                    if (!p.modeloId) return;
+                    const numerosErrados = [];
+                    const temasErrados = new Set();
+                    let titulo = p.nome || 'Prova';
+                    percorrerRespostas(p, (r) => {
+                        titulo = r.titulo;
+                        const chave = `${p.modeloId}|${r.qid}`;
+                        const s = porPergunta.get(chave) || { "Prova": r.titulo, "Nº": r.numero || '', "Pergunta": r.texto, "Tema": r.tema, "Responderam": 0, "Erraram": 0, "% Erro": 0 };
+                        s["Responderam"]++;
+                        if (r.errou) {
+                            s["Erraram"]++;
+                            numerosErrados.push(r.numero || 'removida');
+                            temasErrados.add(r.tema);
+                        }
+                        porPergunta.set(chave, s);
+                    });
+                    porAluno.push({
+                        "Turma (Curso)": row.nomeTreinamento,
+                        "Data de Início": formatarData(row.dataInicio),
+                        "Instrutor": row.instrutorNome,
+                        "Matrícula": row.matricula,
+                        "Nome do Aluno": row.nomeAluno,
+                        "Prova": titulo,
+                        "Nota": (p.nota === '' || p.nota === undefined || isNaN(parseFloat(p.nota))) ? '' : parseFloat(p.nota),
+                        "Nº de Erros": numerosErrados.length,
+                        "Perguntas Erradas": numerosErrados.join(', '),
+                        "Temas Errados": [...temasErrados].join(' | ')
+                    });
+                });
+            });
+            const listaPerguntas = [...porPergunta.values()]
+                .map(s => ({ ...s, "% Erro": s["Responderam"] ? s["Erraram"] / s["Responderam"] : 0 }))
+                .sort((a, b) => String(a["Prova"]).localeCompare(String(b["Prova"]), 'pt-BR') || (a["Nº"] || 999) - (b["Nº"] || 999));
+            return { porPergunta: listaPerguntas, porAluno };
+        };
+
         // SALVAR AVALIAÇÕES E EDIÇÕES DA TURMA
         document.getElementById('btn-salvar-avaliacoes-turma').addEventListener('click', async () => {
             if (window.isTurmaReadOnly) return;
@@ -5988,6 +7940,84 @@
             }
         });
 
+    </script>
+
+    <!-- =====================================================================
+         v2.3 — COMPLEMENTOS DE INTERFACE
+         Script separado e independente: só observa a tela e ajusta aparência
+         e acessibilidade. Não chama o Firebase nem altera funções do sistema.
+         ===================================================================== -->
+    <script>
+        (function () {
+            'use strict';
+
+            // 1) Iniciais do usuário no avatar do menu lateral
+            const nomeEl = document.getElementById('user-display-name');
+            const iniciaisEl = document.getElementById('user-avatar-iniciais');
+            const atualizarIniciais = () => {
+                if (!nomeEl || !iniciaisEl) return;
+                const partes = (nomeEl.textContent || '').trim().split(/\s+/).filter(p => p && p.toLowerCase() !== 'usuário');
+                const iniciais = partes.length === 0 ? '' :
+                    (partes[0][0] + (partes.length > 1 ? partes[partes.length - 1][0] : '')).toUpperCase();
+                iniciaisEl.textContent = iniciais;
+                const avatar = iniciaisEl.parentElement;
+                if (avatar) avatar.classList.toggle('tem-iniciais', iniciais !== '');
+            };
+            if (nomeEl) {
+                new MutationObserver(atualizarIniciais).observe(nomeEl, { childList: true, characterData: true, subtree: true });
+                atualizarIniciais();
+            }
+
+            // 2) Leitores de tela: indica qual item do menu está aberto
+            const atualizarMenuAtual = () => {
+                document.querySelectorAll('.sidebar-link').forEach(link => {
+                    if (link.classList.contains('active')) link.setAttribute('aria-current', 'page');
+                    else link.removeAttribute('aria-current');
+                });
+            };
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                new MutationObserver(atualizarMenuAtual).observe(link, { attributes: true, attributeFilter: ['class'] });
+            });
+            atualizarMenuAtual();
+
+            // 3) Modais: ao fechar, o foco volta para o botão que abriu
+            const origemFoco = new WeakMap();
+            document.querySelectorAll('div[id^="modal-"][aria-modal="true"]').forEach(modal => {
+                let estavaAberto = !modal.classList.contains('hidden');
+                new MutationObserver(() => {
+                    const aberto = !modal.classList.contains('hidden');
+                    if (aberto === estavaAberto) return;
+                    estavaAberto = aberto;
+                    if (aberto) {
+                        const ativo = document.activeElement;
+                        if (ativo && ativo !== document.body && !modal.contains(ativo)) origemFoco.set(modal, ativo);
+                    } else {
+                        const origem = origemFoco.get(modal);
+                        origemFoco.delete(modal);
+                        const outroAberto = document.querySelector('div[id^="modal-"][aria-modal="true"]:not(.hidden)');
+                        if (!outroAberto && origem && origem.isConnected && origem.offsetParent !== null) {
+                            setTimeout(() => { try { origem.focus({ preventScroll: true }); } catch (e) { /* ignora */ } }, 0);
+                        }
+                    }
+                }).observe(modal, { attributes: true, attributeFilter: ['class'] });
+            });
+
+            // 4) Status da turma com a cor do selo (Programado, Em andamento...)
+            const selStatus = document.getElementById('detalhe-turma-status-select');
+            const caixaStatus = selStatus ? selStatus.closest('.seletor-status') : null;
+            const pintarStatus = () => { if (caixaStatus) caixaStatus.dataset.status = selStatus.value || ''; };
+            if (selStatus && caixaStatus) {
+                ['change', 'input', 'blur', 'focus'].forEach(ev => selStatus.addEventListener(ev, pintarStatus));
+                // O sistema troca o valor por código ao abrir a turma; observa a tela e o título
+                const viewDetalhe = document.getElementById('view-detalhe-turma');
+                const tituloTurma = document.getElementById('detalhe-turma-nome');
+                const agendar = () => setTimeout(pintarStatus, 0);
+                if (viewDetalhe) new MutationObserver(agendar).observe(viewDetalhe, { attributes: true, attributeFilter: ['class'] });
+                if (tituloTurma) new MutationObserver(agendar).observe(tituloTurma, { childList: true, characterData: true, subtree: true });
+                new MutationObserver(agendar).observe(selStatus, { attributes: true, attributeFilter: ['disabled'] });
+                pintarStatus();
+            }
+        })();
     </script>
 </body>
 </html>
