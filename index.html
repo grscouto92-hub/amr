@@ -537,6 +537,86 @@
             .lg\:pl-8 { padding-left: 2rem; } .lg\:pt-0 { padding-top: 0; }
         }
     </style>
+
+    <!-- =====================================================================
+         v2.1 — DESIGN DO SISTEMA (selo de status, cores da marca, presença,
+         acessibilidade e tabelas). Vem depois do Tailwind local de propósito.
+         ===================================================================== -->
+    <style id="design-v21">
+        /* Cores da marca para os cards e destaques */
+        :root { --brand-lavender-soft: #f6eef5; --brand-purple-soft: #f7eff8; --brand-green-soft: #f3f9e6; }
+        .border-brand-lavender { border-color: var(--brand-lavender); }
+        .border-brand-purple-dark { border-color: var(--brand-purple-dark); }
+        .bg-brand-lavender-soft { background-color: var(--brand-lavender-soft); }
+        .bg-brand-purple-soft { background-color: var(--brand-purple-soft); }
+        .bg-brand-green-soft { background-color: var(--brand-green-soft); }
+        .text-brand-purple-dark { color: var(--brand-purple-dark); }
+        .text-brand-green-dark { color: #4d7c0f; }
+
+        /* Selo de status único (mesmas cores em todas as telas) */
+        .selo-status { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.125rem 0.5rem;
+            border: 1px solid; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; line-height: 1.25rem; white-space: nowrap; }
+        .selo-status::before { content: ''; width: 0.4rem; height: 0.4rem; border-radius: 9999px; background-color: currentColor; flex-shrink: 0; }
+        .selo-programado   { color: #1d4ed8; background-color: #eff6ff; border-color: #bfdbfe; }
+        .selo-em-andamento { color: #a16207; background-color: #fefce8; border-color: #fde68a; }
+        .selo-concluido    { color: #15803d; background-color: #f0fdf4; border-color: #bbf7d0; }
+        .selo-cancelado    { color: #b91c1c; background-color: #fef2f2; border-color: #fecaca; }
+        .selo-reagendado   { color: #c2410c; background-color: #fff7ed; border-color: #fed7aa; }
+        .selo-neutro       { color: #4b5563; background-color: #f9fafb; border-color: #e5e7eb; }
+
+        /* Seletor de presença (Presente / Falta / Atraso / Falta justificada) */
+        .sel-presenca { appearance: none; -webkit-appearance: none; border: 1px solid #d1d5db; border-radius: 9999px;
+            padding: 0.25rem 1.5rem 0.25rem 0.625rem; min-width: 7.75rem; font-size: 0.75rem; font-weight: 700; cursor: pointer;
+            background-color: #fff; color: #6b7280; line-height: 1.25rem;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7280'%3E%3Cpath d='M5.3 7.3a1 1 0 0 1 1.4 0L10 10.6l3.3-3.3a1 1 0 1 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 0-1.4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 0.45rem center; background-size: 0.8rem; }
+        .sel-presenca[data-estado=""]  { border-style: dashed; color: #9ca3af; }
+        .sel-presenca[data-estado="P"] { color: #4d7c0f; background-color: #f3f9e6; border-color: #c5e38a; }
+        .sel-presenca[data-estado="F"] { color: #b91c1c; background-color: #fef2f2; border-color: #fecaca; }
+        .sel-presenca[data-estado="A"] { color: #c2410c; background-color: #fff7ed; border-color: #fed7aa; }
+        .sel-presenca[data-estado="J"] { color: #6b21a8; background-color: #faf5ff; border-color: #e9d5ff; }
+        .sel-presenca:disabled { cursor: default; opacity: 0.85; }
+        .legenda-presenca span { display: inline-flex; align-items: center; gap: 0.25rem; }
+
+        /* Nome/matrícula como texto, com lápis para editar */
+        .celula-editavel { display: flex; align-items: center; gap: 0.25rem; min-height: 2rem; }
+        .celula-editavel .texto-celula { flex: 1 1 0%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .btn-lapis { color: #9ca3af; padding: 0.25rem; border-radius: 0.375rem; opacity: 0.55; transition: opacity .15s, color .15s, background-color .15s; flex-shrink: 0; }
+        tr:hover .btn-lapis, .btn-lapis:focus-visible { opacity: 1; }
+        .btn-lapis:hover { color: var(--brand-purple); background-color: var(--brand-purple-soft); }
+
+        /* Acessibilidade: contorno visível ao navegar pelo teclado (Tab) */
+        button:focus-visible, a:focus-visible, [role="button"]:focus-visible, summary:focus-visible,
+        input[type="checkbox"]:focus-visible, select:not(.input-premium):focus-visible,
+        .sel-presenca:focus-visible, [tabindex]:not([tabindex="-1"]):focus-visible {
+            outline: 2px solid var(--brand-purple); outline-offset: 2px; }
+
+        /* Tabelas: zebra, cabeçalho fixo ao rolar e números alinhados à direita */
+        .tabela-rolagem { max-height: 70vh; overflow: auto; }
+        .tabela-moderna thead th { position: sticky; top: 0; z-index: 15; background-color: #f9fafb; box-shadow: inset 0 -1px 0 #e5e7eb; }
+        .tabela-moderna thead th.sticky-col-mat, .tabela-moderna thead th.sticky-col-nome { z-index: 30; }
+        .tabela-moderna tbody tr:nth-child(even) > td { background-color: #faf8fb; }
+        .tabela-moderna.tabela-moderna tbody tr:hover > td { background-color: #f5eef7; }
+        .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+        /* Menu "marcar todos" também abre pelo teclado */
+        .group:focus-within .group-focus-within\:flex { display: flex; }
+
+        /* Legenda dos estados de presença (só no computador) */
+        .legenda-presenca { display: none; }
+        @media (min-width: 768px) { .legenda-presenca { display: flex; } }
+
+        /* Logo e rodapé de versão */
+        .logo-ra { height: 2rem; width: auto; }
+        .versao-sistema { font-size: 0.6875rem; color: #9ca3af; text-align: center; }
+    </style>
+
+    <!-- v2.1: logo oficial embutido (funciona offline e aparece também na imagem do relatório) -->
+    <script>
+        window.LOGO_RA_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="110" height="32" viewBox="0 0 110 32" fill="none"><mask id="m0" maskUnits="userSpaceOnUse" x="0" y="0" width="110" height="32"><path d="M109.8 0H0V32H109.8V0Z" fill="white"/></mask><g mask="url(#m0)"><path d="M42.5 19.8L38.2 31.5H40.3L41.1 29H46.2L47.1 31.5H49.3L45 19.8H42.4H42.5ZM41.8 27.2L43.6 22.1H43.7L45.6 27.2H41.8Z" fill="#6D2077"/><path d="M61.3 22.9C60.8 22.7 60.2 22.5 59.6 22.5C59 22.5 58.5 22.7 58 22.9C57.5 23.2 57.1 23.5 56.9 24H56.8C56.6 23.5 56.2 23.2 55.8 22.9C55.4 22.7 54.9 22.5 54.4 22.5C53.9 22.5 53.5 22.6 53.1 22.8C52.7 23 52.4 23.3 52.2 23.8H52.1L51.9 22.7H50.2V31.5H52.2V26.2C52.2 25.8 52.2 25.5 52.4 25.2C52.5 24.9 52.7 24.7 53 24.5C53.3 24.3 53.5 24.3 53.8 24.3C54.2 24.3 54.5 24.3 54.7 24.5C55 24.6 55.2 24.9 55.3 25.1C55.5 25.4 55.6 25.8 55.6 26.2V31.5H57.5V26.2C57.5 25.8 57.6 25.5 57.7 25.2C57.9 24.9 58.1 24.7 58.3 24.5C58.6 24.4 58.9 24.3 59.2 24.3C59.5 24.3 59.8 24.3 60.1 24.5C60.3 24.6 60.5 24.9 60.7 25.2C60.8 25.4 60.9 25.8 60.9 26.3V31.5H62.8V26C62.8 25.3 62.7 24.7 62.4 24.2C62.1 23.6 61.7 23.2 61.3 23" fill="#6D2077"/><path d="M71.2 19H69.3L67.7 21.4H69.3L71.2 19Z" fill="#6D2077"/><path d="M70.8 23.1C70.1 22.7 69.4 22.5 68.6 22.5C67.7 22.5 67 22.7 66.3 23.1C65.7 23.4 65.2 23.9 64.9 24.6C64.5 25.3 64.4 26.1 64.4 27.1C64.4 28.1 64.5 28.9 64.9 29.6C65.2 30.3 65.7 30.8 66.4 31.1C67 31.5 67.7 31.7 68.6 31.7C69.3 31.7 69.9 31.6 70.4 31.3C71 31.1 71.4 30.8 71.7 30.4C72.1 30 72.3 29.5 72.5 28.9H70.4C70.2 29.3 70 29.6 69.7 29.7C69.4 29.9 69 30 68.6 30C68.1 30 67.6 29.9 67.3 29.6C67 29.4 66.7 29.1 66.5 28.6C66.4 28.3 66.4 28 66.3 27.7H72.6C72.7 27.6 72.7 27.5 72.7 27.3C72.7 27.2 72.7 27 72.7 26.8C72.7 26 72.5 25.3 72.2 24.7C71.9 24 71.4 23.5 70.8 23.1ZM66.3 26.2C66.4 26 66.5 25.7 66.5 25.5C66.7 25.1 67 24.8 67.3 24.6C67.7 24.3 68.1 24.2 68.6 24.2C69 24.2 69.4 24.3 69.7 24.5C70 24.7 70.3 24.9 70.4 25.2C70.6 25.6 70.7 25.9 70.8 26.2H66.3L66.3 26.2Z" fill="#6D2077"/><path d="M77.2 22.9C76.8 23.1 76.5 23.4 76.3 23.8H76.2L76 22.7H74.3V31.5H76.3V26.7C76.3 26.3 76.4 25.9 76.6 25.6C76.7 25.2 77 25 77.4 24.8C77.7 24.6 78.1 24.5 78.6 24.5H79.5V22.7H78.5C78 22.7 77.5 22.8 77.2 22.9" fill="#6D2077"/><path d="M82.7 22.7H80.7V31.5H82.7V22.7Z" fill="#6D2077"/><path d="M81.7 19.1C81.4 19.1 81.1 19.2 80.9 19.4C80.6 19.6 80.5 19.9 80.5 20.2C80.5 20.6 80.6 20.8 80.9 21.1C81.1 21.3 81.4 21.4 81.7 21.4C82 21.4 82.3 21.3 82.5 21.1C82.7 20.8 82.9 20.6 82.9 20.2C82.9 19.9 82.7 19.6 82.5 19.4C82.3 19.2 82 19.1 81.7 19.1Z" fill="#6D2077"/><path d="M87.3 24.6C87.7 24.4 88.1 24.3 88.5 24.3C89 24.3 89.4 24.4 89.7 24.6C90 24.7 90.3 25 90.5 25.4H92.5C92.3 24.8 92 24.3 91.7 23.9C91.3 23.5 90.9 23.1 90.4 22.9C89.8 22.6 89.2 22.5 88.5 22.5C87.7 22.5 86.9 22.7 86.3 23.1C85.7 23.4 85.2 23.9 84.8 24.6C84.5 25.3 84.3 26.1 84.3 27.1C84.3 28.1 84.5 28.9 84.8 29.6C85.2 30.3 85.7 30.8 86.3 31.1C86.9 31.5 87.7 31.7 88.5 31.7C89.2 31.7 89.8 31.6 90.4 31.3C90.9 31.1 91.3 30.7 91.7 30.3C92 29.9 92.3 29.4 92.5 28.8H90.5C90.3 29.2 90 29.4 89.7 29.6C89.4 29.8 89 29.9 88.5 29.9C88.1 29.9 87.7 29.8 87.3 29.6C87 29.4 86.7 29.1 86.5 28.7C86.3 28.2 86.2 27.7 86.2 27.1C86.2 26.5 86.3 26 86.5 25.5C86.7 25.1 87 24.8 87.3 24.6" fill="#6D2077"/><path d="M99.3 22.9C98.8 22.6 98.1 22.5 97.4 22.5C96.4 22.5 95.6 22.8 95 23.2C94.4 23.7 94 24.4 93.8 25.2H95.7C95.8 24.9 96 24.6 96.3 24.5C96.6 24.3 96.9 24.2 97.3 24.2C97.9 24.2 98.3 24.3 98.6 24.6C98.9 24.9 99.1 25.2 99.1 25.7V26.2H96.8C96.1 26.2 95.5 26.3 95 26.6C94.5 26.8 94.1 27.1 93.9 27.5C93.6 27.9 93.5 28.4 93.5 28.9C93.5 29.5 93.6 29.9 93.8 30.3C94.1 30.8 94.4 31.1 94.9 31.3C95.4 31.6 95.9 31.7 96.5 31.7C97.2 31.7 97.7 31.5 98.1 31.3C98.5 31 98.9 30.8 99.1 30.4H99.2L99.4 31.5H101V25.8C101 25.1 100.9 24.5 100.6 24C100.3 23.5 99.9 23.2 99.3 22.9M98.8 29.1C98.6 29.4 98.4 29.6 98 29.8C97.7 30 97.3 30 96.9 30C96.4 30 96.1 29.9 95.8 29.7C95.5 29.5 95.4 29.2 95.4 28.8C95.4 28.5 95.5 28.2 95.8 28C96 27.8 96.4 27.7 96.9 27.7H99.1V28.1C99.1 28.5 99 28.8 98.8 29.1" fill="#6D2077"/><path d="M109.3 27.5C109 27.1 108.6 26.9 108.2 26.7C107.8 26.6 107.2 26.4 106.5 26.2C106.1 26.2 105.8 26.1 105.5 26C105.2 25.9 105 25.8 104.9 25.7C104.7 25.5 104.6 25.3 104.6 25.1C104.6 24.8 104.8 24.6 105 24.5C105.2 24.3 105.6 24.2 106.1 24.2C106.5 24.2 106.9 24.3 107.1 24.4C107.4 24.6 107.5 24.8 107.6 25.1H109.7C109.6 24.5 109.4 24.1 109 23.7C108.7 23.3 108.3 23 107.8 22.8C107.3 22.6 106.7 22.5 106.1 22.5C105.4 22.5 104.7 22.6 104.2 22.9C103.7 23.1 103.3 23.4 103.1 23.8C102.8 24.2 102.7 24.6 102.7 25.1C102.7 25.8 102.8 26.3 103.1 26.6C103.5 27 103.8 27.3 104.3 27.5C104.7 27.6 105.3 27.8 105.9 27.9C106.4 28 106.7 28.1 107 28.2C107.2 28.2 107.4 28.3 107.6 28.5C107.7 28.6 107.8 28.8 107.8 29C107.8 29.3 107.7 29.5 107.4 29.7C107.1 29.9 106.7 30 106.1 30C105.6 30 105.3 29.9 105 29.7C104.7 29.5 104.5 29.3 104.4 29H102.4C102.5 29.5 102.7 30 103 30.4C103.3 30.8 103.7 31.1 104.3 31.4C104.8 31.6 105.4 31.7 106.1 31.7C106.8 31.7 107.5 31.6 108.1 31.4C108.6 31.1 109 30.8 109.3 30.4C109.6 30 109.8 29.6 109.8 29C109.8 28.4 109.6 27.9 109.3 27.5" fill="#6D2077"/><path d="M40.4 9.8H42.4L45.7 14.5H47.3L43.9 9.7C44.5 9.7 45 9.5 45.4 9.3C46 9 46.4 8.6 46.7 8.1C47 7.5 47.1 6.9 47.1 6.2C47.1 5.5 47 4.9 46.7 4.4C46.4 3.9 46 3.5 45.4 3.2C44.9 2.9 44.2 2.7 43.5 2.7H38.9V14.5H40.4V9.8V9.8ZM40.4 4H43.4C44.1 4 44.7 4.2 45.1 4.6C45.5 5 45.7 5.6 45.7 6.2C45.7 6.7 45.6 7.1 45.4 7.4C45.3 7.8 45 8 44.6 8.2C44.3 8.4 43.9 8.5 43.4 8.5H40.4V4H40.4Z" fill="#6D2077"/><path d="M53.8 14.3C54.3 14.2 54.7 13.9 55.1 13.5C55.4 13.2 55.7 12.7 55.9 12.2H54.5C54.3 12.6 54 12.9 53.6 13.1C53.2 13.3 52.8 13.4 52.3 13.4C51.7 13.4 51.2 13.3 50.8 13.1C50.4 12.8 50.1 12.4 49.8 11.9C49.7 11.5 49.6 11 49.5 10.5H56C56.1 10.4 56.1 10.3 56.1 10.2C56.1 10 56.1 9.8 56.1 9.7C56.1 9 56 8.4 55.7 7.8C55.4 7.1 54.9 6.6 54.3 6.2C53.8 5.8 53 5.6 52.2 5.6C51.4 5.6 50.7 5.7 50.1 6.1C49.5 6.4 49.1 7 48.7 7.6C48.4 8.3 48.2 9.1 48.2 10.1C48.2 11 48.4 11.9 48.8 12.5C49.1 13.2 49.6 13.7 50.2 14.1C50.8 14.4 51.5 14.6 52.3 14.6C52.8 14.6 53.3 14.5 53.8 14.3M50.7 7.2C51.1 6.9 51.6 6.7 52.2 6.7C52.7 6.7 53.2 6.9 53.6 7.1C54 7.3 54.3 7.7 54.5 8.1C54.7 8.4 54.8 8.9 54.8 9.3H49.5C49.6 9 49.7 8.7 49.8 8.4C50 7.9 50.3 7.5 50.7 7.2" fill="#6D2077"/><path d="M65.3 2.7H64.1V6.8H64C63.7 6.4 63.3 6.1 62.9 5.9C62.4 5.7 61.8 5.6 61.2 5.6C60.5 5.6 59.9 5.7 59.3 6.1C58.7 6.4 58.3 7 58 7.6C57.6 8.3 57.5 9.1 57.5 10.1C57.5 11 57.6 11.9 58 12.5C58.3 13.2 58.7 13.7 59.3 14.1C59.9 14.4 60.5 14.6 61.2 14.6C61.9 14.6 62.4 14.5 62.9 14.3C63.4 14 63.8 13.7 64.1 13.3H64.2L64.3 14.5H65.4V2.7L65.3 2.7ZM63.8 11.9C63.5 12.4 63.2 12.8 62.8 13.1C62.4 13.3 61.9 13.5 61.4 13.5C60.6 13.5 59.9 13.2 59.5 12.6C59 12 58.7 11.2 58.7 10.1C58.7 9.4 58.8 8.8 59.1 8.3C59.3 7.8 59.6 7.4 60 7.1C60.4 6.9 60.9 6.7 61.4 6.7C61.9 6.7 62.4 6.9 62.8 7.1C63.2 7.4 63.5 7.8 63.8 8.3C64 8.8 64.1 9.4 64.1 10.1C64.1 10.8 64 11.4 63.8 11.9" fill="#6D2077"/><path d="M73.5 12.2C73.2 12.6 72.9 12.9 72.5 13.1C72.2 13.3 71.7 13.4 71.2 13.4C70.7 13.4 70.2 13.3 69.8 13.1C69.3 12.8 69 12.4 68.8 11.9C68.6 11.5 68.5 11 68.5 10.5H75C75 10.4 75 10.3 75.1 10.2C75.1 10 75.1 9.8 75.1 9.7C75.1 9 74.9 8.4 74.6 7.8C74.3 7.1 73.9 6.6 73.3 6.2C72.7 5.8 72 5.6 71.1 5.6C70.4 5.6 69.7 5.7 69.1 6.1C68.5 6.4 68 7 67.7 7.6C67.4 8.3 67.2 9.1 67.2 10.1C67.2 11 67.4 11.9 67.7 12.5C68 13.2 68.5 13.7 69.1 14.1C69.7 14.4 70.4 14.6 71.2 14.6C71.8 14.6 72.3 14.5 72.8 14.3C73.2 14.2 73.7 13.9 74 13.5C74.4 13.2 74.6 12.7 74.8 12.2H73.5V12.2ZM69.6 7.2C70 6.9 70.5 6.7 71.1 6.7C71.7 6.7 72.2 6.9 72.5 7.1C72.9 7.3 73.2 7.7 73.4 8.1C73.6 8.4 73.8 8.9 73.8 9.3H68.5C68.5 9 68.6 8.7 68.7 8.4C68.9 7.9 69.2 7.5 69.6 7.2" fill="#6D2077"/></g><mask id="m1" maskUnits="userSpaceOnUse" x="0" y="0" width="35" height="32"><path d="M21.5 28.8C21.5 30.3 22.7 31.5 24.2 31.5H25.7L26.7 28.8H22.4C22.1 28.8 21.8 28.7 21.5 28.5C21.5 28.6 21.5 28.7 21.5 28.8M20.6 24.7C20.6 26.2 21.8 27.4 23.3 27.4H29.5L30.5 24.7H21.5C21.2 24.7 20.9 24.5 20.7 24.3C20.6 24.4 20.6 24.6 20.6 24.7ZM20 20.5C20 22 21.2 23.2 22.7 23.2H33.4L34.4 20.5H20.9C20.6 20.5 20.3 20.4 20.1 20.1C20 20.3 20 20.4 20 20.5M19.4 16.4C19.4 17.8 20.6 19 22.1 19H29.5L30.5 16.4H20.3C20 16.4 19.7 16.2 19.5 16C19.4 16.1 19.4 16.2 19.4 16.4M10.2 12.5L9.2 15.2H18.5C18.9 15.2 19.2 15.3 19.4 15.5C19.4 15.4 19.4 15.3 19.4 15.2C19.4 13.7 18.2 12.5 16.8 12.5H10.2H10.2ZM3.1 8.3L2.1 11H17.9C18.3 11 18.6 11.1 18.8 11.4C18.8 11.3 18.8 11.1 18.8 11C18.8 9.5 17.6 8.3 16.2 8.3H3.1ZM1 4.2L0 6.8H17.1C17.4 6.8 17.7 7 17.9 7.2C17.9 7.1 17.9 7 17.9 6.8C17.9 5.4 16.8 4.2 15.3 4.2H1ZM6.4 0L5.4 2.7H16.5C16.8 2.7 17.1 2.8 17.3 3.1C17.3 2.9 17.4 2.8 17.4 2.7C17.4 1.2 16.2 0 14.7 0H6.4Z" fill="white"/></mask><g mask="url(#m1)"><path d="M34.4 0H0V31.5H34.4V0Z" fill="url(#g0)"/></g><defs><linearGradient id="g0" x1="18.3" y1="2.4" x2="18.3" y2="33.2" gradientUnits="userSpaceOnUse"><stop stop-color="#6D2077"/><stop offset="0.5" stop-color="#D6BFDD"/><stop offset="1" stop-color="#84BD00"/></linearGradient></defs></svg>';
+        window.LOGO_RA_URI = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(window.LOGO_RA_SVG);
+        window.VERSAO_SISTEMA = 'v2.1';
+    </script>
 </head>
 <body class="h-screen flex overflow-hidden">
 
@@ -661,7 +741,7 @@
     <div id="login-view" class="w-full h-full flex items-center justify-center bg-brand-offwhite absolute inset-0 z-40">
         <div class="glass-card w-full max-w-md p-8 m-4">
             <div class="flex flex-col items-center mb-8">
-                <img src="https://agendamento.saudeamericas.com.br/_next/static/media/Logo.e784160f.svg" alt="Rede Américas" class="h-12 mb-4 drop-shadow-sm">
+                <img src="https://agendamento.saudeamericas.com.br/_next/static/media/Logo.e784160f.svg" data-logo-ra alt="Rede Américas" class="h-12 mb-4 drop-shadow-sm">
                 
                 <h1 class="text-2xl font-bold text-brand-purple">Melhoria Contínua</h1>
                 <p class="text-sm text-gray-500 mt-1">Gestão de Treinamentos</p>
@@ -698,13 +778,12 @@
 
         <!-- SIDEBAR -->
         <aside id="sidebar" class="w-64 bg-white border-r border-gray-200 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50">
-            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded bg-brand-purple flex items-center justify-center text-white font-bold">RA</div>
-                    <div>
-                        <h2 class="font-bold text-brand-graphite leading-tight">Treinamentos v2.0</h2>
-                        <p id="user-role-badge" class="text-xs text-brand-green font-medium">Administrador</p>
-                    </div>
+            <!-- v2.1: logo oficial + nome do produto -->
+            <div class="p-5 border-b border-gray-200 flex justify-between items-start">
+                <div>
+                    <img src="https://agendamento.saudeamericas.com.br/_next/static/media/Logo.e784160f.svg" data-logo-ra alt="Rede Américas" class="logo-ra">
+                    <h2 class="mt-3 text-sm font-bold text-brand-purple leading-tight">Melhoria Contínua <span class="font-normal text-gray-400">·</span> Treinamentos</h2>
+                    <p id="user-role-badge" class="text-xs text-brand-green font-medium mt-1">Administrador</p>
                 </div>
                 <button class="btn-toggle-menu md:hidden text-gray-500 hover:text-gray-700" aria-label="Fechar menu">
                     <i data-lucide="x" class="w-5 h-5"></i>
@@ -761,6 +840,8 @@
                 <button id="btn-logout-sidebar" class="w-full flex items-center justify-center gap-2 text-sm text-red-600 hover:bg-red-50 p-2 rounded-lg transition-colors">
                     <i data-lucide="log-out" class="w-4 h-4"></i> Sair do sistema
                 </button>
+                <!-- v2.1: versão discreta no rodapé -->
+                <p id="versao-sistema" class="versao-sistema mt-2">Treinamentos v2.1</p>
             </div>
         </aside>
 
@@ -772,7 +853,7 @@
                     <button class="btn-toggle-menu text-gray-500 hover:text-brand-purple" aria-label="Abrir menu">
                         <i data-lucide="menu" class="w-6 h-6"></i>
                     </button>
-                    <h2 class="font-bold text-brand-purple">Rede Américas</h2>
+                    <img src="https://agendamento.saudeamericas.com.br/_next/static/media/Logo.e784160f.svg" data-logo-ra alt="Rede Américas" class="logo-ra">
                 </div>
                 <button id="btn-logout-header" class="text-gray-500 hover:text-red-500" aria-label="Sair">
                     <i data-lucide="log-out" class="w-5 h-5"></i>
@@ -850,17 +931,17 @@
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total de Turmas</p>
                                 <div id="dash-turmas" class="text-3xl font-bold text-gray-800 mt-1"><div class="h-8 w-16 bg-gray-200 animate-pulse rounded mt-1"></div></div>
                             </div>
-                            <div class="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center">
+                            <div class="w-12 h-12 rounded-full bg-brand-purple-soft flex items-center justify-center">
                                 <i data-lucide="layers" class="w-6 h-6 text-brand-purple"></i>
                             </div>
                         </div>
-                        <div class="glass-card p-5 border-l-4 border-blue-500 flex items-center justify-between hover:-translate-y-1 transition-transform">
+                        <div class="glass-card p-5 border-l-4 border-brand-lavender flex items-center justify-between hover:-translate-y-1 transition-transform">
                             <div>
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Alunos Treinados</p>
                                 <div id="dash-alunos" class="text-3xl font-bold text-gray-800 mt-1"><div class="h-8 w-16 bg-gray-200 animate-pulse rounded mt-1"></div></div>
                             </div>
-                            <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
-                                <i data-lucide="users" class="w-6 h-6 text-blue-500"></i>
+                            <div class="w-12 h-12 rounded-full bg-brand-lavender-soft flex items-center justify-center">
+                                <i data-lucide="users" class="w-6 h-6 text-brand-purple-dark"></i>
                             </div>
                         </div>
                         <div class="glass-card p-5 border-l-4 border-brand-green flex items-center justify-between hover:-translate-y-1 transition-transform">
@@ -868,11 +949,11 @@
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Taxa de Presença</p>
                                 <div id="dash-presenca" class="text-3xl font-bold text-gray-800 mt-1"><div class="h-8 w-16 bg-gray-200 animate-pulse rounded mt-1"></div></div>
                             </div>
-                            <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center">
-                                <i data-lucide="user-check" class="w-6 h-6 text-brand-green"></i>
+                            <div class="w-12 h-12 rounded-full bg-brand-green-soft flex items-center justify-center">
+                                <i data-lucide="user-check" class="w-6 h-6 text-brand-green-dark"></i>
                             </div>
                         </div>
-                        <div class="glass-card p-5 border-l-4 border-orange-500 flex items-center justify-between hover:-translate-y-1 transition-transform">
+                        <div class="glass-card p-5 border-l-4 border-brand-purple-dark flex items-center justify-between hover:-translate-y-1 transition-transform">
                             <div>
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center">
                                     Média Geral Provas
@@ -880,8 +961,8 @@
                                 </p>
                                 <div id="dash-notas" class="text-3xl font-bold text-gray-800 mt-1"><div class="h-8 w-16 bg-gray-200 animate-pulse rounded mt-1"></div></div>
                             </div>
-                            <div class="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center">
-                                <i data-lucide="award" class="w-6 h-6 text-orange-500"></i>
+                            <div class="w-12 h-12 rounded-full bg-brand-purple-soft flex items-center justify-center">
+                                <i data-lucide="award" class="w-6 h-6 text-brand-purple-dark"></i>
                             </div>
                         </div>
                     </div>
@@ -985,18 +1066,18 @@
 
                     <!-- Tabela de Preview -->
                     <div class="glass-card overflow-hidden flex flex-col">
-                        <div class="overflow-x-auto max-h-[450px]">
-                            <table class="w-full text-left border-collapse relative">
+                        <div class="tabela-rolagem">
+                            <table class="w-full text-left border-collapse relative tabela-moderna">
                                 <thead>
-                                    <tr class="bg-gray-50 border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider sticky top-0 z-10 shadow-sm">
+                                    <tr class="bg-gray-50 border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider">
                                         <th class="p-3 font-medium min-w-[200px]">Turma (Curso)</th>
                                         <th class="p-3 font-medium min-w-[200px]">Aluno</th>
                                         <th class="p-3 font-medium">Status</th>
                                         <th class="p-3 font-medium">Unidade</th>
-                                        <th class="p-3 font-medium text-center">% Presença</th>
-                                        <th class="p-3 font-medium text-center">Qtd. Provas</th>
-                                        <th class="p-3 font-medium text-center">Média Conhecimento</th>
-                                        <th class="p-3 font-medium text-center">Nota Comp.</th>
+                                        <th class="p-3 font-medium num">% Presença</th>
+                                        <th class="p-3 font-medium num">Qtd. Provas</th>
+                                        <th class="p-3 font-medium num">Média Conhecimento</th>
+                                        <th class="p-3 font-medium num">Nota Comp.</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-relatorios" class="divide-y divide-gray-100 text-sm">
@@ -1050,8 +1131,8 @@
                             </label>
                             <span class="text-xs text-gray-500 ml-auto"><span id="turmas-count" class="font-bold text-brand-purple">0</span> turma(s)</span>
                         </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
+                        <div class="tabela-rolagem">
+                            <table class="w-full text-left border-collapse tabela-moderna">
                                 <thead>
                                     <tr class="bg-gray-50 border-b border-gray-200 text-sm text-gray-500">
                                         <th class="p-4 font-medium min-w-[200px]">Nome do Treinamento</th>
@@ -1060,8 +1141,8 @@
                                         <th class="p-4 font-medium">Status</th>
                                         <th class="p-4 font-medium min-w-[150px]">Instrutor</th>
                                         <th class="p-4 font-medium min-w-[150px]">Período</th>
-                                        <th class="p-4 font-medium text-center">Dias</th>
-                                        <th class="p-4 font-medium text-center">Alunos</th>
+                                        <th class="p-4 font-medium num">Dias</th>
+                                        <th class="p-4 font-medium num">Alunos</th>
                                         <th class="p-4 font-medium text-center">Ações</th>
                                     </tr>
                                 </thead>
@@ -1076,7 +1157,7 @@
                 <div id="view-detalhe-turma" class="view-section hidden">
                      <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div class="flex items-center gap-3 w-full md:w-auto">
-                            <button id="btn-voltar-turmas" class="btn-secondary p-2 border-gray-300 text-gray-600 hover:bg-gray-100 btn-nav" title="Voltar para lista" data-target="turmas">
+                            <button id="btn-voltar-turmas" class="btn-secondary p-2 border-gray-300 text-gray-600 hover:bg-gray-100 btn-nav" title="Voltar para lista" aria-label="Voltar para a lista de turmas" data-target="turmas">
                                 <i data-lucide="arrow-left" class="w-5 h-5"></i>
                             </button>
                             <div>
@@ -1092,8 +1173,8 @@
                         
                         <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
                             <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-1.5 shadow-sm">
-                                <label class="text-xs font-semibold text-gray-500 uppercase">Status:</label>
-                                <select id="detalhe-turma-status-select" class="text-sm font-medium outline-none bg-transparent">
+                                <label for="detalhe-turma-status-select" class="text-xs font-semibold text-gray-500 uppercase">Status:</label>
+                                <select id="detalhe-turma-status-select" class="text-sm font-medium outline-none bg-transparent" title="Alterar o status grava na hora, após confirmação">
                                     <option value="Programado">Programado</option>
                                     <option value="Em andamento">Em andamento</option>
                                     <option value="Concluído">Concluído</option>
@@ -1156,9 +1237,18 @@
                             </div>
                         </div>
                         
+                        <!-- v2.1: legenda dos estados de presença -->
+                        <div class="legenda-presenca flex-wrap items-center gap-3 px-4 py-2 border-b border-gray-100 bg-white text-xs text-gray-600" aria-label="Legenda da presença">
+                            <span class="font-semibold text-gray-500 uppercase tracking-wider">Presença:</span>
+                            <span><span class="sel-presenca" data-estado="P" style="min-width: 0; padding-right: 0.625rem; background-image: none;">Presente</span></span>
+                            <span><span class="sel-presenca" data-estado="F" style="min-width: 0; padding-right: 0.625rem; background-image: none;">Falta</span></span>
+                            <span><span class="sel-presenca" data-estado="A" style="min-width: 0; padding-right: 0.625rem; background-image: none;">Atraso</span> desconta −1 pt no comportamental</span>
+                            <span><span class="sel-presenca" data-estado="J" style="min-width: 0; padding-right: 0.625rem; background-image: none;">Falta justificada</span> conta como falta no %</span>
+                        </div>
+
                         <!-- DESKTOP VIEW (Table) -->
-                        <div class="overflow-x-auto desktop-presence-table relative">
-                            <table class="w-full text-left border-collapse min-w-max">
+                        <div class="tabela-rolagem desktop-presence-table relative">
+                            <table class="w-full text-left border-collapse min-w-max tabela-moderna">
                                 <thead id="header-alunos-avaliacao">
                                 </thead>
                                 <tbody id="table-alunos-avaliacao" class="divide-y divide-gray-100 text-sm bg-white">
@@ -1194,8 +1284,8 @@
                                 <input type="text" id="search-instrutores" class="input-premium pl-10 py-1.5 text-sm" placeholder="Buscar usuário por nome...">
                             </div>
                         </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
+                        <div class="tabela-rolagem">
+                            <table class="w-full text-left border-collapse tabela-moderna">
                                 <thead>
                                     <tr class="bg-gray-50 border-b border-gray-200 text-sm text-gray-500">
                                         <th class="p-4 font-medium min-w-[200px]">Nome</th>
@@ -1399,7 +1489,7 @@
                                         <label class="block text-xs text-gray-500 mb-1">E-mail</label>
                                         <input type="email" id="add-resp-email" class="input-premium text-sm input-resp" placeholder="maria@americasmed.com.br">
                                     </div>
-                                    <button type="button" id="btn-add-resp" class="btn-secondary p-2 w-full sm:w-auto mt-2 sm:mt-0" title="Adicionar Responsável">
+                                    <button type="button" id="btn-add-resp" class="btn-secondary p-2 w-full sm:w-auto mt-2 sm:mt-0" title="Adicionar Responsável" aria-label="Adicionar responsável">
                                         <i data-lucide="plus" class="w-5 h-5"></i>
                                     </button>
                                 </div>
@@ -1431,7 +1521,7 @@
                                 <label class="block text-xs text-gray-500 mb-1">Nome Completo</label>
                                 <input type="text" id="add-aluno-nome" class="input-premium text-sm input-aluno" placeholder="Ex: João da Silva">
                             </div>
-                            <button type="button" id="btn-add-aluno-lista" class="btn-primary p-3 w-full sm:w-auto mt-2 sm:mt-0" title="Adicionar Aluno">
+                            <button type="button" id="btn-add-aluno-lista" class="btn-primary p-3 w-full sm:w-auto mt-2 sm:mt-0" title="Adicionar Aluno" aria-label="Adicionar aluno">
                                 <i data-lucide="plus" class="w-4 h-4 mr-2 sm:mr-0"></i> <span class="sm:hidden">Adicionar</span>
                             </button>
                         </div>
@@ -1534,6 +1624,8 @@
             </div>
             <div class="p-6 space-y-4">
                 <p id="modal-comp-aluno-nome" class="text-sm font-semibold text-brand-purple mb-2">Aluno: </p>
+                <!-- v2.1: aviso sobre atrasos automáticos -->
+                <p id="modal-comp-aviso-atraso" class="text-xs text-orange-700 bg-orange-50 border border-orange-200 rounded-lg p-2"></p>
                 <input type="hidden" id="modal-comp-index">
                 
                 <div class="space-y-2">
@@ -1641,7 +1733,7 @@
                 <div class="relative">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Senha Temporária</label>
                     <input type="password" id="inst-senha" class="input-premium pr-20" required>
-                    <button type="button" id="btn-gerar-senha" class="btn-secondary py-1 px-2 text-[10px] absolute right-10 top-7 font-bold border-gray-300 text-gray-600" title="Gerar Senha Segura"><i data-lucide="zap" class="w-3 h-3"></i></button>
+                    <button type="button" id="btn-gerar-senha" class="btn-secondary py-1 px-2 text-[10px] absolute right-10 top-7 font-bold border-gray-300 text-gray-600" title="Gerar Senha Segura" aria-label="Gerar senha segura"><i data-lucide="zap" class="w-3 h-3"></i></button>
                     <button type="button" class="btn-toggle-password absolute inset-y-0 right-0 pr-3 pt-6 flex items-center text-gray-500 hover:text-gray-700" aria-label="Mostrar senha" data-target="inst-senha">
                         <i data-lucide="eye" class="w-5 h-5"></i>
                     </button>
@@ -1771,19 +1863,90 @@
 
         lucide.createIcons();
 
+        // v2.1: logo oficial embutido (não depende do site externo) e versão no rodapé
+        if (window.LOGO_RA_URI) document.querySelectorAll('img[data-logo-ra]').forEach(img => { img.src = window.LOGO_RA_URI; });
+        if (window.VERSAO_SISTEMA) document.getElementById('versao-sistema').textContent = `Treinamentos ${window.VERSAO_SISTEMA}`;
+
         // ----------------------------------------------------------------------
         // FUNÇÕES UTILITÁRIAS
         // ----------------------------------------------------------------------
 
-        function getStatusStyle(status) {
-            switch(status) {
-                case 'Programado': return 'bg-blue-100 text-blue-700 border-blue-200';
-                case 'Em andamento': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-                case 'Concluído': return 'bg-green-100 text-green-700 border-green-200';
-                case 'Cancelado': return 'bg-red-100 text-red-700 border-red-200';
-                case 'Reagendado': return 'bg-orange-100 text-orange-700 border-orange-200';
-                default: return 'bg-gray-100 text-gray-700';
+        // v2.1: FONTE ÚNICA das cores de status (selo, barras e gráfico usam daqui)
+        const STATUS_INFO = {
+            'Programado':   { classe: 'selo-programado',   cor: '#3b82f6' },
+            'Em andamento': { classe: 'selo-em-andamento', cor: '#eab308' },
+            'Concluído':    { classe: 'selo-concluido',    cor: '#22c55e' },
+            'Cancelado':    { classe: 'selo-cancelado',    cor: '#ef4444' },
+            'Reagendado':   { classe: 'selo-reagendado',   cor: '#f97316' }
+        };
+        const infoStatus = (status) => STATUS_INFO[status] || { classe: 'selo-neutro', cor: '#64748b' };
+
+        function criarSeloStatus(status) {
+            const nome = status || 'Programado';
+            const span = document.createElement('span');
+            span.className = `selo-status ${infoStatus(nome).classe}`;
+            span.textContent = nome;
+            return span;
+        }
+
+        // v2.1: ESTADOS DE PRESENÇA
+        // Compatível com os dados antigos: "presencas[dia]" continua true/false
+        // (atraso conta como presente; falta justificada conta como falta) e o detalhe
+        // fica em "statusPresenca[dia]" = 'atraso' | 'justificada'.
+        const ESTADOS_PRESENCA = [
+            { valor: '',  rotulo: '— Não lançado' },
+            { valor: 'P', rotulo: 'Presente' },
+            { valor: 'F', rotulo: 'Falta' },
+            { valor: 'A', rotulo: 'Atraso' },
+            { valor: 'J', rotulo: 'Falta justificada' }
+        ];
+        const rotuloPresenca = (v) => (ESTADOS_PRESENCA.find(e => e.valor === v) || ESTADOS_PRESENCA[0]).rotulo;
+
+        function obterEstadoPresenca(aluno, dia) {
+            const detalhe = aluno && aluno.statusPresenca ? aluno.statusPresenca[dia] : undefined;
+            const marcado = aluno && aluno.presencas ? aluno.presencas[dia] : undefined;
+            if (detalhe === 'atraso' && marcado !== false) return 'A';
+            if (detalhe === 'justificada' && marcado !== true) return 'J';
+            if (marcado === true) return 'P';
+            if (marcado === false) {
+                // dias futuros gravados como "false" pela versão antiga = ainda não lançados
+                const iso = diaBRparaISO(dia);
+                return (iso && iso > hojeISO()) ? '' : 'F';
             }
+            return '';
+        }
+
+        function definirEstadoPresenca(aluno, dia, estado) {
+            if (!aluno.presencas) aluno.presencas = {};
+            if (!aluno.statusPresenca) aluno.statusPresenca = {};
+            delete aluno.statusPresenca[dia];
+            if (estado === 'P') aluno.presencas[dia] = true;
+            else if (estado === 'A') { aluno.presencas[dia] = true; aluno.statusPresenca[dia] = 'atraso'; }
+            else if (estado === 'F') aluno.presencas[dia] = false;
+            else if (estado === 'J') { aluno.presencas[dia] = false; aluno.statusPresenca[dia] = 'justificada'; }
+            else delete aluno.presencas[dia];
+        }
+
+        const contarAtrasos = (aluno) => aluno && aluno.statusPresenca
+            ? Object.values(aluno.statusPresenca).filter(v => v === 'atraso').length : 0;
+        const contarJustificadas = (aluno) => aluno && aluno.statusPresenca
+            ? Object.values(aluno.statusPresenca).filter(v => v === 'justificada').length : 0;
+
+        function criarSeletorPresenca(id, estado, rotuloAcessivel, desabilitado) {
+            const sel = document.createElement('select');
+            sel.id = id;
+            sel.className = 'sel-presenca';
+            sel.setAttribute('aria-label', rotuloAcessivel);
+            ESTADOS_PRESENCA.forEach(e => {
+                const opt = document.createElement('option');
+                opt.value = e.valor;
+                opt.textContent = e.rotulo;
+                sel.appendChild(opt);
+            });
+            sel.value = estado;
+            sel.dataset.estado = estado;
+            if (desabilitado) sel.disabled = true;
+            return sel;
         }
 
         function formatarData(dataISO) {
@@ -2196,9 +2359,49 @@
             }
         };
         
-        document.getElementById('detalhe-turma-status-select').addEventListener('change', () => {
-            window.marcarAlteracoesNaoSalvas();
-            verificarVisibilidadeBtnRelatorioFinal();
+        // v2.1: o status é gravado na hora (com confirmação), sem depender do "Salvar Alterações"
+        document.getElementById('detalhe-turma-status-select').addEventListener('change', async (e) => {
+            const sel = e.target;
+            const anterior = sel.dataset.anterior || (dadosTurmaAtual && dadosTurmaAtual.status) || 'Programado';
+            const novo = sel.value;
+            if (novo === anterior) return;
+            if (window.isTurmaReadOnly || !turmaAtualId) { sel.value = anterior; return; }
+
+            const confirmado = await window.mostrarConfirmacao(
+                `Alterar o status da turma de "${anterior}" para "${novo}"? A mudança é gravada imediatamente.`,
+                "Alterar status", "Cancelar");
+            if (!confirmado) {
+                sel.value = anterior;
+                verificarVisibilidadeBtnRelatorioFinal();
+                return;
+            }
+
+            sel.disabled = true;
+            try {
+                await updateDoc(doc(db, "turmas", turmaAtualId), { status: novo, ultimaAtualizacao: serverTimestamp() });
+                dadosTurmaAtual.status = novo;
+                try {
+                    const snap = await getDoc(doc(db, "turmas", turmaAtualId));
+                    if (snap.exists()) dadosTurmaAtual.ultimaAtualizacao = snap.data().ultimaAtualizacao || null;
+                } catch (erroLeitura) { /* mantém o horário anterior */ }
+                if (cacheTurmas) {
+                    const item = cacheTurmas.find(t => t.id === turmaAtualId);
+                    if (item && item !== dadosTurmaAtual) {
+                        item.status = novo;
+                        item.ultimaAtualizacao = dadosTurmaAtual.ultimaAtualizacao;
+                    }
+                }
+                sel.dataset.anterior = novo;
+                atualizarPendencias();
+                window.showToast(`Status da turma alterado para "${novo}".`);
+            } catch (error) {
+                console.error("Erro ao alterar status:", error);
+                sel.value = anterior;
+                window.showToast(mensagemErroFirebase(error, "Não foi possível alterar o status."), "error");
+            } finally {
+                sel.disabled = false;
+                verificarVisibilidadeBtnRelatorioFinal();
+            }
         });
         
         document.querySelectorAll('.comp-checkbox').forEach(cb => cb.addEventListener('change', window.marcarAlteracoesNaoSalvas));
@@ -2338,6 +2541,7 @@
                 btnRemove.type = 'button';
                 btnRemove.className = 'text-red-400 hover:text-red-600 p-1.5 rounded hover:bg-red-50 mt-4';
                 btnRemove.title = 'Excluir prova';
+                btnRemove.setAttribute('aria-label', `Excluir ${prova.nome || 'prova'}`);
                 btnRemove.addEventListener('click', () => removerLinhaProvaTemp(idx));
                 const iconRemove = document.createElement('i');
                 iconRemove.setAttribute('data-lucide', 'trash-2');
@@ -2597,13 +2801,17 @@
             "Desrespeito às regras": 3
         };
 
-        const calcularNotaComp = (infractions) => {
+        // v2.1: cada atraso lançado na presença desconta sozinho (-1 pt cada).
+        // O item "Atraso" marcado à mão no comportamental não soma em dobro:
+        // vale o maior entre (atrasos lançados) e (1, se marcado à mão — dados antigos).
+        const calcularNotaComp = (infractions, aluno = null) => {
             let nota = 10;
-            if (Array.isArray(infractions)) {
-                infractions.forEach(inf => {
-                    nota -= (pesosComportamentais[inf] || 0);
-                });
-            }
+            const lista = Array.isArray(infractions) ? infractions : [];
+            lista.forEach(inf => {
+                if (inf !== 'Atraso') nota -= (pesosComportamentais[inf] || 0);
+            });
+            const atrasos = Math.max(contarAtrasos(aluno), lista.includes('Atraso') ? 1 : 0);
+            nota -= atrasos * pesosComportamentais['Atraso'];
             return nota < 0 ? 0 : nota;
         };
 
@@ -2834,21 +3042,7 @@
                 let svgSlices = '';
                 const totalTurmas = turmas.length;
                 
-                const coresStatus = {
-                    'Programado': 'bg-blue-500',
-                    'Em andamento': 'bg-yellow-500',
-                    'Concluído': 'bg-green-500',
-                    'Cancelado': 'bg-red-500',
-                    'Reagendado': 'bg-orange-500'
-                };
-                const coresStatusHex = {
-                    'Programado': '#3b82f6',
-                    'Em andamento': '#eab308',
-                    'Concluído': '#22c55e',
-                    'Cancelado': '#ef4444',
-                    'Reagendado': '#f97316'
-                };
-
+                // v2.1: cores vêm de STATUS_INFO (fonte única)
                 let strokeOffset = 100;
 
                 const dashStatusList = document.getElementById('dash-status-list');
@@ -2860,12 +3054,10 @@
                         const divContainer = document.createElement('div');
                         
                         const divHeader = document.createElement('div');
-                        divHeader.className = 'flex justify-between text-sm mb-1.5';
-                        const spanStatus = document.createElement('span');
-                        spanStatus.className = 'font-medium text-gray-700';
-                        spanStatus.textContent = status;
+                        divHeader.className = 'flex justify-between items-center gap-2 text-sm mb-1.5';
+                        const spanStatus = criarSeloStatus(status);
                         const spanCount = document.createElement('span');
-                        spanCount.className = 'text-gray-500 font-semibold';
+                        spanCount.className = 'text-gray-500 font-semibold whitespace-nowrap';
                         spanCount.innerHTML = `${statusCounts[status]} <span class="text-xs font-normal">(${Math.round(percent)}%)</span>`;
                         divHeader.appendChild(spanStatus);
                         divHeader.appendChild(spanCount);
@@ -2873,8 +3065,9 @@
                         const divBarContainer = document.createElement('div');
                         divBarContainer.className = 'w-full bg-gray-100 rounded-full h-2.5 overflow-hidden';
                         const divBar = document.createElement('div');
-                        divBar.className = `${coresStatus[status] || 'bg-gray-500'} h-2.5 rounded-full transition-all duration-1000 ease-out`;
+                        divBar.className = 'h-2.5 rounded-full transition-all duration-1000 ease-out';
                         divBar.style.width = `${percent}%`;
+                        divBar.style.backgroundColor = infoStatus(status).cor;
                         divBarContainer.appendChild(divBar);
                         
                         divContainer.appendChild(divHeader);
@@ -2882,7 +3075,7 @@
                         dashStatusList.appendChild(divContainer);
                         
                         const dasharray = `${percent} ${100 - percent}`;
-                        svgSlices += `<circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="${coresStatusHex[status] || '#64748b'}" stroke-width="6" stroke-dasharray="${dasharray}" stroke-dashoffset="${strokeOffset}"></circle>`;
+                        svgSlices += `<circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="${infoStatus(status).cor}" stroke-width="6" stroke-dasharray="${dasharray}" stroke-dashoffset="${strokeOffset}"></circle>`;
                         strokeOffset -= percent;
                     }
                 }
@@ -2903,11 +3096,7 @@
 
                 turmasRecentes.forEach(t => {
                     const statusTurma = t.status || 'Programado';
-                    let statusClass = 'text-gray-600 bg-gray-100 border-gray-200';
-                    if(statusTurma === 'Programado') statusClass = 'text-blue-700 bg-blue-50 border-blue-200';
-                    if(statusTurma === 'Em andamento') statusClass = 'text-yellow-700 bg-yellow-50 border-yellow-200';
-                    if(statusTurma === 'Concluído') statusClass = 'text-green-700 bg-green-50 border-green-200';
-                    
+
                     const fDtIn = formatarData(t.dataInicio);
                     
                     const divItem = document.createElement('div');
@@ -2925,10 +3114,13 @@
                     divInfo.appendChild(pNome);
                     divInfo.appendChild(pDetalhes);
                     
-                    const spanStatus = document.createElement('span');
-                    spanStatus.className = `px-2 py-1 border rounded text-[10px] font-semibold shrink-0 ${statusClass}`;
-                    spanStatus.textContent = statusTurma;
-                    
+                    const spanStatus = criarSeloStatus(statusTurma);
+                    spanStatus.classList.add('shrink-0');
+                    divItem.setAttribute('role', 'button');
+                    divItem.tabIndex = 0;
+                    divItem.setAttribute('aria-label', `Abrir turma ${t.nomeTreinamento || ''}`);
+                    divItem.addEventListener('keydown', (e) => { if (e.key === 'Enter') abrirGestaoTurma(t.id); });
+
                     divItem.appendChild(divInfo);
                     divItem.appendChild(spanStatus);
                     dashRecentesList.appendChild(divItem);
@@ -2984,11 +3176,13 @@
 
                     if(t.alunos && t.alunos.length > 0) {
                         t.alunos.forEach(a => {
-                            let notaComp = calcularNotaComp(a.comportamental?.infractions);
+                            let notaComp = calcularNotaComp(a.comportamental?.infractions, a);
                             let infracoesStr = (a.comportamental?.infractions || []).join(' | ');
 
                             let presencas = 0;
                             let faltas = 0;
+                            let atrasos = 0;
+                            let justificadas = 0;
                             let aulasRealizadas = 0;
                             let previstos = t.diasTreinamento ? t.diasTreinamento.length : 0;
 
@@ -2996,8 +3190,12 @@
                                 t.diasTreinamento.forEach(dia => {
                                     if (isDiaPassado(dia)) {
                                         aulasRealizadas++;
-                                        if (a.presencas && a.presencas[dia]) presencas++;
+                                        // v2.1: atraso conta como presença; justificada conta como falta
+                                        const estado = obterEstadoPresenca(a, dia);
+                                        if (estado === 'P' || estado === 'A') presencas++;
                                         else faltas++;
+                                        if (estado === 'A') atrasos++;
+                                        if (estado === 'J') justificadas++;
                                     }
                                 });
                             }
@@ -3026,6 +3224,8 @@
                                 aulasRealizadas: aulasRealizadas,
                                 presencas: presencas,
                                 faltas: faltas,
+                                atrasos: atrasos,
+                                justificadas: justificadas,
                                 percPresenca: percPresenca
                             });
                         });
@@ -3116,12 +3316,6 @@
             for(let i = 0; i < limit; i++) {
                 const row = window.dadosFiltradosRelatorio[i];
                 
-                let statusColor = 'text-gray-600 bg-gray-100 border-gray-200';
-                if(row.status === 'Programado') statusColor = 'text-blue-700 bg-blue-50 border-blue-200';
-                if(row.status === 'Em andamento') statusColor = 'text-yellow-700 bg-yellow-50 border-yellow-200';
-                if(row.status === 'Concluído') statusColor = 'text-green-700 bg-green-50 border-green-200';
-                if(row.status === 'Cancelado') statusColor = 'text-red-700 bg-red-50 border-red-200';
-
                 let presencaColor = 'text-gray-500';
                 if (row.percPresenca !== '-') {
                     presencaColor = row.percPresenca >= 75 ? 'text-brand-green' : 'text-red-500';
@@ -3137,8 +3331,8 @@
                 }
                 
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-purple-50 border-b border-gray-100 transition-colors';
-                
+                tr.className = 'border-b border-gray-100 transition-colors';
+
                 const tdTurma = document.createElement('td');
                 tdTurma.className = 'p-3 font-medium text-gray-800 text-xs';
                 const spanTurmaNome = document.createElement('span');
@@ -3165,10 +3359,7 @@
                 
                 const tdStatus = document.createElement('td');
                 tdStatus.className = 'p-3 text-xs';
-                const spanStatus = document.createElement('span');
-                spanStatus.className = `px-2 py-0.5 border rounded ${statusColor}`;
-                spanStatus.textContent = row.status;
-                tdStatus.appendChild(spanStatus);
+                tdStatus.appendChild(criarSeloStatus(row.status));
                 
                 const tdUnidade = document.createElement('td');
                 tdUnidade.className = 'p-3 text-xs text-gray-600 truncate max-w-[150px]';
@@ -3176,22 +3367,22 @@
                 tdUnidade.textContent = row.unidade || '-';
                 
                 const tdPresenca = document.createElement('td');
-                tdPresenca.className = `p-3 text-center text-xs font-bold ${presencaColor}`;
+                tdPresenca.className = `p-3 num text-xs font-bold ${presencaColor}`;
                 tdPresenca.textContent = presencaText;
-                
+
                 const tdProvas = document.createElement('td');
-                tdProvas.className = 'p-3 text-center text-xs text-gray-600';
+                tdProvas.className = 'p-3 num text-xs text-gray-600';
                 tdProvas.textContent = row.qtdProvas;
-                
+
                 const tdNota = document.createElement('td');
-                tdNota.className = 'p-3 text-center text-xs';
+                tdNota.className = 'p-3 num text-xs';
                 const spanNota = document.createElement('span');
                 spanNota.className = `badge-nota ${badgeNotaClass}`;
                 spanNota.textContent = row.notaFinal;
                 tdNota.appendChild(spanNota);
                 
                 const tdComp = document.createElement('td');
-                tdComp.className = `p-3 text-center text-xs font-bold ${row.notaComp < 10 ? 'text-red-500' : 'text-brand-green'}`;
+                tdComp.className = `p-3 num text-xs font-bold ${row.notaComp < 10 ? 'text-red-500' : 'text-brand-green-dark'}`;
                 tdComp.textContent = row.notaComp;
                 
                 tr.appendChild(tdTurma);
@@ -3259,7 +3450,9 @@
                 "Aulas Realizadas": row.aulasRealizadas,
                 "Presenças": row.presencas,
                 "Faltas": row.faltas,
-                "% de Presença": row.percPresenca === '-' ? '' : (row.percPresenca / 100) 
+                "Atrasos": row.atrasos || 0,
+                "Faltas Justificadas": row.justificadas || 0,
+                "% de Presença": row.percPresenca === '-' ? '' : (row.percPresenca / 100)
             }));
 
             const worksheet = XLSX.utils.json_to_sheet(dadosExcel);
@@ -3268,13 +3461,13 @@
                 {wch: 35}, {wch: 15}, {wch: 15}, {wch: 25}, {wch: 15}, 
                 {wch: 20}, {wch: 15}, {wch: 15}, {wch: 12}, {wch: 35}, 
                 {wch: 12}, {wch: 25}, {wch: 18}, {wch: 35}, {wch: 18}, 
-                {wch: 15}, {wch: 10}, {wch: 10}, {wch: 15}  
+                {wch: 15}, {wch: 10}, {wch: 10}, {wch: 10}, {wch: 18}, {wch: 15}
             ];
             worksheet['!cols'] = wscols;
 
             const range = XLSX.utils.decode_range(worksheet['!ref']);
             for (let R = range.s.r + 1; R <= range.e.r; ++R) {
-                const cellRef = XLSX.utils.encode_cell({c: 18, r: R}); 
+                const cellRef = XLSX.utils.encode_cell({c: 20, r: R}); // v2.1: "% de Presença" agora é a 21ª coluna
                 if (worksheet[cellRef] && worksheet[cellRef].v !== '') {
                     worksheet[cellRef].z = '0%'; 
                 }
@@ -3575,6 +3768,7 @@
                     const btnEdit = document.createElement('button');
                     btnEdit.className = 'text-orange-500 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 p-2 rounded transition-colors';
                     btnEdit.title = 'Editar Usuário';
+                    btnEdit.setAttribute('aria-label', `Editar usuário ${data.nome || ''}`);
                     btnEdit.addEventListener('click', () => abrirModalEditarUsuario(data.id, data.nome, data.email, data.role));
                     const iconEdit = document.createElement('i');
                     iconEdit.setAttribute('data-lucide', 'edit-2');
@@ -3585,6 +3779,7 @@
                     const btnKey = document.createElement('button');
                     btnKey.className = 'text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 p-2 rounded transition-colors';
                     btnKey.title = 'Redefinir Senha';
+                    btnKey.setAttribute('aria-label', `Redefinir senha de ${data.nome || ''}`);
                     btnKey.addEventListener('click', () => abrirModalResetSenha(data.email, data.nome));
                     const iconKey = document.createElement('i');
                     iconKey.setAttribute('data-lucide', 'key');
@@ -3601,6 +3796,7 @@
                         const btnDel = document.createElement('button');
                         btnDel.className = 'text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2 rounded transition-colors';
                         btnDel.title = 'Excluir Usuário';
+                        btnDel.setAttribute('aria-label', `Excluir usuário ${data.nome || ''}`);
                         btnDel.addEventListener('click', () => abrirModalExclusao('instrutor', data.id, data.nome));
                         const iconDel = document.createElement('i');
                         iconDel.setAttribute('data-lucide', 'trash-2');
@@ -3898,7 +4094,7 @@
                 
                 const btnRemove = document.createElement('button');
                 btnRemove.className = 'text-red-500 hover:text-red-700 p-2 shrink-0';
-                btnRemove.ariaLabel = 'Remover responsável';
+                btnRemove.setAttribute('aria-label', `Remover responsável ${resp.nome || ''}`);
                 btnRemove.addEventListener('click', () => removerResponsavelLista(index));
                 const iconRemove = document.createElement('i');
                 iconRemove.setAttribute('data-lucide', 'trash-2');
@@ -4054,7 +4250,7 @@
                 
                 const btnRemove = document.createElement('button');
                 btnRemove.className = 'text-red-500 hover:text-red-700 p-1';
-                btnRemove.ariaLabel = 'Remover aluno';
+                btnRemove.setAttribute('aria-label', `Remover aluno ${aluno.nome || ''}`);
                 btnRemove.addEventListener('click', () => removerAlunoLista(index));
                 const iconRemove = document.createElement('i');
                 iconRemove.setAttribute('data-lucide', 'trash-2');
@@ -4240,8 +4436,6 @@
                         unidadeDisplay = data.unidade;
                     }
                     
-                    const statusColor = getStatusStyle(statusTurma);
-                    
                     const isAdmin = currentUserData.role === 'admin';
                     const isOwner = data.criadoPorId === currentUser.uid;
                     const podeEditar = isAdmin || isOwner;
@@ -4268,10 +4462,7 @@
                     
                     const tdStatus = document.createElement('td');
                     tdStatus.className = 'p-4';
-                    const spanStatus = document.createElement('span');
-                    spanStatus.className = `px-2 py-1 ${statusColor} border rounded-full text-xs font-medium`;
-                    spanStatus.textContent = statusTurma;
-                    tdStatus.appendChild(spanStatus);
+                    tdStatus.appendChild(criarSeloStatus(statusTurma));
                     
                     const tdInstrutor = document.createElement('td');
                     tdInstrutor.className = 'p-4 text-gray-600';
@@ -4286,11 +4477,11 @@
                     tdPeriodo.innerHTML = periodoStr.replace('\n', '<br>');
                     
                     const tdDias = document.createElement('td');
-                    tdDias.className = 'p-4 text-gray-600 text-center';
+                    tdDias.className = 'p-4 text-gray-600 num';
                     tdDias.textContent = diasTreinamentoCount;
                     
                     const tdAlunos = document.createElement('td');
-                    tdAlunos.className = 'p-4 text-gray-600 text-center';
+                    tdAlunos.className = 'p-4 text-gray-600 num';
                     tdAlunos.textContent = data.alunos ? data.alunos.length : 0;
                     
                     const tdAcoes = document.createElement('td');
@@ -4307,7 +4498,7 @@
                         const btnExcluir = document.createElement('button');
                         btnExcluir.className = 'text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2 rounded transition-colors ml-2';
                         btnExcluir.title = 'Excluir Turma';
-                        btnExcluir.ariaLabel = `Excluir Turma ${data.nomeTreinamento}`;
+                        btnExcluir.setAttribute('aria-label', `Excluir turma ${data.nomeTreinamento}`);
                         btnExcluir.addEventListener('click', () => abrirModalExclusao('turma', docId, data.nomeTreinamento));
                         const iconExcluir = document.createElement('i');
                         iconExcluir.setAttribute('data-lucide', 'trash-2');
@@ -4427,6 +4618,7 @@
 
                     document.getElementById('detalhe-turma-data').innerHTML = `<i data-lucide="calendar" class="w-4 h-4 inline mr-1"></i> ${formatarData(data.dataInicio)}`;
                     document.getElementById('detalhe-turma-status-select').value = data.status || 'Programado';
+                    document.getElementById('detalhe-turma-status-select').dataset.anterior = data.status || 'Programado';
                     verificarVisibilidadeBtnRelatorioFinal();
                     lucide.createIcons();
 
@@ -4447,10 +4639,7 @@
                         const restaurar = await window.mostrarConfirmacao(msg, "Restaurar rascunho", "Descartar");
                         if (restaurar && turmaAtualId === idTurma) {
                             alunosCarregadosAtual = rascunho.alunos;
-                            if (rascunho.status) {
-                                document.getElementById('detalhe-turma-status-select').value = rascunho.status;
-                                verificarVisibilidadeBtnRelatorioFinal();
-                            }
+                            // v2.1: o status não vem do rascunho (agora ele é gravado na hora)
                             hasUnsavedChanges = true;
                             document.getElementById('unsaved-badge').classList.remove('hidden');
                             mostrarStatusRascunho('Rascunho restaurado — clique em "Salvar Alterações" para gravar no sistema.');
@@ -4488,12 +4677,10 @@
                     const nomeInput = document.getElementById(`nome-${index}`);
                     if(nomeInput) aluno.nome = nomeInput.value;
 
+                    // v2.1: lê o seletor de 4 estados (dia "não lançado" não grava nada)
                     diasTreinamentoAtual.forEach((dia, diaIdx) => {
                         const presInput = document.getElementById(`presenca-${index}-${diaIdx}`);
-                        if(presInput) {
-                            if(!aluno.presencas) aluno.presencas = {};
-                            aluno.presencas[dia] = presInput.checked;
-                        }
+                        if(presInput) definirEstadoPresenca(aluno, dia, presInput.value);
                     });
 
                     const compDataInput = document.getElementById(`comp-data-${index}`);
@@ -4554,15 +4741,14 @@
             
             if (confirmed) {
                 const dia = diasTreinamentoAtual[diaIdx];
+                const estado = presente ? 'P' : 'F';
                 alunosCarregadosAtual.forEach((a, i) => {
-                    if(!a.presencas) a.presencas = {};
-                    a.presencas[dia] = presente;
-                    
-                    const cbDesktop = document.getElementById(`presenca-${i}-${diaIdx}`);
-                    if(cbDesktop) cbDesktop.checked = presente;
-                    
-                    const cbMobile = document.getElementById(`mobile-presenca-${i}-${diaIdx}`);
-                    if(cbMobile) cbMobile.checked = presente;
+                    definirEstadoPresenca(a, dia, estado);
+                    ['presenca', 'mobile-presenca'].forEach(prefixo => {
+                        const sel = document.getElementById(`${prefixo}-${i}-${diaIdx}`);
+                        if (sel) { sel.value = estado; sel.dataset.estado = estado; }
+                    });
+                    atualizarRotuloComportamental(i);
                 });
                 window.marcarAlteracoesNaoSalvas();
             }
@@ -4590,6 +4776,30 @@
             gerarImagemRelatorioDia(diaIndex);
         };
 
+        // v2.1: cabeçalho com logo oficial e rodapé com assinatura do instrutor (relatórios em imagem)
+        function cabecalhoRelatorioHTML(titulo) {
+            return `
+                <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #ffffff; border-top-left-radius: 8px; border-top-right-radius: 8px;"><tr>
+                    <td style="padding: 20px 24px; vertical-align: middle;">
+                        <img src="${window.LOGO_RA_URI}" alt="Rede Américas" width="138" height="40" style="display: block; height: 40px; width: auto;">
+                    </td>
+                    <td style="padding: 20px 24px; vertical-align: middle; text-align: right;">
+                        <h1 style="margin: 0; font-size: 22px; font-weight: 700; color: #6D2077;">${escapeHTML(titulo)}</h1>
+                        <p style="margin: 4px 0 0 0; color: #64748b; font-size: 13px;">Melhoria Contínua · Gestão de Treinamentos</p>
+                    </td>
+                </tr></table>
+                <div style="height: 4px; background-color: #6D2077; border-bottom: 2px solid #84BD00;"></div>`;
+        }
+
+        function rodapeRelatorioHTML(instrutorNome) {
+            return `
+                <div style="background-color: #f8fafc; padding: 16px 24px; border-top: 1px solid #e2e8f0; font-size: 13px; color: #475569; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                    <p style="margin: 0;">Atenciosamente,</p>
+                    <p style="margin: 2px 0 0 0; font-size: 15px; font-weight: 700; color: #6D2077;">${escapeHTML(instrutorNome || 'Instrutor(a) responsável')}</p>
+                    <p style="margin: 0; font-size: 12px; color: #64748b;">Instrutor(a) responsável · Qualidade CXNAC</p>
+                </div>`;
+        }
+
         const gerarImagemRelatorioDia = async (diaIndex) => {
             if (!turmaAtualId) return;
             
@@ -4605,13 +4815,19 @@
                     let linhasTabelaHTML = '';
                     let presentes = 0;
                     let ausentes = 0;
-                    
-                    alunosCarregadosAtual.forEach(aluno => {
-                        const estevePresente = aluno.presencas && aluno.presencas[diaTreinamentoGerado] === true;
-                        if(estevePresente) presentes++; else ausentes++;
+                    let atrasados = 0;
+                    let justificadas = 0;
+                    // v2.1: cores dos 4 estados na imagem
+                    const CORES_ESTADO = { P: '#4d7c0f', A: '#c2410c', F: '#b91c1c', J: '#6b21a8', '': '#94a3b8' };
 
-                        const statusText = estevePresente ? 'Presente' : 'Falta';
-                        const statusColor = estevePresente ? '#84BD00' : '#ef4444';
+                    alunosCarregadosAtual.forEach(aluno => {
+                        const estado = obterEstadoPresenca(aluno, diaTreinamentoGerado);
+                        if (estado === 'P' || estado === 'A') presentes++; else ausentes++;
+                        if (estado === 'A') atrasados++;
+                        if (estado === 'J') justificadas++;
+
+                        const statusText = estado === '' ? 'Não lançado' : rotuloPresenca(estado);
+                        const statusColor = CORES_ESTADO[estado];
 
                         linhasTabelaHTML += `
                             <tr>
@@ -4626,11 +4842,8 @@
                     
                     printContainer.innerHTML = `
                         <div id="capture-area" style="width: 800px; font-family: 'Inter', sans-serif; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;">
-                            <div style="background-color: #6D2077; color: white; padding: 24px; text-align: center; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-                                <h1 style="margin: 0; font-size: 24px; font-weight: 700;">Relatório de Presença</h1>
-                                <p style="margin: 4px 0 0 0; color: #D9B4D5; font-size: 14px;">Rede Américas - Gestão de Treinamentos</p>
-                            </div>
-                            
+                            ${cabecalhoRelatorioHTML('Relatório de Presença')}
+
                             <!-- v2: tabela em vez de flex, para o layout funcionar também no corpo do e-mail (Outlook) -->
                             <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;"><tr>
                                 <td style="padding: 20px 24px; vertical-align: top;">
@@ -4641,7 +4854,8 @@
                                 </td>
                                 <td style="padding: 20px 24px; vertical-align: top; text-align: right;">
                                     <p style="margin: 0 0 4px 0; font-size: 14px; color: #475569;"><strong>Data do Registro:</strong> <span style="color: #1e293b;">${escapeHTML(diaTreinamentoGerado)}</span></p>
-                                    <p style="margin: 0; font-size: 14px; color: #475569;"><strong>Resumo:</strong> <span style="color: #84BD00; font-weight: bold;">${presentes} Presentes</span> / <span style="color: #ef4444; font-weight: bold;">${ausentes} Ausentes</span></p>
+                                    <p style="margin: 0; font-size: 14px; color: #475569;"><strong>Resumo:</strong> <span style="color: #4d7c0f; font-weight: bold;">${presentes} Presentes</span> / <span style="color: #b91c1c; font-weight: bold;">${ausentes} Ausentes</span></p>
+                                    ${(atrasados || justificadas) ? `<p style="margin: 4px 0 0 0; font-size: 12px; color: #64748b;">${atrasados ? `<span style="color: #c2410c; font-weight: bold;">${atrasados} com atraso</span>` : ''}${atrasados && justificadas ? ' · ' : ''}${justificadas ? `<span style="color: #6b21a8; font-weight: bold;">${justificadas} falta(s) justificada(s)</span>` : ''}</p>` : ''}
                                 </td>
                             </tr></table>
                             
@@ -4659,10 +4873,8 @@
                                     </tbody>
                                 </table>
                             </div>
-                            
-                            <div style="background-color: #f8fafc; padding: 16px 24px; text-align: center; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
-                                <p style="margin: 0;">Enviado por <strong>Qualidade CXNAC</strong></p>
-                            </div>
+
+                            ${rodapeRelatorioHTML(data.instrutorNome)}
                         </div>
                     `;
 
@@ -4722,7 +4934,7 @@
                     let compData = aluno.comportamental;
                     if (typeof compData === 'string') compData = { infractions: [], obs: compData };
                     else if (!compData) compData = { infractions: [], obs: "" };
-                    const notaComp = calcularNotaComp(compData.infractions);
+                    const notaComp = calcularNotaComp(compData.infractions, aluno);
 
                     linhasTabelaHTML += `
                         <tr>
@@ -4739,10 +4951,7 @@
                 
                 printContainer.innerHTML = `
                     <div id="capture-area" style="width: 850px; font-family: 'Inter', sans-serif; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;">
-                        <div style="background-color: #6D2077; color: white; padding: 24px; text-align: center; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-                            <h1 style="margin: 0; font-size: 24px; font-weight: 700;">Relatório de Fechamento de Turma</h1>
-                            <p style="margin: 4px 0 0 0; color: #D9B4D5; font-size: 14px;">Rede Américas - Gestão de Treinamentos</p>
-                        </div>
+                        ${cabecalhoRelatorioHTML('Relatório de Fechamento de Turma')}
                         
                         <!-- v2: tabela em vez de flex, para o layout funcionar também no corpo do e-mail (Outlook) -->
                         <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;"><tr>
@@ -4776,9 +4985,7 @@
                             </table>
                         </div>
                         
-                        <div style="background-color: #f8fafc; padding: 16px 24px; text-align: center; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
-                            <p style="margin: 0;">Enviado por <strong>Qualidade CXNAC</strong></p>
-                        </div>
+                        ${rodapeRelatorioHTML(data.instrutorNome)}
                     </div>
                 `;
 
@@ -4890,9 +5097,12 @@
                 ? `<p style="${estilo} margin: 16px 0 4px 0;"><strong>Resumo das atividades:</strong></p><p style="${estilo} margin: 0 0 16px 0;">${escapeHTML(resumo).replace(/\n/g, '<br>')}</p>`
                 : '';
             const abertura = `<p style="${estilo}">Olá,</p><p style="${estilo}">${escapeHTML(intro)}</p>${resumoHtml}`;
-            const fechamento = `<p style="${estilo} margin-top: 16px;">Atenciosamente,<br>${escapeHTML(EMAIL_CONFIG.assinatura)}</p>`;
+            // v2.1: assinatura com o nome do instrutor da turma
+            const instrutor = (dadosTurmaAtual && dadosTurmaAtual.instrutorNome) || '';
+            const assinaturaTexto = instrutor ? `${instrutor}\n${EMAIL_CONFIG.assinatura}` : EMAIL_CONFIG.assinatura;
+            const fechamento = `<p style="${estilo} margin-top: 16px;">Atenciosamente,<br>${instrutor ? `<strong>${escapeHTML(instrutor)}</strong><br>` : ''}${escapeHTML(EMAIL_CONFIG.assinatura)}</p>`;
             const texto = `Olá,\n\n${intro}\n\n${resumo ? `RESUMO DAS ATIVIDADES:\n${resumo}\n\n` : ''}`;
-            return { assunto, abertura, fechamento, texto };
+            return { assunto, abertura, fechamento, texto, assinaturaTexto };
         };
 
         const base64Utf8 = (s) => {
@@ -4972,7 +5182,7 @@
                     message: {
                         subject: c.assunto,
                         html: `<div>${c.abertura}${window.currentReportHTML}${c.fechamento}${rodape}</div>`,
-                        text: `${c.texto}(Relatório em HTML no corpo deste e-mail.)\n\nAtenciosamente,\n${EMAIL_CONFIG.assinatura}`
+                        text: `${c.texto}(Relatório em HTML no corpo deste e-mail.)\n\nAtenciosamente,\n${c.assinaturaTexto}`
                     },
                     turmaId: turmaAtualId || null,
                     tipoRelatorio: window.isRelatorioFinal ? 'fechamento' : 'presenca',
@@ -5012,7 +5222,7 @@
             const dest = validarDestinatarios();
             if (!dest) return;
             const c = montarConteudoEmail();
-            const corpo = `${c.texto}[ COLE A IMAGEM DO RELATÓRIO AQUI (CTRL + V) ]\n\nAtenciosamente,\n${EMAIL_CONFIG.assinatura}`;
+            const corpo = `${c.texto}[ COLE A IMAGEM DO RELATÓRIO AQUI (CTRL + V) ]\n\nAtenciosamente,\n${c.assinaturaTexto}`;
             const ccParam = dest.cc.length ? `&cc=${encodeURIComponent(dest.cc.join(';'))}` : '';
 
             window.currentReportCanvas.toBlob(async (blob) => {
@@ -5100,6 +5310,7 @@
                 const btnRelatorio = document.createElement('button');
                 btnRelatorio.className = 'flex items-center gap-1 text-[10px] bg-brand-purple text-white px-2 py-1 rounded hover:bg-purple-800 transition-colors';
                 btnRelatorio.title = 'Gerar Relatório do Dia';
+                btnRelatorio.setAttribute('aria-label', `Gerar relatório do dia ${dia}`);
                 btnRelatorio.addEventListener('click', () => abrirModalConteudoDia(diaIdx));
                 const iconRel = document.createElement('i');
                 iconRel.setAttribute('data-lucide', 'mail');
@@ -5110,9 +5321,13 @@
                 if (!window.isTurmaReadOnly) {
                     const divMore = document.createElement('div');
                     divMore.className = 'relative group';
-                    
+
                     const btnMore = document.createElement('button');
+                    btnMore.type = 'button';
                     btnMore.className = 'text-gray-400 hover:text-brand-purple p-1';
+                    btnMore.setAttribute('aria-label', `Marcar todos os alunos no dia ${dia}`);
+                    btnMore.setAttribute('aria-haspopup', 'menu');
+                    btnMore.title = 'Marcar todos';
                     const iconMore = document.createElement('i');
                     iconMore.setAttribute('data-lucide', 'more-vertical');
                     iconMore.className = 'w-4 h-4';
@@ -5120,7 +5335,8 @@
                     divMore.appendChild(btnMore);
                     
                     const divMenu = document.createElement('div');
-                    divMenu.className = 'absolute top-full left-1/2 transform -translate-x-1/2 mt-1 hidden group-hover:flex flex-col bg-white border border-gray-200 shadow-xl rounded text-xs z-50';
+                    divMenu.className = 'absolute top-full left-1/2 transform -translate-x-1/2 mt-1 hidden group-hover:flex group-focus-within:flex flex-col bg-white border border-gray-200 shadow-xl rounded text-xs z-50';
+                    divMenu.setAttribute('role', 'menu');
                     
                     const btnPres = document.createElement('button');
                     btnPres.className = 'px-3 py-2 hover:bg-green-50 text-green-700 whitespace-nowrap text-left w-full';
@@ -5175,73 +5391,49 @@
             }
 
             alunosCarregadosAtual.forEach((aluno, index) => {
-                const presencasAluno = aluno.presencas || {};
                 const isDisabled = window.isTurmaReadOnly ? true : false;
-                const bgClasses = window.isTurmaReadOnly ? "bg-transparent text-gray-500" : "bg-transparent focus:bg-white";
+                const alunoNovo = !aluno.nome && !aluno.matricula;
+                const nomeAcessivel = aluno.nome || `aluno ${index + 1}`;
 
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-gray-50 group border-b border-gray-100 last:border-0';
-                
+                tr.className = 'group border-b border-gray-100 last:border-0';
+
+                // v2.1: nome e matrícula aparecem como texto; o lápis libera a edição
                 const tdMat = document.createElement('td');
                 tdMat.className = 'p-3 sticky-col-mat group-hover:bg-gray-50';
-                const inputMat = document.createElement('input');
-                inputMat.type = 'text';
-                inputMat.id = `matricula-${index}`;
-                inputMat.className = `input-premium py-1.5 px-2 text-sm text-gray-700 font-bold ${bgClasses}`;
-                inputMat.placeholder = 'Opcional';
-                inputMat.value = aluno.matricula || '';
-                if (isDisabled) inputMat.disabled = true;
-                inputMat.addEventListener('change', window.marcarAlteracoesNaoSalvas);
-                tdMat.appendChild(inputMat);
+                tdMat.appendChild(criarCelulaEditavel({
+                    id: `matricula-${index}`, valor: aluno.matricula, placeholder: 'Sem matrícula',
+                    rotulo: `matrícula de ${nomeAcessivel}`, classeTexto: 'font-bold text-gray-700',
+                    somenteLeitura: isDisabled, iniciarEditando: alunoNovo && !isDisabled
+                }));
                 tr.appendChild(tdMat);
-                
+
                 const tdNome = document.createElement('td');
                 tdNome.className = 'p-3 sticky-col-nome group-hover:bg-gray-50';
-                const inputNome = document.createElement('input');
-                inputNome.type = 'text';
-                inputNome.id = `nome-${index}`;
-                inputNome.className = `input-premium py-1.5 px-2 text-sm text-gray-800 font-medium ${bgClasses}`;
-                inputNome.placeholder = 'Nome do Aluno';
-                inputNome.value = aluno.nome || '';
-                if (isDisabled) inputNome.disabled = true;
-                inputNome.addEventListener('change', window.marcarAlteracoesNaoSalvas);
-                tdNome.appendChild(inputNome);
+                tdNome.appendChild(criarCelulaEditavel({
+                    id: `nome-${index}`, valor: aluno.nome, placeholder: 'Nome do aluno',
+                    rotulo: `nome de ${nomeAcessivel}`, classeTexto: 'font-medium text-gray-800',
+                    somenteLeitura: isDisabled, iniciarEditando: alunoNovo && !isDisabled
+                }));
                 tr.appendChild(tdNome);
-                
+
+                // v2.1: presença com 4 estados (Presente / Falta / Atraso / Falta justificada)
                 diasTreinamentoAtual.forEach((dia, diaIdx) => {
-                    const isPresente = presencasAluno[dia] ? true : false;
                     const tdPres = document.createElement('td');
-                    tdPres.className = 'p-4 text-center border-r border-gray-100 bg-gray-50 group-hover:bg-white transition-colors';
-                    
-                    const divTog = document.createElement('div');
-                    divTog.className = 'relative inline-flex items-center justify-center w-12 align-middle select-none transition duration-200 ease-in';
-                    
-                    const inputCb = document.createElement('input');
-                    inputCb.type = 'checkbox';
-                    inputCb.id = `presenca-${index}-${diaIdx}`;
-                    inputCb.className = 'toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer';
-                    if (isPresente) inputCb.checked = true;
-                    if (isDisabled) inputCb.disabled = true;
-                    inputCb.addEventListener('change', window.marcarAlteracoesNaoSalvas);
-                    
-                    const labelCb = document.createElement('label');
-                    labelCb.htmlFor = `presenca-${index}-${diaIdx}`;
-                    labelCb.className = 'toggle-label flex items-center justify-between overflow-hidden h-6 w-12 rounded-full bg-gray-300 cursor-pointer';
-                    
-                    const iconX = document.createElement('i');
-                    iconX.setAttribute('data-lucide', 'x');
-                    iconX.className = 'toggle-icon-x w-3 h-3 text-white ml-auto mr-1 relative z-0';
-                    
-                    const iconChk = document.createElement('i');
-                    iconChk.setAttribute('data-lucide', 'check');
-                    iconChk.className = 'toggle-icon-check w-3 h-3 text-white ml-1 relative z-0';
-                    
-                    labelCb.appendChild(iconX);
-                    labelCb.appendChild(iconChk);
-                    
-                    divTog.appendChild(inputCb);
-                    divTog.appendChild(labelCb);
-                    tdPres.appendChild(divTog);
+                    tdPres.className = 'p-3 text-center border-r border-gray-100 transition-colors';
+                    const sel = criarSeletorPresenca(
+                        `presenca-${index}-${diaIdx}`,
+                        obterEstadoPresenca(aluno, dia),
+                        `Presença de ${nomeAcessivel} em ${dia.substring(0, 5)}`,
+                        isDisabled
+                    );
+                    sel.addEventListener('change', () => {
+                        sel.dataset.estado = sel.value;
+                        definirEstadoPresenca(aluno, dia, sel.value);
+                        atualizarRotuloComportamental(index);
+                        window.marcarAlteracoesNaoSalvas();
+                    });
+                    tdPres.appendChild(sel);
                     tr.appendChild(tdPres);
                 });
 
@@ -5304,7 +5496,9 @@
                 tdCompArea.appendChild(inputCompHid);
                 
                 const btnComp = document.createElement('button');
+                btnComp.type = 'button';
                 btnComp.className = `text-sm px-3 py-2 border border-gray-200 bg-white rounded-lg w-full text-left flex justify-between items-center ${window.isTurmaReadOnly ? 'cursor-default' : 'hover:border-brand-purple cursor-pointer'} transition-colors shadow-sm`;
+                btnComp.setAttribute('aria-label', `Avaliação comportamental de ${nomeAcessivel}`);
                 if (!window.isTurmaReadOnly) btnComp.addEventListener('click', () => abrirModalComportamento(index));
                 
                 const spanComp = document.createElement('span');
@@ -5327,7 +5521,9 @@
                     tdRem.className = 'p-3 text-center bg-white group-hover:bg-gray-50';
                     const btnRem = document.createElement('button');
                     btnRem.className = 'text-red-400 hover:text-red-600 p-2 rounded hover:bg-red-50 transition-colors';
+                    btnRem.type = 'button';
                     btnRem.title = 'Remover Aluno';
+                    btnRem.setAttribute('aria-label', `Remover ${nomeAcessivel} da turma`);
                     btnRem.addEventListener('click', () => removerAlunoTurmaExistente(index));
                     const iconRem = document.createElement('i');
                     iconRem.setAttribute('data-lucide', 'trash-2');
@@ -5340,29 +5536,101 @@
                 tbody.appendChild(tr);
             });
             
-            alunosCarregadosAtual.forEach((aluno, index) => {
-                let compData = aluno.comportamental;
-                if (typeof compData === 'string') compData = { infractions: [], obs: compData };
-                else if (!compData) compData = { infractions: [], obs: "" };
-                
-                let notaComp = calcularNotaComp(compData.infractions);
-                let labelEl = document.getElementById(`comp-label-${index}`);
-                
-                if (labelEl) {
-                    labelEl.textContent = `Nota Comp: ${notaComp}`;
-                    if (notaComp < 10) {
-                        labelEl.className = "text-red-600 font-bold text-xs";
-                    } else if (compData.obs && compData.obs.trim() !== "") {
-                        labelEl.className = "text-blue-600 font-bold text-xs";
-                        labelEl.textContent += " (Obs)";
-                    } else {
-                        labelEl.className = "text-brand-green font-bold text-xs";
-                    }
-                }
-            });
+            alunosCarregadosAtual.forEach((aluno, index) => atualizarRotuloComportamental(index));
 
             lucide.createIcons();
         };
+
+        // v2.1: rótulo "Nota Comp" (considera os atrasos lançados na presença)
+        function atualizarRotuloComportamental(index) {
+            const aluno = alunosCarregadosAtual[index];
+            const labelEl = document.getElementById(`comp-label-${index}`);
+            if (!aluno || !labelEl) return;
+            let compData = aluno.comportamental;
+            if (typeof compData === 'string') compData = { infractions: [], obs: compData };
+            else if (!compData) compData = { infractions: [], obs: "" };
+
+            const notaComp = calcularNotaComp(compData.infractions, aluno);
+            const atrasos = contarAtrasos(aluno);
+            labelEl.textContent = `Nota Comp: ${notaComp}${atrasos > 0 ? ` · ${atrasos} atraso(s)` : ''}`;
+            if (notaComp < 10) {
+                labelEl.className = "text-red-600 font-bold text-xs";
+            } else if (compData.obs && compData.obs.trim() !== "") {
+                labelEl.className = "text-blue-600 font-bold text-xs";
+                labelEl.textContent += " (Obs)";
+            } else {
+                labelEl.className = "text-brand-green-dark font-bold text-xs";
+            }
+        }
+
+        // v2.1: célula de texto com lápis (nome/matrícula). O <input> continua existindo
+        // com o mesmo id, então salvar/sincronizar funciona igual.
+        function criarCelulaEditavel({ id, valor, placeholder, rotulo, classeTexto, somenteLeitura, iniciarEditando }) {
+            const wrap = document.createElement('div');
+            wrap.className = 'celula-editavel';
+            const texto = document.createElement('span');
+            texto.className = `texto-celula text-sm ${classeTexto}`;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = id;
+            input.value = valor || '';
+            input.placeholder = placeholder;
+            input.className = 'input-premium py-1.5 px-2 text-sm hidden';
+            input.setAttribute('aria-label', rotulo);
+
+            const atualizarTexto = () => {
+                const v = input.value.trim();
+                texto.textContent = v || placeholder;
+                texto.title = v;
+                texto.classList.toggle('italic', !v);
+                texto.classList.toggle('text-gray-400', !v);
+            };
+            atualizarTexto();
+            wrap.appendChild(texto);
+            wrap.appendChild(input);
+            if (somenteLeitura) return wrap;
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'btn-lapis';
+            btn.title = 'Editar';
+            btn.setAttribute('aria-label', `Editar ${rotulo}`);
+            const icone = document.createElement('i');
+            icone.setAttribute('data-lucide', 'pencil');
+            icone.className = 'w-3.5 h-3.5';
+            btn.appendChild(icone);
+            wrap.appendChild(btn);
+
+            let valorOriginal = input.value;
+            const mostrarEdicao = (sim) => {
+                texto.classList.toggle('hidden', sim);
+                btn.classList.toggle('hidden', sim);
+                input.classList.toggle('hidden', !sim);
+            };
+            const entrar = () => {
+                valorOriginal = input.value;
+                mostrarEdicao(true);
+                input.focus();
+                input.select();
+            };
+            const sair = (confirmar) => {
+                if (!confirmar) input.value = valorOriginal;
+                input.value = input.value.trim();
+                if (input.value !== valorOriginal) window.marcarAlteracoesNaoSalvas();
+                atualizarTexto();
+                mostrarEdicao(false);
+            };
+            btn.addEventListener('click', entrar);
+            texto.addEventListener('dblclick', entrar);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); sair(true); btn.focus(); }
+                else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); sair(false); btn.focus(); }
+            });
+            input.addEventListener('blur', () => { if (!input.classList.contains('hidden')) sair(true); });
+
+            if (iniciarEditando) { valorOriginal = ''; mostrarEdicao(true); }
+            return wrap;
+        }
 
         const abrirModalComportamento = (index) => {
             if (window.isTurmaReadOnly) return;
@@ -5379,6 +5647,12 @@
             });
             
             document.getElementById('modal-comp-obs').value = compData.obs || "";
+            // v2.1: atrasos lançados na presença já descontam sozinhos
+            const atrasos = contarAtrasos(aluno);
+            const avisoAtraso = document.getElementById('modal-comp-aviso-atraso');
+            avisoAtraso.textContent = atrasos > 0
+                ? `${atrasos} atraso(s) lançado(s) na presença: −${atrasos * pesosComportamentais['Atraso']} pt(s) já aplicados automaticamente. Não é preciso marcar "Atraso" abaixo.`
+                : 'Atrasos lançados na presença descontam automaticamente (−1 pt cada).';
             openModal('modal-comportamento');
         };
         window.abrirModalComportamento = abrirModalComportamento;
@@ -5400,20 +5674,8 @@
             const inputHidden = document.getElementById(`comp-data-${index}`);
             if (inputHidden) inputHidden.value = JSON.stringify(compData);
             
-            let notaComp = calcularNotaComp(infractions);
-            let labelEl = document.getElementById(`comp-label-${index}`);
-            if (labelEl) {
-                labelEl.textContent = `Nota Comp: ${notaComp}`;
-                if (notaComp < 10) {
-                    labelEl.className = "text-red-600 font-bold text-xs";
-                } else if (obs && obs.trim() !== "") {
-                    labelEl.className = "text-blue-600 font-bold text-xs";
-                    labelEl.textContent += " (Obs)";
-                } else {
-                    labelEl.className = "text-brand-green font-bold text-xs";
-                }
-            }
-            
+            atualizarRotuloComportamental(index);
+
             window.marcarAlteracoesNaoSalvas();
             closeModal('modal-comportamento');
         });
@@ -5471,12 +5733,12 @@
                 
                 const btnMassaPres = document.createElement('button');
                 btnMassaPres.className = 'flex-1 py-2 bg-green-50 text-green-700 border border-green-200 rounded-lg text-xs font-semibold';
-                btnMassaPres.textContent = 'Marcar Todos P.';
+                btnMassaPres.textContent = 'Todos presentes';
                 btnMassaPres.addEventListener('click', () => marcarMassa(diaIdx, true));
                 
                 const btnMassaAus = document.createElement('button');
                 btnMassaAus.className = 'flex-1 py-2 bg-red-50 text-red-700 border border-red-200 rounded-lg text-xs font-semibold';
-                btnMassaAus.textContent = 'Marcar Todos A.';
+                btnMassaAus.textContent = 'Todos com falta';
                 btnMassaAus.addEventListener('click', () => marcarMassa(diaIdx, false));
                 
                 divAcoesMassa.appendChild(btnMassaPres);
@@ -5485,8 +5747,6 @@
             }
 
             alunosCarregadosAtual.forEach((aluno, index) => {
-                const presencasAluno = aluno.presencas || {};
-                const isPresente = presencasAluno[diaStr] ? true : false;
                 const isDisabled = window.isTurmaReadOnly ? true : false;
 
                 const divCard = document.createElement('div');
@@ -5506,45 +5766,25 @@
                 divInfo.appendChild(pNome);
                 divInfo.appendChild(pMat);
                 
-                const divTog = document.createElement('div');
-                divTog.className = 'relative inline-flex items-center justify-center w-12 align-middle select-none transition duration-200 ease-in shrink-0';
-                
-                const inputCb = document.createElement('input');
-                inputCb.type = 'checkbox';
-                inputCb.id = `mobile-presenca-${index}-${diaIdx}`;
-                inputCb.className = 'toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer';
-                if (isPresente) inputCb.checked = true;
-                if (isDisabled) inputCb.disabled = true;
-                
-                inputCb.addEventListener('change', (e) => {
+                // v2.1: mesmo seletor de 4 estados do computador
+                const sel = criarSeletorPresenca(
+                    `mobile-presenca-${index}-${diaIdx}`,
+                    obterEstadoPresenca(aluno, diaStr),
+                    `Presença de ${aluno.nome || `aluno ${index + 1}`} em ${diaStr.substring(0, 5)}`,
+                    isDisabled
+                );
+                sel.classList.add('shrink-0');
+                sel.addEventListener('change', () => {
+                    sel.dataset.estado = sel.value;
+                    definirEstadoPresenca(aluno, diaStr, sel.value);
+                    const selDesktop = document.getElementById(`presenca-${index}-${diaIdx}`);
+                    if (selDesktop) { selDesktop.value = sel.value; selDesktop.dataset.estado = sel.value; }
+                    atualizarRotuloComportamental(index);
                     window.marcarAlteracoesNaoSalvas();
-                    const desktopCb = document.getElementById(`presenca-${index}-${diaIdx}`);
-                    if (desktopCb) desktopCb.checked = e.target.checked;
-                    
-                    if (!aluno.presencas) aluno.presencas = {};
-                    aluno.presencas[diaStr] = e.target.checked;
                 });
-                
-                const labelCb = document.createElement('label');
-                labelCb.htmlFor = `mobile-presenca-${index}-${diaIdx}`;
-                labelCb.className = 'toggle-label flex items-center justify-between overflow-hidden h-6 w-12 rounded-full bg-gray-300 cursor-pointer';
-                
-                const iconX = document.createElement('i');
-                iconX.setAttribute('data-lucide', 'x');
-                iconX.className = 'toggle-icon-x w-3 h-3 text-white ml-auto mr-1 relative z-0';
-                
-                const iconChk = document.createElement('i');
-                iconChk.setAttribute('data-lucide', 'check');
-                iconChk.className = 'toggle-icon-check w-3 h-3 text-white ml-1 relative z-0';
-                
-                labelCb.appendChild(iconX);
-                labelCb.appendChild(iconChk);
-                
-                divTog.appendChild(inputCb);
-                divTog.appendChild(labelCb);
-                
+
                 divCard.appendChild(divInfo);
-                divCard.appendChild(divTog);
+                divCard.appendChild(sel);
                 
                 container.appendChild(divCard);
             });
